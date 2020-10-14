@@ -6,9 +6,7 @@ import Header from "./NavBar/Header";
 
 class App extends React.Component {
   static async getInitialProps(ctx) {
-    const res = await fetch(
-      "http://localhost:8080/qa_react_wordpress/wp-json/api/v1/questions"
-    );
+    const res = await fetch("https://api.github.com/repos/vercel/next.js");
     const json = await res.json();
     const isServer = typeof window === "undefined";
     return { json, isServer };
