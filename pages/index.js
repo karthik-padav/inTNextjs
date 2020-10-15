@@ -5,12 +5,12 @@ import Home from "./Home/Home";
 import Header from "./NavBar/Header";
 
 class App extends React.Component {
-  static async getInitialProps(ctx) {
-    const res = await fetch("https://api.github.com/repos/vercel/next.js");
-    const json = await res.json();
-    const isServer = typeof window === "undefined";
-    return { json, isServer };
-  }
+  // static async getInitialProps(ctx) {
+  //   const res = await fetch("https://api.github.com/repos/vercel/next.js");
+  //   const json = await res.json();
+  //   const isServer = typeof window === "undefined";
+  //   return { json, isServer };
+  // }
 
   async componentDidMount() {
     const res = await fetch("https://api.github.com/repos/vercel/next.js");
