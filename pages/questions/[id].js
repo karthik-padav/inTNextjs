@@ -23,7 +23,6 @@ const useStyles = makeStyles((theme) => ({
 
 function Post(data) {
   const classes = useStyles();
-  console.log(data, "props123123");
   return (
     <>
       {data&&data.res.map((item, index) => {
