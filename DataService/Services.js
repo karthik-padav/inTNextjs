@@ -50,7 +50,6 @@ export const getBloodDonor = (querry) => {
 };
 
 export const getQuestions = (querry) => {
-  console.log(querry,'querry')
   return new Promise((resolve, reject) => {
     axios({
       method: "get",
