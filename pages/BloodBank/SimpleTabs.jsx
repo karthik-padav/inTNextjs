@@ -50,13 +50,13 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function SimpleTabs(props) {
+function SimpleTabs(props) {
   const {
     LoadMoreBloodReceiver,
-    receiverList,
+    receiverList = [],
     scrollLoader,
     LoadMoreBloodDonor,
-    donorList,
+    donorList = [],
   } = props;
   const classes = useStyles();
   const [value, setValue] = React.useState(0);
@@ -146,3 +146,4 @@ export default function SimpleTabs(props) {
     </div>
   );
 }
+export default SimpleTabs;

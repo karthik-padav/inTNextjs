@@ -1,3 +1,9 @@
+import Link from "next/link";
+import {
+  bloodRequied,
+  getBloodReceiver,
+  getBloodDonor,
+} from "../DataService/Services";
 import Head from "next/head";
 import React, { useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
@@ -11,11 +17,10 @@ import ListItemText from "@material-ui/core/ListItemText";
 import Select from "@material-ui/core/Select";
 import Checkbox from "@material-ui/core/Checkbox";
 import Chip from "@material-ui/core/Chip";
-import Profile from "../Common/Profile";
-import Menu from "../Common/Menu";
+import Profile from "./Common/Profile";
+import Menu from "./Common/Menu";
 import classNames from "classnames";
-import { getBloodReceiver, getBloodDonor } from "../../DataService/Services";
-import SimpleTabs from "./SimpleTabs";
+import SimpleTabs from "./BloodBank/SimpleTabs";
 import _ from "lodash";
 
 const useStyles = makeStyles((theme) => ({
@@ -157,4 +162,9 @@ function BloodBank() {
   );
 }
 
+BloodBank.getInitialProps = async function () {
+  const res = await bloodRequied();
+  console.log(res, "we are in BloodBank");
+  return res;
+};
 export default BloodBank;
