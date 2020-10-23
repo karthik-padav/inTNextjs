@@ -1,4 +1,7 @@
 const constants = {
-  baseUrl: "http://localhost:8080/qa_react_wordpress",
+  baseUrl: "https://howdy-planet.000webhostapp.com",
+  pas:'*A+[d}KU0E(N}0c%',
+  dm:'mim',
+  u:'admin'
 };
 export default constants;
