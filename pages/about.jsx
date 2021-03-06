@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { bloodRequied } from "../DataService/Services";
+// import { bloodRequied } from "../DataService/Services";
 
 function About() {
   return (
@@ -9,9 +9,9 @@ function About() {
   );
 }
 
-About.getInitialProps = async function () {
-  const res = await bloodRequied();
-  console.log(res, "we are in about");
-  return res;
-};
+// About.getInitialProps = async function () {
+//   const res = await bloodRequied();
+//   console.log(res, "we are in about");
+//   return res;
+// };
 export default About;

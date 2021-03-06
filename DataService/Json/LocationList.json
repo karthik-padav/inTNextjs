@@ -1,0 +1,56 @@
+[{
+  "name": "India",
+  "code": "IND",
+  "state": [
+    {
+      "name": "Karnataka",
+      "code": "karnataka",
+      "district": [
+        {
+          "name": "Dakshina Kannada",
+          "code": "dakshina_kannada",
+          "taluk": [
+            {
+              "name": "Sulya",
+              "code": "sulya"
+            },
+            {
+              "name": "Bantval",
+              "code": "bantval"
+            },
+            {
+              "name": "Beltangadi",
+              "code": "beltangadi"
+            },
+            {
+              "name": "Mangalore",
+              "code": "mangalore"
+            },
+            {
+              "name": "Puttur",
+              "code": "puttur"
+            }
+          ]
+        },
+        {
+          "name": "Udupi",
+          "code": "udupi",
+          "taluk": [
+            {
+              "name": "Karkal",
+              "code": "karkal"
+            },
+            {
+              "name": "Kundapura",
+              "code": "kundapura"
+            },
+            {
+              "name": "Udupi",
+              "code": "udupi"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}]
