@@ -15,7 +15,7 @@ import MuiAlert from "@material-ui/lab/Alert";
 
 import Snackbar from "@material-ui/core/Snackbar";
 import LoginModal from "components/common/LoginModal";
-import AddPostModalWrapper from "pages/questions/AddPostWrapper/AddPostModalWrapper";
+import AddPostComponent from "pages/questions/AddPostWrapper/AddPostComponent";
 import AddBloodRequestModal from "pages/bloodbank/AddBloodRequestWrapper/AddBloodRequestModal";
 
 const useStyles = makeStyles((theme) => ({
@@ -31,6 +31,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function UiComponents(props) {
+  const { postQuestionModal = false } = props;
   React.useEffect(() => {
     let localstorageUserData = localStorage.getItem("userDetails");
     if (localstorageUserData)
@@ -78,7 +79,7 @@ function UiComponents(props) {
       </Snackbar>
 
       <LoginModal />
-      <AddPostModalWrapper />
+      {postQuestionModal && <AddPostComponent />}
       <AddBloodRequestModal />
     </div>
   );
@@ -88,6 +89,7 @@ const mapStateToProps = (state) => {
   return {
     userDetails: state.userDetails,
     toastMsg: _get(state, "ui.toast"),
+    postQuestionModal: _get(state, "ui.postQuestionModal.show"),
   };
 };
 const mapDispatchToProps = (dispatch) => {

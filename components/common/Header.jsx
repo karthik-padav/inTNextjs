@@ -12,9 +12,15 @@ import _get from "lodash/get";
 import _isEmpty from "lodash/isEmpty";
 import Link from "next/link";
 import MuiAlert from "@material-ui/lab/Alert";
+import Icon from "@material-ui/core/Icon";
+
+import Box from "@material-ui/core/Box";
+import Avatar from "@material-ui/core/Avatar";
+import Badge from "@material-ui/core/Badge";
 
 import Snackbar from "@material-ui/core/Snackbar";
 import LoginModal from "components/common/LoginModal";
+import ButtonWrapper from "components/common/ButtonWrapper";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -25,6 +31,18 @@ const useStyles = makeStyles((theme) => ({
   },
   title: {
     flexGrow: 1,
+  },
+  appBar: {
+    backgroundColor: theme.palette.common.white,
+    color: theme.palette.text.secondary,
+  },
+  logo: {
+    height: "55px",
+    width: "auto",
+  },
+  xSmall: {
+    width: theme.spacing(4),
+    height: theme.spacing(4),
   },
 }));
 
@@ -37,26 +55,58 @@ function Header(props) {
   const classes = useStyles();
   return (
     <div className={classes.root}>
-      <AppBar position="fixed">
+      <AppBar position="fixed" className={classes.appBar}>
         <Toolbar>
-          <IconButton
-            edge="start"
-            className={classes.menuButton}
-            color="inherit"
-            aria-label="menu"
+          <Box
+            display="flex"
+            width="100%"
+            justifyContent="space-between"
+            alignItems="center"
           >
-            <MenuIcon />
-          </IconButton>
-          <Link href="/">
-            <Typography variant="h6" className={classes.title}>
-              MIM
-            </Typography>
-          </Link>
-          {_get(props, "userDetails") && (
-            <Button color="inherit" onClick={logout}>
-              Logout
-            </Button>
-          )}
+            <Link href="/">
+              <img
+                // src="/images/INT_logo.png"
+                src="/images/Logo_full.png"
+                alt="in Tulunadu"
+                className={classes.logo}
+              />
+            </Link>
+            <Box>
+              {_get(props, "userDetails") && (
+                <>
+                  <ButtonWrapper
+                    type="IconButton"
+                    borderRadius="100px"
+                    bgColor="color3"
+                    hoverBgColor="color2"
+                    color="color1"
+                    onClick={logout}
+                    mr={1}
+                  >
+                    <Badge badgeContent={0}>
+                      <Icon className={"far fa-bell"} fontSize="small" />
+                    </Badge>
+                  </ButtonWrapper>
+                  <ButtonWrapper
+                    // type="IconButton"
+                    onClick={logout}
+                    pt={0.5}
+                    pr={2}
+                    pb={0.5}
+                    pl={0.5}
+                  >
+                    <Box mr={1}>
+                      <Avatar
+                        src={_get(props, "userDetails.profilePicture", "")}
+                        className={classes.xSmall}
+                      />
+                    </Box>
+                    Logout
+                  </ButtonWrapper>
+                </>
+              )}
+            </Box>
+          </Box>
         </Toolbar>
       </AppBar>
       <Toolbar />

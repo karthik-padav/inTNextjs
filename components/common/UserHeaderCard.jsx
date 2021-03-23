@@ -44,26 +44,21 @@ function UserHeaderCard(props) {
             justifyContent="space-between"
             alignContent="center"
           >
-            <div>
-              <Box
-                component="p"
-                variant="body1"
-                m={0}
-                fontWeight="fontWeightBold"
-              >
+            <Box display="flex" flexDirection="column">
+              <Typography component="p" variant="body1" m={0}>
                 {givenName} {familyName}
-              </Box>
+              </Typography>
               {email && (
-                <Box component="p" variant="body1" m={0}>
+                <Typography component="p" variant="body1" m={0}>
                   {email}
-                </Box>
+                </Typography>
               )}
               {createdAt && (
                 <Typography variant="caption">
                   {moment(createdAt).fromNow()}
                 </Typography>
               )}
-            </div>
+            </Box>
             {_get(props, "children") && <div>{props.children}</div>}
           </Box>
         </Grid>

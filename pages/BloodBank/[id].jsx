@@ -142,7 +142,7 @@ function BloodPost(props) {
               <ProfileMenu />
             </Paper>
             <Box className={classes.pt2}>
-              <Paper className={classes.paper}>
+              <Paper>
                 <Menu />
               </Paper>
             </Box>
@@ -244,9 +244,9 @@ function BloodPost(props) {
                 taluk={_get(bloodReceiver, "taluk")}
                 description={_get(bloodReceiver, "description")}
               />
-              <Divider color="primary" mt={1.5} mb={1.5} />
+              <Divider mt={1.5} mb={1.5} />
               Comments: {_get(bloodReceiver, "comments", 0)}
-              <Divider color="primary" mt={1.5} mb={1.5} />
+              <Divider mt={1.5} mb={1.5} />
               {_get(bloodReceiver, "bloodRequestId") && (
                 <CommentCard id={bloodReceiver.bloodRequestId} />
               )}

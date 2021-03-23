@@ -31,7 +31,7 @@ import {
 } from "dataService/Services";
 import constants from "dataService/Constants";
 import { createMuiTheme, ThemeProvider } from "@material-ui/core/styles";
-import { redMode, darkMode } from "dataService/Theme";
+// import { redMode, darkMode } from "dataService/Theme";
 
 import RequestBloodForm from "pages/bloodbank/AddBloodRequestWrapper/RequestBloodForm";
 import ConfirmAlertBox from "components/common/ConfirmAlertBox";
@@ -203,7 +203,6 @@ function BloodBank(props) {
   const editClicked = (value) => {
     toggleBloodModal(true, value);
   };
-  const redTheme = createMuiTheme(redMode());
 
   console.log(props, "props123");
   return (
@@ -216,7 +215,7 @@ function BloodBank(props) {
               <ProfileMenu />
             </Paper>
             <Box pt={2}>
-              <Paper className={classes.paper}>
+              <Paper>
                 <Menu />
               </Paper>
             </Box>

@@ -1,27 +1,15 @@
 import { getQuestions } from "dataService/Services";
 import React, { useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import {
-  Grid,
-  Paper,
-  Box,
-  Icon,
-  Button,
-  Typography,
-  Divider,
-} from "@material-ui/core";
+import { Grid, Paper, Box, Icon, Button, Typography } from "@material-ui/core";
 import { connect } from "react-redux";
+import Divider from "components/common/Divider";
 
-import ProfileMenu from "components/common/ProfileMenu";
-import Menu from "components/common/Menu";
-import classNames from "classnames";
-import CardWrapper from "../questions/CardWrapper";
 import _get from "lodash/get";
 import _isEmpty from "lodash/isEmpty";
 import _find from "lodash/find";
 import _findIndex from "lodash/findIndex";
-import { isLoggedIn } from "dataService/Utils";
-import LoaderComponent from "pages/questions/LoaderComponent";
+import QuestionsWrapper from "pages/questions/QuestionsWrapper";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -40,78 +28,18 @@ const useStyles = makeStyles((theme) => ({
 
 function MyPostCard(props) {
   const classes = useStyles();
-
-  const [questionList, setQuestionList] = useState([]);
-  const [questionStartIndex, setQuestionStartIndex] = useState(0);
-  const [hasMoreQuestionToLoad, setHasMoreQuestionToLoad] = useState(true);
-
-  const [limit, setLimit] = useState(15);
-
-  const [querry, setQuerry] = useState(null);
-
-  const [questionLoader, setQuestionLoader] = useState(false);
-
-  const LoadMoreQuestion = async () => {
-    if (hasMoreQuestionToLoad) {
-      setQuestionStartIndex((prev) => prev + limit);
-    }
-  };
-
-  useEffect(() => {
-    let querryString = `?offset=${questionStartIndex}&limit=${limit}`;
-    if (querry) querryString += `${querry}`;
-    getQuestionFnc(querryString);
-  }, [questionStartIndex]);
-
-  useEffect(() => {
-    let querryString = `?offset=${questionStartIndex}&limit=${limit}`;
-    if (querry) querryString += `${querry}`;
-    setHasMoreQuestionToLoad(true);
-    setQuestionStartIndex(0);
-    getQuestionFnc(querryString, false);
-  }, [querry]);
-
-  const getQuestionFnc = (querryString, isAppend = true) => {
-    setQuestionLoader(true);
-    getQuestions(querryString)
-      .then((res) => {
-        if (_get(res, "status")) {
-          if (!_isEmpty(res.data)) {
-            if (isAppend) setQuestionList((prev) => [...prev, ...res.data]);
-            else setQuestionList(res.data);
-          } else {
-            if (!isAppend) {
-              setQuestionList(res.data);
-            }
-            setHasMoreQuestionToLoad(false);
-          }
-        }
-        setQuestionLoader(false);
-      })
-      .catch((err) => {
-        setQuestionLoader(false);
-      });
-  };
+  const { userDetails } = props;
 
   return (
     <div className={classes.root}>
-      <Typography variant="h6">My Posts</Typography>
-      <Divider mt={1} mb={1} color="primary" />
-      {!_isEmpty(questionList) && (
-        <>
-          <CardWrapper questionList={questionList} />
-        </>
-      )}
-      {questionLoader && <LoaderComponent />}
-      <button onClick={LoadMoreQuestion}>
-        {questionLoader ? "loading more..." : "Load More"}
-      </button>
-
-      {!questionLoader && _isEmpty(questionList) && (
-        <Box display="flex" justifyContent="center" m={3}>
-          No Data Found.
-        </Box>
-      )}
+      <Paper className={classes.paper}>
+        <Typography variant="h1">My Post</Typography>
+      </Paper>
+      {/* <Divider /> */}
+      <QuestionsWrapper
+        postedBy={_get(userDetails, "userId")}
+        showAddPost={false}
+      />
     </div>
   );
 }

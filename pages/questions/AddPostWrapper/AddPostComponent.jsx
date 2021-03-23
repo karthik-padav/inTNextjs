@@ -8,15 +8,21 @@ import _get from "lodash/get";
 import _isArray from "lodash/isArray";
 import _isEmpty from "lodash/isEmpty";
 import _cloneDeep from "lodash/cloneDeep";
-import IconButton from "@material-ui/core/IconButton";
+import _findIndex from "lodash/findIndex";
 import Button from "@material-ui/core/Button";
 import classNames from "classnames";
 import GridList from "@material-ui/core/GridList";
 import GridListTile from "@material-ui/core/GridListTile";
 import { connect } from "react-redux";
 import { postFeed } from "dataService/Services";
-import Divider from "components/common/Divider";
 import CircularProgress from "@material-ui/core/CircularProgress";
+import DialogActions from "@material-ui/core/DialogActions";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogContentText from "@material-ui/core/DialogContentText";
+import DialogTitle from "@material-ui/core/DialogTitle";
+import ButtonWrapper from "components/common/ButtonWrapper";
+import Dialog from "@material-ui/core/Dialog";
+import DialogBox from "components/common/DialogBoxWrapper/DialogBox";
 
 const useStyles = makeStyles((theme) => ({
   imageSizeWrapper: {
@@ -44,6 +50,8 @@ const useStyles = makeStyles((theme) => ({
   gridList: {
     flexWrap: "nowrap",
     transform: "translateZ(0)",
+    maxWidth: "100%",
+    width: theme.spacing(70),
   },
   submitLoaderBtn: {
     position: "absolute",
@@ -60,6 +68,7 @@ function AddPostComponent(props) {
     isEditRequest,
     setQuestionList,
     questionList,
+    isModalOpen,
   } = props;
   console.log(isEditRequest, "isEditRequest123");
   const [images, setImages] = React.useState(
@@ -68,8 +77,8 @@ function AddPostComponent(props) {
   const [postImages, setPostImages] = React.useState();
   const [submitLoader, setSubmitLoader] = React.useState(false);
   const [post, setPost] = React.useState(_get(isEditRequest, "content", ""));
+  console.log(post, "post123");
   const placeholder = `${'Start your question with "What", "How", "Why", etc.'}`;
-  console.log(isEditRequest, "isEditRequest123");
 
   const getPhoto = async (event) => {
     if (_get(event, "target.files")) {
@@ -112,10 +121,13 @@ function AddPostComponent(props) {
 
   const handleSubmit = async () => {
     const { postAdded } = props;
-    const formData = await generateFinalFormData();
-    setSubmitLoader(true);
-    postFeed(formData, _get(isEditRequest, "feedId") ? "update" : "post").then(
-      (res) => {
+    if (post) {
+      const formData = await generateFinalFormData();
+      setSubmitLoader(true);
+      postFeed(
+        formData,
+        _get(isEditRequest, "feedId") ? "update" : "post"
+      ).then((res) => {
         if (_get(res, "status")) {
           props.updateToastMsg({
             msg: "Success",
@@ -139,8 +151,8 @@ function AddPostComponent(props) {
           });
         }
         setSubmitLoader(false);
-      }
-    );
+      });
+    }
   };
 
   const generateFinalFormData = () => {
@@ -165,108 +177,116 @@ function AddPostComponent(props) {
 
   return (
     <>
-      <Box alignItems="center" display="flex">
-        <Box flexGrow={1}>
-          <Typography variant="h5" align="center">
-            <b>Create Post</b>
-          </Typography>
-        </Box>
-        <Box>
-          <IconButton
-            variant="contained"
-            size="medium"
-            color="primary"
-            onClick={() => togglePostModal(false)}
-          >
-            <Icon className="fa fa-times" fontSize="small" />
-          </IconButton>
-        </Box>
-      </Box>
-      <Divider color="primary" mt={1} mb={1.5} />
-      <GridList className={classes.gridList} cols={4.5}>
-        <GridListTile>
-          <Box
-            position="relative"
-            display="flex"
-            justifyContent="center"
-            alignContent="center"
-            alignItems="center"
-            className={classNames(
-              classes.fileInputWrapper,
-              classes.imageSizeWrapper
-            )}
-          >
-            <input
-              type="file"
-              multiple
-              name="myImage"
-              accept="image/*"
-              onChange={getPhoto}
-              className={classes.fileInput}
-            />
-            <Icon className={"fa fa-plus"} fontSize="medium" />
-          </Box>
-        </GridListTile>
-        {images.map((item, index) => (
-          <GridListTile key={index}>
-            <Box position="relative" p={0.5}>
-              <Box position="absolute" top={-15} right={-15}>
-                <IconButton
-                  variant="contained"
-                  size="medium"
-                  color="primary"
-                  onClick={() => removeImage(index)}
+      <DialogBox
+        isModalOpen={isModalOpen}
+        onClose={togglePostModal}
+        headerTitle="Create Post"
+        body={
+          <>
+            <GridList className={classes.gridList} cols={4.5}>
+              <GridListTile>
+                <Box
+                  position="relative"
+                  display="flex"
+                  justifyContent="center"
+                  alignContent="center"
+                  alignItems="center"
+                  className={classNames(
+                    classes.fileInputWrapper,
+                    classes.imageSizeWrapper
+                  )}
                 >
-                  <Icon className="fa fa-times" fontSize="small" />
-                </IconButton>
+                  <input
+                    type="file"
+                    multiple
+                    name="myImage"
+                    accept="image/*"
+                    onChange={getPhoto}
+                    className={classes.fileInput}
+                  />
+                  <Icon className={"fa fa-plus"} fontSize="medium" />
+                </Box>
+              </GridListTile>
+              {images.map((item, index) => (
+                <GridListTile key={index}>
+                  <Box position="relative" p={0.5}>
+                    <Box position="absolute" top={-15} right={-15}>
+                      <IconButton
+                        variant="contained"
+                        size="medium"
+                        color="primary"
+                        onClick={() => removeImage(index)}
+                      >
+                        <Icon className="fa fa-times" fontSize="small" />
+                      </IconButton>
+                    </Box>
+                    {_get(item, "imagesUrl") && (
+                      <img
+                        src={item.imagesUrl}
+                        className={classes.imageSizeWrapper}
+                      />
+                    )}
+                    {_get(item, "fileName") && (
+                      <img
+                        src={item.fileName}
+                        className={classes.imageSizeWrapper}
+                      />
+                    )}
+                  </Box>
+                </GridListTile>
+              ))}
+            </GridList>
+            <Box>
+              <TextField
+                placeholder={placeholder}
+                multiline
+                fullWidth
+                rows={4}
+                rowsMax={10}
+                value={post}
+                InputProps={{
+                  onChange: handleTextChange,
+                }}
+              />
+              <Box display="flex" justifyContent="flex-end">
+                <Typography variant="caption">
+                  {post.length}/{postCharLength}
+                </Typography>
               </Box>
-              {_get(item, "imagesUrl") && (
-                <img
-                  src={item.imagesUrl}
-                  className={classes.imageSizeWrapper}
+            </Box>
+          </>
+        }
+        footer={
+          <>
+            <ButtonWrapper
+              // borderRadius="100px"
+              bgColor="color3"
+              hoverBgColor="color2"
+              color="color1"
+              onClick={() => togglePostModal(false)}
+              disabled={submitLoader}
+            >
+              <Typography variant="button">Close</Typography>
+            </ButtonWrapper>
+            <ButtonWrapper
+              // borderRadius="100px"
+              bgColor="color3"
+              hoverBgColor="color2"
+              color="color1"
+              onClick={handleSubmit}
+              disabled={submitLoader}
+            >
+              Sumbit
+              {submitLoader && (
+                <CircularProgress
+                  size={24}
+                  className={classes.submitLoaderBtn}
                 />
               )}
-              {_get(item, "fileName") && (
-                <img src={item.fileName} className={classes.imageSizeWrapper} />
-              )}
-            </Box>
-          </GridListTile>
-        ))}
-      </GridList>
-
-      <Box mt={2}>
-        <TextField
-          placeholder={placeholder}
-          multiline
-          fullWidth
-          rows={4}
-          rowsMax={10}
-          value={post}
-          InputProps={{
-            onChange: handleTextChange,
-          }}
-        />
-        <Box display="flex" justifyContent="flex-end">
-          <Typography variant="caption">
-            {post.length}/{postCharLength}
-          </Typography>
-        </Box>
-      </Box>
-
-      <Box display="flex" justifyContent="flex-end" mt={2}>
-        <Button
-          variant="contained"
-          color="primary"
-          size="medium"
-          disabled={post.length < 1 || submitLoader}
-          onClick={handleSubmit}
-        >
-          Sumbit
-          {submitLoader && (
-            <CircularProgress size={24} className={classes.submitLoaderBtn} />
-          )}
-        </Button>
-      </Box>
+            </ButtonWrapper>
+          </>
+        }
+      />
     </>
   );
 }
@@ -276,6 +296,7 @@ const mapStateToProps = (state) => {
     userDetails: state.userDetails,
     isEditRequest: _get(state, "ui.postQuestionModal.data"),
     questionList: _get(state, "questionList.data", []),
+    isModalOpen: _get(state, "ui.postQuestionModal.show"),
   };
 };
 const mapDispatchToProps = (dispatch) => {

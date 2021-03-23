@@ -28,6 +28,7 @@ import ProfileMenu from "components/common/ProfileMenu";
 import ProfileCard from "./profilePage/ProfileCard";
 import { profileMenu } from "dataService/MenuLists";
 import MyPostCard from "./profilePage/MyPostCard";
+import constants from "dataService/Constants";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -45,41 +46,24 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function Profile(props) {
-  console.log(props, "asd123");
   const classes = useStyles();
 
-  const editClicked = () => {
-    console.log("we are in editClicked");
+  const handleClick = (item) => {
+    console.log(item, "we are in handleClick");
   };
+
   const menuItem = [
+    constants.MENU.HOME,
     {
-      title: "Home",
+      title: "My Post",
+      code: "myPost",
       icon: "fa fa-hand-holding-heart",
       iconSize: "small",
       iconColor: "red",
-      redirect: "/",
+      cb: handleClick,
     },
-    {
-      title: "About",
-      icon: "fa fa-hand-holding-heart",
-      iconSize: "small",
-      iconColor: "red",
-      redirect: "/about",
-    },
-    {
-      title: "Show Menu",
-      icon: "fa fa-hand-holding-heart",
-      iconSize: "small",
-      iconColor: "red",
-      cb: editClicked,
-    },
-    {
-      title: "Settings",
-      icon: "fa fa-hand-holding-heart",
-      iconSize: "small",
-      iconColor: "red",
-      redirect: "/settings",
-    },
+    constants.MENU.ABOUT,
+    constants.MENU.SETTINGS,
   ];
 
   return (
@@ -98,9 +82,7 @@ function Profile(props) {
           </Paper>
 
           <Box mt={1}>
-            <Paper className={classes.paper}>
-              <MyPostCard />
-            </Paper>
+            <MyPostCard />
           </Box>
         </Grid>
         <Grid item sm={12} md={3} className={classes.p1}>

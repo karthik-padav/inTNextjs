@@ -22,5 +22,57 @@ const constants = {
       code: "O+",
     },
   ],
+
+  MENU: {
+    HOME: {
+      title: "Home",
+      code: "home",
+      icon: "fas fa-home",
+      iconSize: "small",
+      iconColor: "red",
+      redirect: "/",
+    },
+    PROFILE: {
+      title: "Profile",
+      code: "profile",
+      icon: "far fa-user-circle",
+      iconSize: "small",
+      iconColor: "#4c6ef5",
+      redirect: "/profile",
+    },
+
+    QUESTIONS: {
+      title: "Questions",
+      code: "questions",
+      icon: "fas fa-rss",
+      iconSize: "small",
+      iconColor: "#ee802f",
+      redirect: "/questions",
+    },
+    BLOODBANK: {
+      title: "Blood Bank",
+      code: "bloodBank",
+      icon: "fas fa-tint",
+      iconSize: "small",
+      iconColor: "red",
+      redirect: "/bloodbank",
+    },
+    ABOUT: {
+      title: "About",
+      code: "about",
+      icon: "fas fa-info",
+      iconSize: "small",
+      iconColor: "#4c6ef5",
+      redirect: "/about",
+    },
+    SETTINGS: {
+      title: "Settings",
+      code: "settings",
+      icon: "fas fa-cog",
+      iconSize: "small",
+      // iconColor: "red",
+      redirect: "/settings",
+    },
+  },
 };
 export default constants;

@@ -1,10 +1,17 @@
 import Head from "next/head";
 import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import { Grid, Avatar, Typography, Box, Button } from "@material-ui/core";
+
+import List from "@material-ui/core/List";
+import ListItem from "@material-ui/core/ListItem";
+import ListItemIcon from "@material-ui/core/ListItemIcon";
+import ListItemText from "@material-ui/core/ListItemText";
+
 import Icon from "@material-ui/core/Icon";
 import Link from "next/link";
 import _get from "lodash/get";
+
+import constants from "dataService/Constants";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -26,60 +33,34 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const menuItem = [
-  {
-    title: "Questions",
-    icon: "fa fa-hand-holding-heart",
-    iconSize: "small",
-    iconColor: "red",
-    redirect: "/questions",
-  },
-  {
-    title: "Blood Bank",
-    icon: "fa fa-hand-holding-heart",
-    iconSize: "small",
-    iconColor: "red",
-    redirect: "/bloodbank",
-  },
-  {
-    title: "About",
-    icon: "fa fa-hand-holding-heart",
-    iconSize: "small",
-    iconColor: "red",
-    redirect: "/about",
-  },
-  {
-    title: "Settings",
-    icon: "fa fa-hand-holding-heart",
-    iconSize: "small",
-    iconColor: "red",
-    redirect: "/settings",
-  },
+  constants.MENU.PROFILE,
+  constants.MENU.QUESTIONS,
+  constants.MENU.BLOODBANK,
+  constants.MENU.ABOUT,
+  constants.MENU.SETTINGS,
 ];
+
+const handleClick = (item) => {
+  if (_get(item, "cb")) item.cb(item);
+};
+
 function Menu(props) {
   const classes = useStyles();
   return (
-    <>
+    <List component="nav" aria-labelledby="nested-list-subheader">
       {_get(props, "menuItem", menuItem).map((item, index) => (
-        <Box py={1} key={index}>
-          {_get(item, "redirect") && (
-            <Link href={item.redirect}>
-              <Button style={{ justifyContent: "flex-start" }} fullWidth>
-                {item.title}
-              </Button>
-            </Link>
-          )}
-          {_get(item, "cb") && (
-            <Button
-              style={{ justifyContent: "flex-start" }}
-              fullWidth
-              onClick={item.cb}
-            >
-              {item.title}
-            </Button>
-          )}
-        </Box>
+        <Link href={_get(item, "redirect", "")}>
+          <ListItem button key={index} onClick={() => handleClick(item)}>
+            {_get(item, "icon") && (
+              <ListItemIcon style={{ color: item.iconColor }}>
+                <Icon className={item.icon} fontSize="small" />
+              </ListItemIcon>
+            )}
+            <ListItemText primary={item.title} />
+          </ListItem>
+        </Link>
       ))}
-    </>
+    </List>
   );
 }
 

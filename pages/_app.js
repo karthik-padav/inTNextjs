@@ -4,6 +4,7 @@ import { Provider } from "react-redux";
 import { createMuiTheme, ThemeProvider } from "@material-ui/core/styles";
 import { connect } from "react-redux";
 import { green, grey } from "@material-ui/core/colors";
+import AppWrapper from "./AppWrapper";
 
 import Header from "components/common/Header";
 import UiComponents from "components/common/UiComponents";
@@ -41,9 +42,12 @@ const redMode = createMuiTheme({
 function MyApp({ Component, pageProps }) {
   return (
     <Provider store={store}>
-      <Header />
-      <Component {...pageProps} />
-      <UiComponents />
+      {/* <ThemeProvider theme={redMode}>
+        <Header />
+        <Component {...pageProps} />
+        <UiComponents />
+      </ThemeProvider> */}
+      <AppWrapper Component={Component} pageProps={pageProps} />
     </Provider>
   );
 }

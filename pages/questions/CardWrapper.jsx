@@ -33,7 +33,7 @@ function CardWrapper(props) {
           </a>
         </Link>
       )}
-      {!_isEmpty(data.contentImage) && (
+      {_get(data, "contentImage") && !_isEmpty(data.contentImage) && (
         <Box my={1}>
           <ImagePreview
             contentImage={data.contentImage}

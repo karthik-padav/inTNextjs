@@ -18,15 +18,9 @@ import TextField from "@material-ui/core/TextField";
 import React, { useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { connect } from "react-redux";
-import EditProfile from "components/common/EditProfile";
-import Menu from "components/common/Menu";
 import Divider from "components/common/Divider";
-import Radio from "@material-ui/core/Radio";
-import RadioGroup from "@material-ui/core/RadioGroup";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import FormControl from "@material-ui/core/FormControl";
-import FormLabel from "@material-ui/core/FormLabel";
-import ProfileMenu from "components/common/ProfileMenu";
+
+import ButtonWrapper from "components/common/ButtonWrapper";
 
 import { updateUserDetails } from "dataService/Services";
 import _get from "lodash/get";
@@ -74,8 +68,8 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function ProfileCard(props) {
-  console.log(props, "asd123");
   const classes = useStyles();
+  const { updateUser } = props;
   const givenName = _get(props, "userDetails.givenName", "");
   const familyName = _get(props, "userDetails.familyName", "");
   const email = _get(props, "userDetails.email", "");
@@ -85,6 +79,7 @@ function ProfileCard(props) {
   const [newGivenName, setNewGivenName] = useState(givenName);
   const [newFamilyName, setNewFamilyName] = useState(familyName);
   const [newDpImage, setNewDp] = useState({});
+  const [loader, setLoader] = useState(false);
 
   function handleUserName(e, type) {
     if (type === "givenName") setNewGivenName(e.target.value);
@@ -115,9 +110,24 @@ function ProfileCard(props) {
     console.log(newFamilyName, "newFamilyName123");
     console.log(newGivenName, "newGivenName123");
     console.log(newDpImage, "newDpImage123");
+    setLoader(true);
     const formdata = await generateFinalFormData();
-
-    updateUserDetails(formdata).then((res) => {});
+    updateUserDetails(formdata)
+      .then((res) => {
+        if (_get(res, "status")) {
+          setLoader(false);
+          updateUser(_get(res, "data"));
+          setNewGivenName(_get(res, "data.givenName"));
+          setNewFamilyName(_get(res, "data.familyName"));
+          toggleEdit(false);
+        } else {
+          setLoader(false);
+          updateToastMsg({ msg: res.message, type: "error" });
+        }
+      })
+      .catch((err) => {
+        setLoader(false);
+      });
   }
 
   function generateFinalFormData() {
@@ -134,26 +144,40 @@ function ProfileCard(props) {
 
   return (
     <div className={classes.root}>
-      <Box display="flex" justifyContent="space-between">
-        <Typography variant="h6">Profile</Typography>
+      <Box display="flex" justifyContent="space-between" alignItems="center">
+        <Typography variant="h1">Profile</Typography>
         <Box display="flex" justifyContent="flex-end">
           {isEdit ? (
             <>
-              <Box mr={1}>
-                <Button onClick={() => toggleEdit(false)}>Cancel</Button>
-              </Box>
-              <Button
-                variant="contained"
-                onClick={updateUserProfile}
-                color="primary"
-                disabled={_isEmpty(newFamilyName) || _isEmpty(newGivenName)}
+              <ButtonWrapper
+                bgColor="color3"
+                hoverBgColor="color2"
+                mr={1}
+                color="color1"
+                onClick={() => toggleEdit(false)}
+                disabled={loader}
               >
-                Save
-              </Button>
+                <Typography variant="button">Cancel</Typography>
+              </ButtonWrapper>
+
+              <ButtonWrapper
+                bgColor="color3"
+                hoverBgColor="color2"
+                color="color1"
+                onClick={updateUserProfile}
+                disabled={
+                  _isEmpty(newFamilyName) || _isEmpty(newGivenName) || loader
+                }
+                loader={loader}
+              >
+                <Typography variant="button">Save</Typography>
+              </ButtonWrapper>
             </>
           ) : (
-            <Button
-              color="primary"
+            <ButtonWrapper
+              bgColor="color3"
+              hoverBgColor="color2"
+              color="color1"
               onClick={() => {
                 setNewGivenName(givenName);
                 setNewFamilyName(familyName);
@@ -161,12 +185,12 @@ function ProfileCard(props) {
                 toggleEdit(true);
               }}
             >
-              Edit Profile
-            </Button>
+              <Typography variant="button">Edit</Typography>
+            </ButtonWrapper>
           )}
         </Box>
       </Box>
-      <Divider mt={1} mb={1} color="primary" />
+      <Divider mt={2} mb={2} />
       <Box display="flex" justifyContent="center">
         {isEdit ? (
           <Badge
@@ -185,6 +209,7 @@ function ProfileCard(props) {
                     className={classes.inputFile}
                     accept="image/*"
                     onChange={setDp}
+                    disabled={loader}
                   />
                 </Avatar>
               </Box>
@@ -210,7 +235,7 @@ function ProfileCard(props) {
         justifyContent="center"
       >
         {isEdit ? (
-          <form className={classes.root} noValidate autoComplete="off">
+          <Box display="flex">
             <TextField
               InputProps={{
                 classes: {
@@ -231,7 +256,7 @@ function ProfileCard(props) {
               id="standard-basic"
               value={newFamilyName}
             />
-          </form>
+          </Box>
         ) : (
           <>
             <Typography className={classes.userName}>
@@ -239,11 +264,9 @@ function ProfileCard(props) {
                 {givenName} {familyName}
               </b>
             </Typography>
-            <Typography variant="body1">
-              <b>{email}</b>
-            </Typography>
           </>
         )}
+        <Typography variant="body1">{email}</Typography>
       </Box>
     </div>
   );
@@ -251,17 +274,17 @@ function ProfileCard(props) {
 
 const mapStateToProps = (state) => {
   return {
-    toastMsg: state.toastMsg,
+    // toastMsg: state.toastMsg,
     userDetails: state.userDetails,
-    theme: state.theme,
+    // theme: state.theme,
   };
 };
 const mapDispatchToProps = (dispatch) => {
   return {
-    updateTheme: (mode) => {
+    updateUser: (userDetails) => {
       dispatch({
-        type: "UPDATE_THEME",
-        payload: mode,
+        type: "UPDATE_USER",
+        payload: userDetails,
       });
     },
     updateToastMsg: (toastMsg) => {

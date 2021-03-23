@@ -61,7 +61,7 @@ function AddBloodRequestModal(props) {
           <Paper className={classNames(classes.paper, classes.mx_md)}>
             <Box alignItems="center" display="flex">
               <Box flexGrow={1}>
-                <Typography variant="h5" align="center">
+                <Typography variant="h1" align="center">
                   <b>Create Post</b>
                 </Typography>
               </Box>
@@ -76,7 +76,7 @@ function AddBloodRequestModal(props) {
                 </IconButton>
               </Box>
             </Box>
-            <Divider color="primary" mt={1} mb={1.5} />
+            <Divider mt={1} mb={1.5} />
             <RequestBloodForm />
           </Paper>
         </Fade>

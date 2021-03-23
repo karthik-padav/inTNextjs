@@ -1,17 +1,25 @@
 import Head from "next/head";
 import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import { Grid, Avatar, Typography, Box, Button } from "@material-ui/core";
-import Icon from "@material-ui/core/Icon";
-import Link from "next/link";
+import Lottie from "react-lottie";
+import * as animationData from "dataService/lottie/no_data_found.json";
 
-const useStyles = makeStyles((theme) => ({}));
 function NoDataFound(props) {
-  const classes = useStyles();
   const { title = "No data found" } = props;
+
+  const defaultOptions = {
+    loop: true,
+    autoplay: true,
+    animationData: animationData,
+    rendererSettings: {
+      preserveAspectRatio: "xMidYMid slice",
+    },
+  };
+
   return (
     <>
-      <p>{title}</p>
+      <p>{title}asdasd</p>
+      <Lottie options={defaultOptions} height={400} width={400} />
     </>
   );
 }

@@ -13,17 +13,7 @@ import _isEmpty from "lodash/isEmpty";
 import _findIndex from "lodash/findIndex";
 import _includes from "lodash/includes";
 
-import {
-  Grid,
-  Paper,
-  Box,
-  Backdrop,
-  Modal,
-  Fade,
-  Button,
-  IconButton,
-  Icon,
-} from "@material-ui/core";
+import { Grid, Paper, Box, Icon } from "@material-ui/core";
 
 import ProfileMenu from "components/common/ProfileMenu";
 import Menu from "components/common/Menu";
@@ -33,6 +23,7 @@ import PostCardWrapper from "components/common/PostCard/PostCardWrapper";
 
 import ConfirmAlertBox from "components/common/ConfirmAlertBox";
 import { deletePostFeed } from "dataService/Services";
+import ButtonWrapper from "components/common/ButtonWrapper";
 import { isLoggedIn } from "dataService/Utils";
 
 const useStyles = makeStyles((theme) => ({
@@ -58,12 +49,23 @@ const useStyles = makeStyles((theme) => ({
 
 function FeedPost(props) {
   const classes = useStyles();
-  const { userDetails, togglePostModal, updateToastMsg } = props;
-  const [feedResp, setFeedData] = useState(_get(props, "feedResp.data[0]"));
+  const {
+    userDetails,
+    togglePostModal,
+    updateToastMsg,
+    questionObj,
+    setQuestionList,
+  } = props;
+  const feedResp = _get(props, "questionList[0]");
   const userId = _get(userDetails, "userId");
   const postedBy = _get(feedResp, "user_details.userId");
 
   const [showConfirmBox, setConfirmAlert] = useState(false);
+  const [loader, setLoader] = React.useState(false);
+
+  useEffect(() => {
+    setQuestionList({ data: _get(questionObj, "data", []) });
+  }, [questionObj]);
 
   const editClicked = (value) => {
     togglePostModal(true, value);
@@ -90,19 +92,22 @@ function FeedPost(props) {
   const deletePost = (data) => {
     const feedId = _get(data, "feedId");
     if (feedId) {
+      setLoader(true);
       deletePostFeed(data.feedId).then((res) => {
         if (_get(res, "status")) {
-          setFeedData(null);
+          setQuestionList({ data: [] });
           setConfirmAlert(false);
           updateToastMsg({ msg: res.message, type: "success" });
+          setLoader(false);
         } else {
           updateToastMsg({ msg: res.message, type: "error" });
+          setLoader(false);
         }
       });
     }
   };
 
-  const confirmAlertMenu = [
+  const confirmAlertButtons = [
     {
       title: "No",
       code: "no",
@@ -113,6 +118,7 @@ function FeedPost(props) {
       title: "Yes",
       authCheck: true,
       code: "yes",
+      hasLoader: true,
       color: "primary",
       variant: "contained",
       cb: deletePost,
@@ -120,84 +126,83 @@ function FeedPost(props) {
   ];
 
   return (
-    <>
-      <div className={classes.root}>
-        <Grid container spacing={0}>
-          <Grid item sm={12} md={3} className={classes.p1}>
-            <div className="stickyWrapper">
-              <Paper className={classes.paper}>
-                <ProfileMenu />
+    <div className={classes.root}>
+      <Grid container spacing={0}>
+        <Grid item sm={12} md={3} className={classes.p1}>
+          <div className="stickyWrapper">
+            <Paper className={classes.paper}>
+              <ProfileMenu />
+            </Paper>
+            <Box className={classes.pt2}>
+              <Paper>
+                <Menu />
               </Paper>
-              <Box className={classes.pt2}>
-                <Paper className={classes.paper}>
-                  <Menu />
-                </Paper>
-              </Box>
-            </div>
-          </Grid>
-          <Grid item sm={12} md={6} className={classes.p1}>
-            <Box
-              justifyContent="space-between"
-              display=" flex"
-              alignItems="center"
-              mb={2}
-            >
-              <Button
-                variant="contained"
-                color="primary"
-                size="medium"
-                className={classes.raiseRequestBtn}
-                onClick={() => {
-                  if (isLoggedIn()) {
-                    togglePostModal(true);
-                  } else toggleLoginModal(true);
-                }}
-              >
-                Add
-                <Box ml={1} lineHeight="1">
-                  <Icon className={"fa fa-plus"} fontSize="small" />
-                </Box>
-              </Button>
             </Box>
-            {feedResp && (
-              <PostCardWrapper data={feedResp} menuItem={moreMenuItem}>
-                <CardWrapper data={feedResp} />
-              </PostCardWrapper>
-            )}
-
-            {showConfirmBox && (
-              <ConfirmAlertBox menu={confirmAlertMenu} data={showConfirmBox} />
-            )}
-
-            {_isEmpty(feedResp) && (
-              <Box display="flex" justifyContent="center" m={3}>
-                <NoDataFound title="Post Not Found." />
-              </Box>
-            )}
-          </Grid>
-          <Grid item sm={12} md={3} className={classes.p1}>
-            <Paper className={classes.paper}>xs=6</Paper>
-          </Grid>
+          </div>
         </Grid>
-      </div>
-    </>
+        <Grid item sm={12} md={6} className={classes.p1}>
+          {/* <Box mb={2} mt={2}>
+            <ButtonWrapper
+              onClick={() => {
+                if (isLoggedIn()) {
+                  togglePostModal(true);
+                } else toggleLoginModal(true);
+              }}
+            >
+              Add
+              <Box ml={1} lineHeight="1">
+                <Icon className={"fa fa-plus"} fontSize="small" />
+              </Box>
+            </ButtonWrapper>
+          </Box> */}
+          {feedResp && (
+            <PostCardWrapper
+              data={feedResp}
+              menuItem={moreMenuItem}
+              showCommentList={true}
+            >
+              <CardWrapper data={feedResp} />
+            </PostCardWrapper>
+          )}
+
+          <ConfirmAlertBox
+            menu={confirmAlertButtons}
+            title="Delete Post"
+            loader={loader}
+            subtitle="Are You Sure You Want To Delete This Post?"
+            data={showConfirmBox}
+            isModalOpen={showConfirmBox}
+          />
+
+          {_isEmpty(feedResp) && (
+            <Box display="flex" justifyContent="center" m={3}>
+              <NoDataFound title="Post Not Found." />
+            </Box>
+          )}
+        </Grid>
+        <Grid item sm={12} md={3} className={classes.p1}>
+          <Paper className={classes.paper}>xs=6</Paper>
+        </Grid>
+      </Grid>
+    </div>
   );
 }
 
 FeedPost.getInitialProps = async function (ctx) {
   const { id } = ctx.query;
   const { pathname } = ctx;
-  let feedResp = {};
+  let questionObj = {};
   const query = `?id=${id}`;
   if (_includes(pathname.split("/"), "questions")) {
-    feedResp = await getQuestions(query);
+    questionObj = await getQuestions(query);
   }
-  return { feedResp };
+  return { questionObj };
 };
 
 const mapStateToProps = (state) => {
   return {
     userDetails: state.userDetails,
+    questionList: _get(state, "questionList.data", []),
   };
 };
 const mapDispatchToProps = (dispatch) => {
@@ -218,6 +223,12 @@ const mapDispatchToProps = (dispatch) => {
       dispatch({
         type: "UPDATE_TOAST",
         payload: toastMsg,
+      });
+    },
+    setQuestionList: (payload) => {
+      dispatch({
+        type: "ADD_Q",
+        payload,
       });
     },
   };

@@ -1,28 +1,21 @@
-import {
-  Grid,
-  Paper,
-  Box,
-  IconButton,
-  Icon,
-  Button,
-  Badge,
-  Fade,
-  Backdrop,
-  Typography,
-  Modal,
-} from "@material-ui/core";
+import { Grid, Paper, Box } from "@material-ui/core";
 import React, { useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { connect } from "react-redux";
-import EditProfile from "components/common/EditProfile";
 import ProfileMenu from "components/common/ProfileMenu";
 import Menu from "components/common/Menu";
+import List from "@material-ui/core/List";
+import Typography from "@material-ui/core/Typography";
+import ListItem from "@material-ui/core/ListItem";
+import ListItemIcon from "@material-ui/core/ListItemIcon";
+import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
+import ListItemText from "@material-ui/core/ListItemText";
+import ListSubheader from "@material-ui/core/ListSubheader";
+import Switch from "@material-ui/core/Switch";
+import WifiIcon from "@material-ui/icons/Wifi";
+import BluetoothIcon from "@material-ui/icons/Bluetooth";
 import Divider from "components/common/Divider";
-import Radio from "@material-ui/core/Radio";
-import RadioGroup from "@material-ui/core/RadioGroup";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import FormControl from "@material-ui/core/FormControl";
-import FormLabel from "@material-ui/core/FormLabel";
+import Theme from "pages/settings/Theme";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -40,20 +33,19 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function Settings(props) {
-  console.log(props, "asd123");
   const { theme, updateTheme } = props;
   const classes = useStyles();
 
   return (
     <div className={classes.root}>
-      {/* <Grid container spacing={0}>
+      <Grid container spacing={0}>
         <Grid item sm={12} md={3} className={classes.p1}>
           <div className="stickyWrapper">
             <Paper className={classes.paper}>
               <ProfileMenu />
             </Paper>
             <Box pt={2}>
-              <Paper className={classes.paper}>
+              <Paper>
                 <Menu />
               </Paper>
             </Box>
@@ -61,63 +53,10 @@ function Settings(props) {
         </Grid>
         <Grid item sm={12} md={6} className={classes.p1}>
           <Paper className={classes.paper}>
-            <Typography variant="h6">Settings</Typography>
+            <Typography variant="h1">Settings</Typography>
             <Divider mt={1} mb={1} color="primary" />
-            <EditProfile />
-            <Box
-              component="p"
-              // m={0}
-              variant="body1"
-              fontWeight="fontWeightBold"
-            >
-              Theme:
-            </Box>
-            <Grid container>
-              <Grid item xs={12} md={6}>
-                <FormControl component="fieldset">
-                  <RadioGroup
-                    row
-                    aria-label="position"
-                    name="position"
-                    defaultValue="top"
-                    value={theme}
-                    onChange={(e) => updateTheme(e.target.value)}
-                  >
-                    <FormControlLabel
-                      value="default"
-                      control={<Radio color="primary" />}
-                      label="Default"
-                      labelPlacement="top"
-                    />
-                    <FormControlLabel
-                      value="dark"
-                      control={<Radio color="primary" />}
-                      label="Dark"
-                      labelPlacement="top"
-                    />
-                  </RadioGroup>
-                </FormControl>
-              </Grid>
-            </Grid>
 
-            <Box>
-              <Box
-                component="p"
-                // m={0}
-                variant="body1"
-                fontWeight="fontWeightBold"
-              >
-                Account:
-              </Box>
-              <Box
-                component="p"
-                // m={0}
-                variant="body1"
-                fontWeight="fontWeightBold"
-              >
-                Delete Account
-              </Box>
-            </Box>
+            <Theme />
           </Paper>
         </Grid>
         <Grid item sm={12} md={3} className={classes.p1}>
@@ -126,7 +65,6 @@ function Settings(props) {
           </div>
         </Grid>
       </Grid>
-    */}
     </div>
   );
 }

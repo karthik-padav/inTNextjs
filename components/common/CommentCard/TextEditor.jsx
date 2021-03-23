@@ -14,6 +14,7 @@ import { connect } from "react-redux";
 import { getAllComments, postComments } from "dataService/Services";
 import { isLoggedIn } from "dataService/Utils";
 import UserHeaderCard from "components/common/UserHeaderCard";
+import ButtonWrapper from "components/common/ButtonWrapper";
 import OptionMenuV2 from "components/common/OptionMenuV2";
 
 const useStyles = makeStyles((theme) => ({
@@ -50,15 +51,26 @@ function TextEditor(props) {
       />
 
       <Box display="flex" justifyContent="flex-end">
-        <IconButton variant="contained" size="medium" onClick={onCancel}>
+        <ButtonWrapper
+          // borderRadius="100px"
+          mt={2}
+          mr={1}
+          bgColor="color3"
+          hoverBgColor="color2"
+          color="color1"
+          onClick={onCancel}
+        >
           <Typography component="span" variant="caption">
             Cancel
           </Typography>
-          {/* <Icon className="fa fa-chevron-right" fontSize="small" /> */}
-        </IconButton>
-        <IconButton
-          variant="contained"
-          size="medium"
+        </ButtonWrapper>
+
+        <ButtonWrapper
+          // borderRadius="100px"
+          mt={2}
+          bgColor="color3"
+          hoverBgColor="color2"
+          color="color1"
           onClick={() => {
             if (onSave)
               onSave({
@@ -70,7 +82,7 @@ function TextEditor(props) {
           <Typography component="span" variant="caption">
             Save
           </Typography>
-        </IconButton>
+        </ButtonWrapper>
       </Box>
     </div>
   );

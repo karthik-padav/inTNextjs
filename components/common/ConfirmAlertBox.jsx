@@ -1,99 +1,77 @@
 import Head from "next/head";
 import React from "react";
-import { makeStyles } from "@material-ui/core/styles";
-import { Grid, Avatar, Typography, Paper, Box } from "@material-ui/core";
-import Icon from "@material-ui/core/Icon";
 import _get from "lodash/get";
-import Modal from "@material-ui/core/Modal";
-import Backdrop from "@material-ui/core/Backdrop";
-import Fade from "@material-ui/core/Fade";
-import classNames from "classnames";
-import Button from "@material-ui/core/Button";
-import IconButton from "@material-ui/core/IconButton";
+import DialogActions from "@material-ui/core/DialogActions";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogContentText from "@material-ui/core/DialogContentText";
+import DialogTitle from "@material-ui/core/DialogTitle";
+import ButtonWrapper from "components/common/ButtonWrapper";
+import { Typography } from "@material-ui/core";
+import Zoom from "@material-ui/core/Zoom";
+import Dialog from "@material-ui/core/Dialog";
+import Divider from "components/common/Divider";
+import { makeStyles } from "@material-ui/core/styles";
+
+const Transition = React.forwardRef(function Transition(props, ref) {
+  return <Zoom ref={ref} {...props} />;
+});
 
 const useStyles = makeStyles((theme) => ({
-  root: {
-    flexGrow: 1,
-  },
-  mb2: {
-    marginBottom: theme.spacing(2),
-  },
-  mt2: {
-    marginTop: theme.spacing(2),
-  },
-  ml1: {
-    marginLeft: theme.spacing(1),
-  },
-  modal: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  paper: {
-    padding: theme.spacing(2),
-    color: theme.palette.text.secondary,
-    backgroundColor: theme.palette.background.paper,
-    boxShadow: theme.shadows[5],
-  },
-  mx_md: {
-    width: "300px",
-    maxWidth: "100%",
+  buttonProgress: {
+    position: "absolute",
   },
 }));
 
 function ConfirmAlertBox(props) {
   const classes = useStyles();
-  const { menu = [], data } = props;
+  const { menu = [], data, isModalOpen } = props;
   return (
-    <Modal
-      className={classes.modal}
-      open={true}
-      closeAfterTransition
-      onClose={props.onCancel}
-      BackdropComponent={Backdrop}
-      BackdropProps={{
-        timeout: 500,
-      }}
+    <Dialog
+      open={isModalOpen}
+      TransitionComponent={Transition}
+      keepMounted
+      onClose={() => onClose(false)}
+      aria-labelledby="alert-dialog-slide-title"
+      aria-describedby="alert-dialog-slide-description"
     >
-      <Fade in={true}>
-        <Paper className={classNames(classes.paper, classes.mx_md)}>
-          <Box
-            component="p"
-            variant="body1"
-            m={0}
-            className={classes.mb2}
-            fontWeight="fontWeightBold"
-          >
-            {props.title}
-          </Box>
-          <Typography variant="p" gutterBottom>
-            Are you sure you want to delete your request?
-          </Typography>
-          <Box display="flex" className={classes.mt2} justifyContent="flex-end">
-            {menu.map((item, index) => {
-              const {
-                cb = () => {},
-                color = "",
-                variant = "",
-                size = "small",
-                title = "",
-              } = item;
-              return (
-                <Button
-                  key={index}
-                  size={size}
-                  onClick={() => cb(data)}
-                  color={color}
-                  variant={variant}
-                >
-                  <Typography variant="BUTTON">{title}</Typography>
-                </Button>
-              );
-            })}
-          </Box>
-        </Paper>
-      </Fade>
-    </Modal>
+      {_get(props, "title") && (
+        <DialogTitle id="alert-dialog-slide-title">
+          <Typography variant="h1">{props.title}</Typography>
+          <Divider mt={1} mb={1.5} />
+        </DialogTitle>
+      )}
+      {_get(props, "subtitle") && (
+        <DialogContent>
+          <DialogContentText id="alert-dialog-slide-description">
+            {props.subtitle}
+          </DialogContentText>
+        </DialogContent>
+      )}
+      <DialogActions>
+        {menu.map((item, index) => {
+          const {
+            cb = () => {},
+            title = "",
+            hasLoader = false,
+            loader = false,
+          } = item;
+          return (
+            <ButtonWrapper
+              // borderRadius="100px"
+              bgColor="color3"
+              hoverBgColor="color2"
+              color="color1"
+              key={index}
+              onClick={() => cb(data)}
+              disabled={hasLoader && loader}
+              loader={loader}
+            >
+              <Typography variant="button">{title}</Typography>
+            </ButtonWrapper>
+          );
+        })}
+      </DialogActions>
+    </Dialog>
   );
 }
 
