@@ -1,5 +1,7 @@
+import { grey, red, blue } from "@material-ui/core/colors";
+
 export default {
-  blue: "#0095f6",
+  blue: blue["A700"],
   white: "#fff",
   black: "#65676b",
   lightGray: "#f0f2f5",

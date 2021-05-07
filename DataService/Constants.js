@@ -1,3 +1,6 @@
+import { red, orange, blue, pink, grey } from "@material-ui/core/colors";
+import colors from "Themes/ThemeColors";
+
 const constants = {
   baseUrl: "http://localhost:8081",
   dpImagePath: "./uploads/displayPhoto/",
@@ -8,6 +11,7 @@ const constants = {
   pas: "*A+[d}KU0E(N}0c%",
   dm: "mim",
   u: "admin",
+
   bloodType: [
     {
       name: "AB",
@@ -23,56 +27,77 @@ const constants = {
     },
   ],
 
-  MENU: {
-    HOME: {
-      title: "Home",
-      code: "home",
-      icon: "fas fa-home",
-      iconSize: "small",
-      iconColor: "red",
-      redirect: "/",
+  shopCategory: [
+    {
+      name: "Food",
+      code: "food",
     },
-    PROFILE: {
-      title: "Profile",
-      code: "profile",
-      icon: "far fa-user-circle",
-      iconSize: "small",
-      iconColor: "#4c6ef5",
-      redirect: "/profile",
+    {
+      name: "Fashion",
+      code: "fashion",
     },
+    {
+      name: "Others",
+      code: "other",
+    },
+    {
+      name: "name1",
+      code: "n1",
+    },
+    {
+      name: "name2",
+      code: "n2",
+    },
+    {
+      name: "name3",
+      code: "n3",
+    },
+    {
+      name: "name4",
+      code: "n4",
+    },
+    {
+      name: "name5",
+      code: "n5",
+    },
+    {
+      name: "name6",
+      code: "n6",
+    },
+    {
+      name: "name7",
+      code: "n7",
+    },
+    {
+      name: "name8",
+      code: "n8",
+    },
+    {
+      name: "name10",
+      code: "10",
+    },
+  ],
 
-    QUESTIONS: {
-      title: "Questions",
-      code: "questions",
-      icon: "fas fa-rss",
-      iconSize: "small",
-      iconColor: "#ee802f",
-      redirect: "/questions",
-    },
-    BLOODBANK: {
-      title: "Blood Bank",
-      code: "bloodBank",
-      icon: "fas fa-tint",
-      iconSize: "small",
-      iconColor: "red",
-      redirect: "/bloodbank",
-    },
-    ABOUT: {
-      title: "About",
-      code: "about",
-      icon: "fas fa-info",
-      iconSize: "small",
-      iconColor: "#4c6ef5",
-      redirect: "/about",
-    },
-    SETTINGS: {
-      title: "Settings",
-      code: "settings",
-      icon: "fas fa-cog",
-      iconSize: "small",
-      // iconColor: "red",
-      redirect: "/settings",
-    },
+  THEME: {
+    DARK: "dark",
+    LIGHT: "light",
+  },
+
+  POST_TYPES: {
+    QUESTION: "QUESTION",
+    SHOP: "SHOP",
+    BLOOD_BANK: "BLOOD_BANK",
+  },
+
+  NOTIFICATION_TYPES: {
+    LIKE: "LIKE",
+    COMMENT: "COMMENT",
+  },
+
+  AVATAR: {
+    lg: 10,
+    md: 6,
+    sm: 4,
   },
 };
 export default constants;

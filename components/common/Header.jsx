@@ -7,20 +7,21 @@ import IconButton from "@material-ui/core/IconButton";
 import MenuIcon from "@material-ui/icons/Menu";
 import { connect } from "react-redux";
 import { loadCSS } from "fg-loadcss";
-import { getUserDetails } from "dataService/Services";
 import _get from "lodash/get";
 import _isEmpty from "lodash/isEmpty";
 import Link from "next/link";
 import MuiAlert from "@material-ui/lab/Alert";
-import Icon from "@material-ui/core/Icon";
 
 import Box from "@material-ui/core/Box";
 import Avatar from "@material-ui/core/Avatar";
-import Badge from "@material-ui/core/Badge";
 
 import Snackbar from "@material-ui/core/Snackbar";
 import LoginModal from "components/common/LoginModal";
 import ButtonWrapper from "components/common/ButtonWrapper";
+import NotificationBadge from "components/common/NotificationBadge";
+import ProfileBadge from "components/common/ProfileBadge";
+
+import { isLoggedIn } from "Function/Common";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -33,11 +34,11 @@ const useStyles = makeStyles((theme) => ({
     flexGrow: 1,
   },
   appBar: {
-    backgroundColor: theme.palette.common.white,
-    color: theme.palette.text.secondary,
+    backgroundColor: theme.palette.background.default,
+    // color: theme.palette.text.secondary,
   },
   logo: {
-    height: "55px",
+    height: "45px",
     width: "auto",
   },
   xSmall: {
@@ -47,10 +48,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function Header(props) {
-  const logout = () => {
-    props.updateUser(null);
-    localStorage.removeItem("userDetails");
-  };
+  const { toggleLoginModal } = props;
 
   const classes = useStyles();
   return (
@@ -72,38 +70,15 @@ function Header(props) {
               />
             </Link>
             <Box>
-              {_get(props, "userDetails") && (
-                <>
-                  <ButtonWrapper
-                    type="IconButton"
-                    borderRadius="100px"
-                    bgColor="color3"
-                    hoverBgColor="color2"
-                    color="color1"
-                    onClick={logout}
-                    mr={1}
-                  >
-                    <Badge badgeContent={0}>
-                      <Icon className={"far fa-bell"} fontSize="small" />
-                    </Badge>
-                  </ButtonWrapper>
-                  <ButtonWrapper
-                    // type="IconButton"
-                    onClick={logout}
-                    pt={0.5}
-                    pr={2}
-                    pb={0.5}
-                    pl={0.5}
-                  >
-                    <Box mr={1}>
-                      <Avatar
-                        src={_get(props, "userDetails.profilePicture", "")}
-                        className={classes.xSmall}
-                      />
-                    </Box>
-                    Logout
-                  </ButtonWrapper>
-                </>
+              {isLoggedIn() ? (
+                <Box display="flex" alignItems="center">
+                  <NotificationBadge />
+                  <ProfileBadge />
+                </Box>
+              ) : (
+                <ButtonWrapper onClick={() => toggleLoginModal(true)}>
+                  <Typography variant="button">Login</Typography>
+                </ButtonWrapper>
               )}
             </Box>
           </Box>
@@ -126,6 +101,12 @@ const mapDispatchToProps = (dispatch) => {
       dispatch({
         type: "UPDATE_USER",
         payload: userDetails,
+      });
+    },
+    toggleLoginModal: (flag) => {
+      dispatch({
+        type: "SHOW_LOGIN_MODAL",
+        payload: flag,
       });
     },
     updateToastMsg: (toastMsg) => {

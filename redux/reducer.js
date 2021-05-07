@@ -22,6 +22,28 @@ const questionList = (questionList = {}, action) => {
   return questionList;
 };
 
+const shopList = (shopList = {}, action) => {
+  switch (action.type) {
+    case "ADD_SHOP":
+      shopList = action.payload;
+      break;
+    default:
+      return shopList;
+  }
+  return shopList;
+};
+
+const notificationList = (notificationList = {}, action) => {
+  switch (action.type) {
+    case "ADD_NOTIFICATION":
+      notificationList = action.payload;
+      break;
+    default:
+      return notificationList;
+  }
+  return notificationList;
+};
+
 const bRequestList = (bRequestList = {}, action) => {
   switch (action.type) {
     case "ADD_B":
@@ -47,6 +69,12 @@ const ui = (ui = {}, action) => {
     case "SHOW_B_MODAL":
       ui = { ...ui, postBloodModal: action.payload };
       break;
+    case "SHOW_SHOP_MODAL":
+      ui = { ...ui, shopModal: action.payload };
+      break;
+    case "SHOW_OTP_MODAL":
+      ui = { ...ui, otpModal: action.payload };
+      break;
     case "UPDATE_THEME":
       ui = { ...ui, theme: action.payload };
       break;
@@ -62,6 +90,8 @@ export const store = createStore(
     ui,
     questionList,
     bRequestList,
+    notificationList,
+    shopList,
   })
   //   window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
 );

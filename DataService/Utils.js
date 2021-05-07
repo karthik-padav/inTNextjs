@@ -1,4 +1,6 @@
 import _get from "lodash/get";
+import { store } from "redux/reducer";
+
 export const getToken = () => {
   let userDetails = localStorage.getItem("userDetails");
   if (userDetails) {
@@ -9,8 +11,10 @@ export const getToken = () => {
 };
 
 export const isLoggedIn = () => {
-  let userDetails = localStorage.getItem("userDetails");
-  userDetails = JSON.parse(userDetails);
-  if (userDetails && _get(userDetails, "accesstoken")) return true;
+  const state = store.getState();
+  const userDetails = _get(state, "userDetails");
+  // let userDetails = localStorage.getItem("userDetails");
+  // userDetails = JSON.parse(userDetails);
+  if (userDetails) return true;
   else return false;
 };

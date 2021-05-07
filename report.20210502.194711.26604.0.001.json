@@ -4,10 +4,10 @@
     "reportVersion": 1,
     "event": "Allocation failed - JavaScript heap out of memory",
     "trigger": "FatalError",
-    "filename": "report.20210210.142149.23808.0.001.json",
-    "dumpEventTime": "2021-02-10T14:21:49Z",
-    "dumpEventTimeStamp": "1612947109453",
-    "processId": 23808,
+    "filename": "report.20210502.194711.26604.0.001.json",
+    "dumpEventTime": "2021-05-02T19:47:11Z",
+    "dumpEventTimeStamp": "1619965031850",
+    "processId": 26604,
     "cwd": "C:\\Users\\padavka\\Karthik\\reactjs\\qa",
     "commandLine": [
       "node",
@@ -53,74 +53,74 @@
       {
         "model": "Intel(R) Core(TM) i5-8265U CPU @ 1.60GHz",
         "speed": 1800,
-        "user": 4349031,
+        "user": 33277453,
         "nice": 0,
-        "sys": 3615703,
-        "idle": 30411359,
-        "irq": 888093
+        "sys": 33107968,
+        "idle": 135369015,
+        "irq": 3838968
       },
       {
         "model": "Intel(R) Core(TM) i5-8265U CPU @ 1.60GHz",
         "speed": 1800,
-        "user": 3021921,
+        "user": 23738125,
         "nice": 0,
-        "sys": 1667156,
-        "idle": 33686578,
-        "irq": 222218
+        "sys": 14912890,
+        "idle": 163102984,
+        "irq": 1005656
       },
       {
         "model": "Intel(R) Core(TM) i5-8265U CPU @ 1.60GHz",
         "speed": 1800,
-        "user": 5809703,
+        "user": 59587890,
         "nice": 0,
-        "sys": 2918390,
-        "idle": 29647562,
-        "irq": 116250
+        "sys": 40480671,
+        "idle": 101685437,
+        "irq": 1524796
       },
       {
         "model": "Intel(R) Core(TM) i5-8265U CPU @ 1.60GHz",
         "speed": 1800,
-        "user": 3554375,
+        "user": 32530171,
         "nice": 0,
-        "sys": 1438437,
-        "idle": 33382843,
-        "irq": 48109
+        "sys": 14840546,
+        "idle": 154383281,
+        "irq": 363734
       },
       {
         "model": "Intel(R) Core(TM) i5-8265U CPU @ 1.60GHz",
         "speed": 1800,
-        "user": 5180500,
+        "user": 42194484,
         "nice": 0,
-        "sys": 2575328,
-        "idle": 30619828,
-        "irq": 135203
+        "sys": 33297421,
+        "idle": 126262093,
+        "irq": 841562
       },
       {
         "model": "Intel(R) Core(TM) i5-8265U CPU @ 1.60GHz",
         "speed": 1800,
-        "user": 3551984,
+        "user": 29977093,
         "nice": 0,
-        "sys": 1644125,
-        "idle": 33179546,
-        "irq": 86234
+        "sys": 12249953,
+        "idle": 159526953,
+        "irq": 287609
       },
       {
         "model": "Intel(R) Core(TM) i5-8265U CPU @ 1.60GHz",
         "speed": 1800,
-        "user": 5313468,
+        "user": 39177781,
         "nice": 0,
-        "sys": 2255312,
-        "idle": 30806875,
-        "irq": 102828
+        "sys": 18585750,
+        "idle": 143990468,
+        "irq": 461453
       },
       {
         "model": "Intel(R) Core(TM) i5-8265U CPU @ 1.60GHz",
         "speed": 1800,
-        "user": 3595875,
+        "user": 36063437,
         "nice": 0,
-        "sys": 1401000,
-        "idle": 33378781,
-        "irq": 39750
+        "sys": 23613953,
+        "idle": 142076609,
+        "irq": 982156
       }
     ],
     "networkInterfaces": [
@@ -137,7 +137,7 @@
         "name": "Local Area Connection",
         "internal": false,
         "mac": "00:ff:31:88:63:1a",
-        "address": "192.168.241.122",
+        "address": "192.168.241.246",
         "netmask": "255.255.255.252",
         "family": "IPv4"
       },
@@ -154,7 +154,7 @@
         "name": "WiFi",
         "internal": false,
         "mac": "50:e0:85:16:53:aa",
-        "address": "192.168.0.105",
+        "address": "192.168.0.104",
         "netmask": "255.255.255.0",
         "family": "IPv4"
       },
@@ -186,75 +186,75 @@
   },
   "nativeStack": [
     {
-      "pc": "0x00007ff714201389",
+      "pc": "0x00007ff7368f1389",
       "symbol": "std::basic_ostream<char,std::char_traits<char> >::operator<<+10873"
     },
     {
-      "pc": "0x00007ff7142057cc",
+      "pc": "0x00007ff7368f57cc",
       "symbol": "std::basic_ostream<char,std::char_traits<char> >::operator<<+28348"
     },
     {
-      "pc": "0x00007ff714204778",
+      "pc": "0x00007ff7368f4778",
       "symbol": "std::basic_ostream<char,std::char_traits<char> >::operator<<+24168"
     },
     {
-      "pc": "0x00007ff7142f332b",
+      "pc": "0x00007ff7369e332b",
       "symbol": "v8::base::CPU::has_sse+37723"
     },
     {
-      "pc": "0x00007ff714af6f4e",
+      "pc": "0x00007ff7371e6f4e",
       "symbol": "v8::Isolate::ReportExternalAllocationLimitReached+94"
     },
     {
-      "pc": "0x00007ff714adef91",
+      "pc": "0x00007ff7371cef91",
       "symbol": "v8::SharedArrayBuffer::Externalize+833"
     },
     {
-      "pc": "0x00007ff7149ac85c",
+      "pc": "0x00007ff73709c85c",
       "symbol": "v8::internal::Heap::EphemeronKeyWriteBarrierFromCode+1436"
     },
     {
-      "pc": "0x00007ff7149b7c00",
+      "pc": "0x00007ff7370a7c00",
       "symbol": "v8::internal::Heap::ProtectUnprotectedMemoryChunks+1312"
     },
     {
-      "pc": "0x00007ff7149b4734",
+      "pc": "0x00007ff7370a4734",
       "symbol": "v8::internal::Heap::PageFlagsAreConsistent+3204"
     },
     {
-      "pc": "0x00007ff7149a9fc3",
+      "pc": "0x00007ff737099fc3",
       "symbol": "v8::internal::Heap::CollectGarbage+1283"
     },
     {
-      "pc": "0x00007ff7149a8794",
+      "pc": "0x00007ff737098794",
       "symbol": "v8::internal::Heap::AddRetainedMap+2356"
     },
     {
-      "pc": "0x00007ff7149c9a65",
+      "pc": "0x00007ff7370b9a65",
       "symbol": "v8::internal::Factory::NewFillerObject+53"
     },
     {
-      "pc": "0x00007ff714736239",
+      "pc": "0x00007ff736e26239",
       "symbol": "v8::internal::interpreter::JumpTableTargetOffsets::iterator::operator=+4057"
     },
     {
-      "pc": "0x00007ff714f22c6d",
+      "pc": "0x00007ff737612c6d",
       "symbol": "v8::internal::SetupIsolateDelegate::SetupHeap+567949"
     },
     {
-      "pc": "0x00007ff714f75292",
-      "symbol": "v8::internal::SetupIsolateDelegate::SetupHeap+905394"
+      "pc": "0x00007ff7375dc877",
+      "symbol": "v8::internal::SetupIsolateDelegate::SetupHeap+345751"
     },
     {
-      "pc": "0x000003018e71163c",
+      "pc": "0x0000023ecf80e93b",
       "symbol": ""
     }
   ],
   "javascriptHeap": {
-    "totalMemory": 2152521728,
-    "totalCommittedMemory": 2152521728,
-    "usedMemory": 2135433320,
-    "availableMemory": 48825496,
+    "totalMemory": 2153021440,
+    "totalCommittedMemory": 2153021440,
+    "usedMemory": 2135200808,
+    "availableMemory": 47238824,
     "memoryLimit": 2197815296,
     "heapSpaces": {
       "read_only_space": {
@@ -268,35 +268,35 @@
         "memorySize": 2097152,
         "committedMemory": 2097152,
         "capacity": 1047488,
-        "used": 265568,
-        "available": 781920
+        "used": 24632,
+        "available": 1022856
       },
       "old_space": {
-        "memorySize": 2082058240,
-        "committedMemory": 2082058240,
-        "capacity": 2071320728,
-        "used": 2069847784,
-        "available": 1472944
+        "memorySize": 1297461248,
+        "committedMemory": 1297461248,
+        "capacity": 1287341808,
+        "used": 1287196760,
+        "available": 145048
       },
       "code_space": {
-        "memorySize": 1736704,
-        "committedMemory": 1736704,
-        "capacity": 1567808,
-        "used": 1567808,
+        "memorySize": 4096000,
+        "committedMemory": 4096000,
+        "capacity": 3558208,
+        "used": 3558208,
         "available": 0
       },
       "map_space": {
-        "memorySize": 5246976,
-        "committedMemory": 5246976,
-        "capacity": 2836720,
-        "used": 2836720,
+        "memorySize": 7081984,
+        "committedMemory": 7081984,
+        "capacity": 3654000,
+        "used": 3654000,
         "available": 0
       },
       "large_object_space": {
-        "memorySize": 60497920,
-        "committedMemory": 60497920,
-        "capacity": 60332744,
-        "used": 60332744,
+        "memorySize": 841400320,
+        "committedMemory": 841400320,
+        "capacity": 840184512,
+        "used": 840184512,
         "available": 0
       },
       "code_large_object_space": {
@@ -316,17 +316,17 @@
     }
   },
   "resourceUsage": {
-    "userCpuSeconds": 254.125,
-    "kernelCpuSeconds": 14.75,
-    "cpuConsumptionPercent": 91.4541,
-    "maxRss": 2262970368,
+    "userCpuSeconds": 4788.42,
+    "kernelCpuSeconds": 196.64,
+    "cpuConsumptionPercent": 6.46076,
+    "maxRss": 1723731968,
     "pageFaults": {
-      "IORequired": 854599,
+      "IORequired": 26209299,
       "IONotRequired": 0
     },
     "fsActivity": {
-      "reads": 18497,
-      "writes": 63
+      "reads": 207197,
+      "writes": 5250
     }
   },
   "libuv": [
@@ -336,8 +336,6 @@
     "ALLUSERSPROFILE": "C:\\ProgramData",
     "ANDROID_HOME": "C:\\Users\\padavka\\AppData\\Local\\Android\\Sdk",
     "APPDATA": "C:\\Users\\padavka\\AppData\\Roaming",
-    "CHROME_CRASHPAD_PIPE_NAME": "\\\\.\\pipe\\crashpad_12328_WLJCDOYMNUINCPGA",
-    "COLORTERM": "truecolor",
     "CommonProgramFiles": "C:\\Program Files\\Common Files",
     "CommonProgramFiles(x86)": "C:\\Program Files (x86)\\Common Files",
     "CommonProgramW6432": "C:\\Program Files\\Common Files",
@@ -347,13 +345,11 @@
     "DriverData": "C:\\Windows\\System32\\Drivers\\DriverData",
     "FPS_BROWSER_APP_PROFILE_STRING": "Internet Explorer",
     "FPS_BROWSER_USER_PROFILE_STRING": "Default",
-    "GIT_ASKPASS": "c:\\Users\\padavka\\AppData\\Local\\Programs\\Microsoft VS Code\\resources\\app\\extensions\\git\\dist\\askpass.sh",
     "HOME": "C:\\Users\\padavka",
     "HOMEDRIVE": "C:",
     "HOMEPATH": "\\Users\\padavka",
     "INIT_CWD": "C:\\Users\\padavka\\Karthik\\reactjs\\qa",
     "JAVA_HOME": "C:\\Program Files\\Java\\jdk-14.0.1",
-    "LANG": "en_GB.UTF-8",
     "LOCALAPPDATA": "C:\\Users\\padavka\\AppData\\Local",
     "LOGONSERVER": "\\\\ESDC7",
     "NODE": "C:\\Program Files\\nodejs\\node.exe",
@@ -501,15 +497,17 @@
     "npm_package_dependencies_react": "16.13.1",
     "npm_package_dependencies_react_dom": "16.13.1",
     "npm_package_dependencies_react_google_login": "^5.1.21",
+    "npm_package_dependencies_react_lottie": "^1.2.3",
     "npm_package_dependencies_react_redux": "^7.2.2",
     "npm_package_dependencies_react_swipeable_views": "^0.13.9",
     "npm_package_dependencies_redux": "^4.0.5",
+    "npm_package_dependencies_redux_thunk": "^2.3.0",
     "npm_package_dependencies_yup": "^0.29.3",
     "npm_package_dependencies__material_ui_core": "^4.11.0",
     "npm_package_dependencies__material_ui_icons": "^4.9.1",
     "npm_package_dependencies__material_ui_lab": "^4.0.0-alpha.56",
     "npm_package_description": "This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).",
-    "npm_package_gitHead": "d21c85f75b2f649e16208fd73622aa5a06226915",
+    "npm_package_gitHead": "a011aba0e46f3bc62e41341b47cf32ffa940a74d",
     "npm_package_name": "qa",
     "npm_package_private": "true",
     "npm_package_readmeFilename": "README.md",
@@ -521,10 +519,9 @@
     "NUMBER_OF_PROCESSORS": "8",
     "OneDrive": "C:\\Users\\padavka\\OneDrive - Tecnotree",
     "OneDriveCommercial": "C:\\Users\\padavka\\OneDrive - Tecnotree",
-    "ORIGINAL_XDG_CURRENT_DESKTOP": "undefined",
     "OS": "Windows_NT",
     "Path": "C:\\Program Files\\nodejs\\node_modules\\npm\\node_modules\\npm-lifecycle\\node-gyp-bin;C:\\Users\\padavka\\Karthik\\reactjs\\qa\\node_modules\\.bin;C:\\WINDOWS\\system32;C:\\WINDOWS;C:\\WINDOWS\\System32\\Wbem;C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\;C:\\WINDOWS\\System32\\OpenSSH\\;C:\\Program Files\\nodejs\\;C:\\Program Files\\TortoiseGit\\bin;C:\\WINDOWS\\system32\\config\\systemprofile\\AppData\\Local\\Android\\Sdk;C:\\WINDOWS\\system32\\config\\systemprofile\\AppData\\Local\\Android\\Sdk\\platform-tools;C:\\Users\\padavka\\AppData\\Local\\Microsoft\\WindowsApps;C:\\Users\\padavka\\AppData\\Local\\Programs\\Microsoft VS Code\\bin;C:\\Users\\padavka\\AppData\\Local\\Programs\\Git\\cmd;C:\\Users\\padavka\\AppData\\Roaming\\npm;C:\\Users\\padavka\\AppData\\Local\\Google\\Cloud SDK\\google-cloud-sdk\\bin",
-    "PATHEXT": ".COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JSE;.WSF;.WSH;.MSC;.CPL",
+    "PATHEXT": ".COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JSE;.WSF;.WSH;.MSC",
     "PROCESSOR_ARCHITECTURE": "AMD64",
     "PROCESSOR_IDENTIFIER": "Intel64 Family 6 Model 142 Stepping 12, GenuineIntel",
     "PROCESSOR_LEVEL": "6",
@@ -534,14 +531,12 @@
     "ProgramFiles(x86)": "C:\\Program Files (x86)",
     "ProgramW6432": "C:\\Program Files",
     "PROMPT": "$P$G",
-    "PSModulePath": "C:\\Users\\padavka\\Documents\\WindowsPowerShell\\Modules;C:\\Users\\padavka\\AppData\\Local\\Google\\Cloud SDK\\google-cloud-sdk\\platform\\PowerShell;C:\\Program Files\\WindowsPowerShell\\Modules;C:\\WINDOWS\\system32\\WindowsPowerShell\\v1.0\\Modules",
+    "PSModulePath": "C:\\Users\\padavka\\Documents\\WindowsPowerShell\\Modules;C:\\Users\\padavka\\AppData\\Local\\Google\\Cloud SDK\\google-cloud-sdk\\platform\\PowerShell",
     "PUBLIC": "C:\\Users\\Public",
     "SESSIONNAME": "Console",
     "SystemDrive": "C:",
     "SystemRoot": "C:\\WINDOWS",
     "TEMP": "C:\\Users\\padavka\\AppData\\Local\\Temp",
-    "TERM_PROGRAM": "vscode",
-    "TERM_PROGRAM_VERSION": "1.53.0",
     "TMP": "C:\\Users\\padavka\\AppData\\Local\\Temp",
     "UATDATA": "C:\\WINDOWS\\CCM\\UATData\\D9F8C395-CAB8-491d-B8AC-179A1FE1BE77",
     "USERDNSDOMAIN": "NOVA.LOCAL",
@@ -549,9 +544,6 @@
     "USERDOMAIN_ROAMINGPROFILE": "NOVA",
     "USERNAME": "padavka",
     "USERPROFILE": "C:\\Users\\padavka",
-    "VSCODE_GIT_ASKPASS_MAIN": "c:\\Users\\padavka\\AppData\\Local\\Programs\\Microsoft VS Code\\resources\\app\\extensions\\git\\dist\\askpass-main.js",
-    "VSCODE_GIT_ASKPASS_NODE": "C:\\Users\\padavka\\AppData\\Local\\Programs\\Microsoft VS Code\\Code.exe",
-    "VSCODE_GIT_IPC_HANDLE": "\\\\.\\pipe\\vscode-git-7de5a49dda-sock",
     "windir": "C:\\WINDOWS",
     "_prog": "node"
   },
@@ -576,8 +568,8 @@
     "C:\\WINDOWS\\System32\\CRYPT32.dll",
     "C:\\WINDOWS\\System32\\MSASN1.dll",
     "C:\\WINDOWS\\System32\\bcrypt.dll",
-    "C:\\WINDOWS\\SYSTEM32\\IPHLPAPI.DLL",
     "C:\\WINDOWS\\SYSTEM32\\USERENV.dll",
+    "C:\\WINDOWS\\SYSTEM32\\IPHLPAPI.DLL",
     "C:\\WINDOWS\\System32\\profapi.dll",
     "C:\\WINDOWS\\SYSTEM32\\WINMM.dll",
     "C:\\WINDOWS\\SYSTEM32\\winmmbase.dll",

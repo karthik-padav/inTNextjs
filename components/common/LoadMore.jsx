@@ -12,7 +12,7 @@ const useStyles = makeStyles((theme) => ({
 
 function LoadMore(props) {
   const {
-    lable = "Load More",
+    label = "Load More",
     loader = false,
     onTrigger = () => {},
     width = "auto",
@@ -21,15 +21,12 @@ function LoadMore(props) {
   return (
     <>
       <ButtonWrapper
-        // borderRadius="100px"
-        bgColor="color3"
-        // hoverBgColor="color2"
-        color="color1"
+        variant="contained"
         onClick={onTrigger}
-        disabled={loader}
+        loader={loader}
         width={width}
       >
-        <Typography variant="button">{lable}</Typography>
+        <Typography variant="button">{label}</Typography>
       </ButtonWrapper>
     </>
   );

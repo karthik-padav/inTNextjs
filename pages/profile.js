@@ -16,7 +16,7 @@ import {
 import React, { useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { connect } from "react-redux";
-import EditProfile from "components/common/EditProfile";
+import EditProfile from "pages/profilePage/EditProfile";
 import Menu from "components/common/Menu";
 import Divider from "components/common/Divider";
 import Radio from "@material-ui/core/Radio";
@@ -26,9 +26,10 @@ import FormControl from "@material-ui/core/FormControl";
 import FormLabel from "@material-ui/core/FormLabel";
 import ProfileMenu from "components/common/ProfileMenu";
 import ProfileCard from "./profilePage/ProfileCard";
-import { profileMenu } from "dataService/MenuLists";
 import MyPostCard from "./profilePage/MyPostCard";
 import constants from "dataService/Constants";
+import menuLists from "dataService/MenuLists";
+import { useRouter } from "next/router";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -38,7 +39,7 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(2),
     color: theme.palette.text.secondary,
     backgroundColor: theme.palette.background.paper,
-    boxShadow: theme.shadows[5],
+    // boxShadow: theme.shadows[5],
   },
   p1: {
     padding: theme.spacing(1),
@@ -46,34 +47,26 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function Profile(props) {
+  const { userDetails } = props;
+  const router = useRouter();
+
   const classes = useStyles();
+
+  useEffect(() => {
+    console.log(userDetails, "userDetails123");
+    if (!userDetails) router.push("/");
+  }, []);
 
   const handleClick = (item) => {
     console.log(item, "we are in handleClick");
   };
-
-  const menuItem = [
-    constants.MENU.HOME,
-    {
-      title: "My Post",
-      code: "myPost",
-      icon: "fa fa-hand-holding-heart",
-      iconSize: "small",
-      iconColor: "red",
-      cb: handleClick,
-    },
-    constants.MENU.ABOUT,
-    constants.MENU.SETTINGS,
-  ];
 
   return (
     <div className={classes.root}>
       <Grid container spacing={0}>
         <Grid item sm={12} md={3} className={classes.p1}>
           <div className="stickyWrapper">
-            <Paper className={classes.paper}>
-              <Menu menuItem={menuItem} />
-            </Paper>
+            <Menu />
           </div>
         </Grid>
         <Grid item sm={12} md={6} className={classes.p1}>
@@ -104,12 +97,6 @@ const mapStateToProps = (state) => {
 };
 const mapDispatchToProps = (dispatch) => {
   return {
-    updateTheme: (mode) => {
-      dispatch({
-        type: "UPDATE_THEME",
-        payload: mode,
-      });
-    },
     updateToastMsg: (toastMsg) => {
       dispatch({
         type: "UPDATE_TOAST",

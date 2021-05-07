@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from "react";
+import { useRouter } from "next/router";
+
 import { makeStyles } from "@material-ui/core/styles";
 import Box from "@material-ui/core/Box";
 import Typography from "@material-ui/core/Typography";
@@ -11,13 +13,14 @@ import Paper from "@material-ui/core/Paper";
 import _get from "lodash/get";
 import _isEmpty from "lodash/isEmpty";
 import _findIndex from "lodash/findIndex";
+
 import { connect } from "react-redux";
 import {
   getAllComments,
   postComments,
   deleteComment,
 } from "dataService/Services";
-import { isLoggedIn } from "dataService/Utils";
+import { isLoggedIn, getPostTypeFromURL } from "Function/Common";
 import UserHeaderCard from "components/common/UserHeaderCard";
 import OptionMenuV2 from "components/common/OptionMenuV2";
 import ConfirmAlertBox from "components/common/ConfirmAlertBox";
@@ -34,7 +37,7 @@ const useStyles = makeStyles((theme) => ({
   paper: {
     padding: theme.spacing(2),
     color: theme.palette.text.secondary,
-    backgroundColor: theme.palette.common.color7,
+    backgroundColor: theme.palette.common.gray,
     borderRadius: theme.spacing(2),
   },
   small: {
@@ -54,12 +57,14 @@ function CommentCard(props) {
 
   const [commentList, setCommentList] = useState([]);
   const [scrollLoader, setScrollLoader] = useState(false);
-  const [limit, setLimit] = useState(2);
+  const [limit, setLimit] = useState(15);
   const [commentStartIndex, setCommentStartIndex] = useState(0);
   const [hasMoreCommentToLoad, setHasMoreComments] = useState(true);
   const [editId, setEditId] = useState(null);
   const [isConfirmAlertBox, setConfirmAlert] = React.useState(null);
   const [loader, setLoader] = React.useState(false);
+
+  const router = useRouter();
 
   const LoadMoreComments = async () => {
     if (hasMoreCommentToLoad) {
@@ -97,7 +102,7 @@ function CommentCard(props) {
 
   const sumbmitComment = (value) => {
     const postId = _get(props, "id");
-    console.log(value, "value123321");
+    const postType = getPostTypeFromURL(router.pathname);
     let data = {};
     if (value)
       data = {
@@ -108,6 +113,7 @@ function CommentCard(props) {
       data = {
         postId,
         content: comments,
+        postType,
       };
     if ((data.postId || data.commentId) && !_isEmpty(data.content)) {
       setLoader(true);
@@ -181,6 +187,8 @@ function CommentCard(props) {
       code: "yes",
       hasLoader: true,
       cb: deleteConfirmed,
+      color: "primary",
+      variant: "contained",
     },
   ];
 
@@ -214,11 +222,8 @@ function CommentCard(props) {
                 />
                 <Box display="flex" justifyContent="flex-end">
                   <ButtonWrapper
-                    // borderRadius="100px"
-                    bgColor="color3"
-                    hoverBgColor="color2"
-                    color="color1"
-                    disabled={loader}
+                    variant="contained"
+                    loader={loader}
                     onClick={() => {
                       if (isLoggedIn()) {
                         sumbmitComment();
@@ -282,10 +287,10 @@ function CommentCard(props) {
       {!_isEmpty(commentList) && hasMoreCommentToLoad && (
         <Box display="flex" justifyContent="center" my={2}>
           <LoadMore
-            label="Load More"
+            label="Load more comments"
             loader={loader}
             onTrigger={LoadMoreComments}
-            width="30%"
+            // width="30%"
           />
         </Box>
       )}
@@ -293,7 +298,7 @@ function CommentCard(props) {
       <ConfirmAlertBox
         menu={confirmAlertButtons}
         loader={loader}
-        title="Delete Comment"
+        title={<Typography variant="h1">Delete Post</Typography>}
         subtitle="Are You Sure You Want To Delete This Comment?"
         data={isConfirmAlertBox}
         isModalOpen={isConfirmAlertBox}

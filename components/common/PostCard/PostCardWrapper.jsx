@@ -1,9 +1,12 @@
+import React, { useEffect, useState } from "react";
+import { useRouter } from "next/router";
 import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import _get from "lodash/get";
 import _isEmpty from "lodash/isEmpty";
 import { connect } from "react-redux";
 import Divider from "components/common/Divider";
+import RatingWrapper from "components/common/RatingWrapper";
 import Icon from "@material-ui/core/Icon";
 import OptionMenuV2 from "components/common/OptionMenuV2";
 import CommentCard from "components/common/CommentCard/index";
@@ -12,71 +15,147 @@ import Paper from "@material-ui/core/Paper";
 import Box from "@material-ui/core/Box";
 import ButtonWrapper from "components/common/ButtonWrapper";
 import Link from "next/link";
+import { isLoggedIn, getPostTypeFromURL } from "Function/Common";
+import { handleLike } from "dataService/Services";
+import { red } from "@material-ui/core/colors";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
-    padding: theme.spacing(2),
+    // padding: theme.spacing(2),
     color: theme.palette.text.secondary,
     backgroundColor: theme.palette.background.paper,
-    boxShadow: theme.shadows[5],
+    // boxShadow: theme.shadows[1],
   },
 }));
 
 function PostCardWrapper(props) {
   const classes = useStyles(props);
-
   const {
     children,
+    updateToastMsg,
     data,
     showCommentList = false,
     menuItem = [],
-    redirect = null,
+    redirect_href = null,
+    showLike = true,
+    showComment = true,
+    showRating = true,
   } = props;
+  const hasLiked = _get(data, "hasLiked", 0) > 0;
+  const [liked, setLike] = useState(hasLiked ? 1 : 0);
+  const [likeCount, setLikeCount] = useState(_get(data, "likes", 0));
+
+  const postId = _get(data, "feedId");
   const userDetails = _get(props, "data.user_details");
   const createdAt = _get(data, "createdAt");
+
+  const router = useRouter();
+
+  useEffect(() => {
+    setLike(liked === 1 ? liked : hasLiked ? 1 : 0);
+  }, [hasLiked]);
+
+  const onLike = (postId) => {
+    const postType = getPostTypeFromURL(router.pathname);
+    handleLike({ postId, postType })
+      .then((resp) => {
+        if (_get(resp, "status")) {
+          const likeStatus = _get(resp, "data.status", 0);
+          setLike(likeStatus);
+        } else {
+          updateToastMsg({
+            msg: "Something went wrong.",
+            type: "error",
+          });
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
   return (
-    <Paper className={classes.paper}>
+    <Paper className={classes.paper} elevation={1}>
       {userDetails && (
-        <UserHeaderCard {...userDetails} createdAt={createdAt}>
-          {!_isEmpty(menuItem) && (
-            <OptionMenuV2 menuItem={menuItem} data={data} />
-          )}
-        </UserHeaderCard>
+        <Box px={2} pt={2} pb={1}>
+          <UserHeaderCard {...userDetails} createdAt={createdAt}>
+            {!_isEmpty(menuItem) && (
+              <OptionMenuV2 menuItem={menuItem} data={data} />
+            )}
+          </UserHeaderCard>
+        </Box>
       )}
 
-      {children && children}
+      {children && (
+        <Box px={2} py={1}>
+          {children}
+        </Box>
+      )}
 
-      <Divider mt={1} mb={1} />
-      <Box display="flex" alignItems="center">
-        <Box display="flex" alignItems="center" mr={2}>
-          <ButtonWrapper
-            type="IconButton"
-            bgColor="color3"
-            hoverBgColor="color6"
-            color="color5"
-            // onClick={console.log("Liked")}
-          >
-            {/* <Icon className="far fa-heart" fontSize="small" /> */}
-            <Icon className="fas fa-heart" fontSize="small" />
-          </ButtonWrapper>
-          <Typography variant="body1">100</Typography>
+      <Divider />
+      <Box
+        display="flex"
+        px={1}
+        py={1}
+        alignItems="center"
+        justifyContent="space-between"
+      >
+        <Box display="flex">
+          {showLike && (
+            <Box display="flex" alignItems="center" mr={2}>
+              <ButtonWrapper
+                type="IconButton"
+                color={red[500]}
+                onClick={() => {
+                  if (isLoggedIn()) {
+                    postId && onLike(postId);
+                  } else props.toggleLoginModal(true);
+                }}
+              >
+                <Icon
+                  className={
+                    isLoggedIn()
+                      ? liked === 1
+                        ? "fas fa-heart"
+                        : "far fa-heart"
+                      : "far fa-heart"
+                  }
+                  style={{ fontSize: "18px" }}
+                />
+              </ButtonWrapper>
+              <Box ml={0.5}>
+                <Typography variant="body1">{likeCount}</Typography>
+              </Box>
+            </Box>
+          )}
+          {showComment && (
+            <Box
+              display="flex"
+              alignItems="center"
+              mr={2}
+              onClick={() => {
+                if (redirect_href) router.push(redirect_href);
+              }}
+            >
+              <ButtonWrapper type="IconButton">
+                <Icon className="far fa-comment" style={{ fontSize: "18px" }} />
+              </ButtonWrapper>
+              <Box ml={0.5}>
+                <Typography variant="body1">
+                  {_get(data, "comments", 0)}
+                </Typography>
+              </Box>
+            </Box>
+          )}
         </Box>
-        <Box display="flex" alignItems="center" mr={2}>
-          <ButtonWrapper
-            type="IconButton"
-            bgColor="color3"
-            hoverBgColor="color2"
-            color="color1"
-          >
-            <Icon className="far fa-comment" fontSize="small" />
-          </ButtonWrapper>
-          <Typography variant="body1">{_get(data, "comments", 0)}</Typography>
-        </Box>
+        <div>{showRating && <RatingWrapper />}</div>
       </Box>
-      {showCommentList && (
+      {showComment && showCommentList && (
         <>
-          {/* <Divider mt={1} mb={1} /> */}
-          <CommentCard id={data.feedId} />
+          <Divider />
+          <Box px={2} py={1}>
+            <CommentCard id={data.feedId} />
+          </Box>
         </>
       )}
     </Paper>
@@ -88,4 +167,21 @@ const mapStateToProps = (state) => {
     userDetails: _get(state, "userDetails"),
   };
 };
-export default connect(mapStateToProps)(PostCardWrapper);
+const mapDispatchToProps = (dispatch) => {
+  return {
+    updateToastMsg: (toastMsg) => {
+      dispatch({
+        type: "UPDATE_TOAST",
+        payload: toastMsg,
+      });
+    },
+    toggleLoginModal: (flag) => {
+      dispatch({
+        type: "SHOW_LOGIN_MODAL",
+        payload: flag,
+      });
+    },
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(PostCardWrapper);

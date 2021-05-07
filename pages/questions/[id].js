@@ -24,7 +24,7 @@ import PostCardWrapper from "components/common/PostCard/PostCardWrapper";
 import ConfirmAlertBox from "components/common/ConfirmAlertBox";
 import { deletePostFeed } from "dataService/Services";
 import ButtonWrapper from "components/common/ButtonWrapper";
-import { isLoggedIn } from "dataService/Utils";
+import { isLoggedIn } from "Function/Common";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -34,7 +34,7 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(2),
     color: theme.palette.text.secondary,
     backgroundColor: theme.palette.background.paper,
-    boxShadow: theme.shadows[5],
+    // boxShadow: theme.shadows[5],
   },
   raiseRequestBtn: {
     borderRadius: "50px",
@@ -62,10 +62,26 @@ function FeedPost(props) {
 
   const [showConfirmBox, setConfirmAlert] = useState(false);
   const [loader, setLoader] = React.useState(false);
+  const { query } = useRouter();
 
   useEffect(() => {
     setQuestionList({ data: _get(questionObj, "data", []) });
   }, [questionObj]);
+
+  useEffect(() => {
+    const id = _get(query, "id");
+    if (id) {
+      getQuestions(`?id=${id}`)
+        .then((res) => {
+          if (_get(res, "status")) {
+            if (!_isEmpty(res.data)) {
+              setQuestionList({ data: _get(res, "data", []) });
+            }
+          }
+        })
+        .catch((err) => {});
+    }
+  }, []);
 
   const editClicked = (value) => {
     togglePostModal(true, value);
@@ -130,55 +146,11 @@ function FeedPost(props) {
       <Grid container spacing={0}>
         <Grid item sm={12} md={3} className={classes.p1}>
           <div className="stickyWrapper">
-            <Paper className={classes.paper}>
-              <ProfileMenu />
-            </Paper>
-            <Box className={classes.pt2}>
-              <Paper>
-                <Menu />
-              </Paper>
-            </Box>
+            <Menu />
           </div>
         </Grid>
         <Grid item sm={12} md={6} className={classes.p1}>
-          {/* <Box mb={2} mt={2}>
-            <ButtonWrapper
-              onClick={() => {
-                if (isLoggedIn()) {
-                  togglePostModal(true);
-                } else toggleLoginModal(true);
-              }}
-            >
-              Add
-              <Box ml={1} lineHeight="1">
-                <Icon className={"fa fa-plus"} fontSize="small" />
-              </Box>
-            </ButtonWrapper>
-          </Box> */}
-          {feedResp && (
-            <PostCardWrapper
-              data={feedResp}
-              menuItem={moreMenuItem}
-              showCommentList={true}
-            >
-              <CardWrapper data={feedResp} />
-            </PostCardWrapper>
-          )}
-
-          <ConfirmAlertBox
-            menu={confirmAlertButtons}
-            title="Delete Post"
-            loader={loader}
-            subtitle="Are You Sure You Want To Delete This Post?"
-            data={showConfirmBox}
-            isModalOpen={showConfirmBox}
-          />
-
-          {_isEmpty(feedResp) && (
-            <Box display="flex" justifyContent="center" m={3}>
-              <NoDataFound title="Post Not Found." />
-            </Box>
-          )}
+          Online shop by id
         </Grid>
         <Grid item sm={12} md={3} className={classes.p1}>
           <Paper className={classes.paper}>xs=6</Paper>

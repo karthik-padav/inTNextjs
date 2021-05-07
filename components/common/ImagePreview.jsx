@@ -86,9 +86,9 @@ function ImagePreview({ contentImage = [], imagePath = "" }) {
                       src={`${imagePath}/${img.fileName}`}
                       className={classes.imageSizeWrapper}
                     />
-                    <p style={{ fontSize: "10px" }}>
+                    {/* <p style={{ fontSize: "10px" }}>
                       {`${imagePath}/${img.fileName}`}
-                    </p>
+                    </p> */}
                     {contentImage.length > ImagePreviewCount &&
                       imgIndex + 1 === ImagePreviewCount && (
                         <Box

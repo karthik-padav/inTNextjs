@@ -16,13 +16,9 @@ const useStyles = makeStyles((theme) => ({
     flexGrow: 1,
   },
   paper: {
-    padding: theme.spacing(2),
-    color: theme.palette.text.secondary,
-    backgroundColor: theme.palette.background.paper,
-    boxShadow: theme.shadows[5],
-  },
-  p1: {
-    padding: theme.spacing(1),
+    color: theme.palette.common.white,
+    backgroundColor: theme.palette.common.blue,
+    padding: theme.spacing(1, 2),
   },
 }));
 

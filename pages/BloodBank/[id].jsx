@@ -30,7 +30,7 @@ import ConfirmAlertBox from "components/common/ConfirmAlertBox";
 import BloodDetailsCard from "pages/bloodbank/BloodDetailsCard";
 
 import { getBloodReceiver, postBloodRequest } from "dataService/Services";
-import { isLoggedIn } from "dataService/Utils";
+import { isLoggedIn } from "Function/Common";
 import OptionMenu from "./OptionMenu";
 import CommentCard from "components/common/CommentCard/index";
 import Divider from "components/common/Divider";
@@ -46,7 +46,7 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(2),
     color: theme.palette.text.secondary,
     backgroundColor: theme.palette.background.paper,
-    boxShadow: theme.shadows[5],
+    // boxShadow: theme.shadows[5],
   },
   raiseRequestBtn: {
     borderRadius: "50px",
@@ -138,14 +138,7 @@ function BloodPost(props) {
       <Grid container spacing={0}>
         <Grid item sm={12} md={3} className={classes.p1}>
           <div className="stickyWrapper">
-            <Paper className={classes.paper}>
-              <ProfileMenu />
-            </Paper>
-            <Box className={classes.pt2}>
-              <Paper>
-                <Menu />
-              </Paper>
-            </Box>
+            <Menu />
           </div>
         </Grid>
         <Grid item sm={12} md={6} className={classes.p1}>
@@ -264,7 +257,7 @@ function BloodPost(props) {
 
       <ConfirmAlertBox
         isConfirmAlertBox={isConfirmAlertBox}
-        title="Confirm Delete"
+        title={<Typography variant="h1">Delete Post</Typography>}
         onConfirm={deleteRequest}
         onCancel={() => {
           setConfirmAlert(null);

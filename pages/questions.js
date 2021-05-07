@@ -13,7 +13,7 @@ import _get from "lodash/get";
 import _isEmpty from "lodash/isEmpty";
 import _find from "lodash/find";
 import _findIndex from "lodash/findIndex";
-import { isLoggedIn } from "dataService/Utils";
+import { isLoggedIn } from "Function/Common";
 import LoaderComponent from "pages/questions/LoaderComponent";
 // import { getAllQuestions } from "actions/questions";
 import PostCardWrapper from "components/common/PostCard/PostCardWrapper";
@@ -31,140 +31,21 @@ const useStyles = makeStyles((theme) => ({
   },
   paper: {
     padding: theme.spacing(2),
-    color: theme.palette.text.secondary,
-    backgroundColor: theme.palette.background.paper,
-    boxShadow: theme.shadows[5],
   },
   p1: {
     padding: theme.spacing(1),
-  },
-  mx_md: {
-    width: "568px",
-    maxWidth: "100%",
-  },
-  modal: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  mt2: {
-    paddingTop: theme.spacing(2),
   },
 }));
 
 function Questions(props) {
   const classes = useStyles();
-  // const {
-  //   togglePostModal,
-  //   toggleLoginModal,
-  //   updateToastMsg,
-  //   userDetails,
-  //   questionList,
-  //   setQuestionList,
-  // } = props;
-  // const [questionStartIndex, setQuestionStartIndex] = useState(0);
-  // const [hasMoreQuestionToLoad, setHasMoreQuestionToLoad] = useState(true);
-  // const [showConfirmBox, setConfirmAlert] = useState(false);
-
-  // const [limit, setLimit] = useState(15);
-
-  // const [querry, setQuerry] = useState(null);
-
-  // const [questionLoader, setQuestionLoader] = useState(false);
-
-  // const LoadMoreQuestion = async () => {
-  //   if (hasMoreQuestionToLoad) {
-  //     setQuestionStartIndex((prev) => prev + limit);
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   let querryString = `?offset=${questionStartIndex}&limit=${limit}`;
-  //   if (querry) querryString += `${querry}`;
-  //   getQuestionFnc(querryString);
-  // }, [questionStartIndex]);
-
-  // useEffect(() => {
-  //   let querryString = `?offset=${questionStartIndex}&limit=${limit}`;
-  //   if (querry) querryString += `${querry}`;
-  //   setHasMoreQuestionToLoad(true);
-  //   setQuestionStartIndex(0);
-  //   getQuestionFnc(querryString, false);
-  // }, [querry]);
-
-  // const getQuestionFnc = (querryString, isAppend = true) => {
-  //   setQuestionLoader(true);
-  //   getQuestions(querryString)
-  //     .then((res) => {
-  //       if (_get(res, "status")) {
-  //         if (!_isEmpty(res.data)) {
-  //           if (isAppend)
-  //             setQuestionList({ data: [...questionList, ...res.data] });
-  //           else setQuestionList({ data: res.data });
-  //         } else {
-  //           if (!isAppend) {
-  //             setQuestionList({ data: res.data });
-  //           }
-  //           setHasMoreQuestionToLoad(false);
-  //         }
-  //       }
-  //       setQuestionLoader(false);
-  //     })
-  //     .catch((err) => {
-  //       setQuestionLoader(false);
-  //     });
-  // };
-
-  // const editClicked = (value) => {
-  //   togglePostModal(true, value);
-  // };
-
-  // const deletePost = (data) => {
-  //   const feedId = _get(data, "feedId");
-  //   if (feedId) {
-  //     deletePostFeed(data.feedId).then((res) => {
-  //       if (_get(res, "status")) {
-  //         let newList = questionList.filter((item) => {
-  //           return item.feedId !== data.feedId;
-  //         });
-  //         setQuestionList({ data: newList });
-  //         setConfirmAlert(false);
-  //         updateToastMsg({ msg: res.message, type: "success" });
-  //       } else {
-  //         updateToastMsg({ msg: res.message, type: "error" });
-  //       }
-  //     });
-  //   }
-  // };
-
-  // const confirmAlertButtons = [
-  //   {
-  //     title: "No",
-  //     code: "no",
-  //     cb: () => setConfirmAlert(false),
-  //     mr: 2,
-  //   },
-  //   {
-  //     title: "Yes",
-  //     authCheck: true,
-  //     code: "yes",
-  //     cb: deletePost,
-  //   },
-  // ];
 
   return (
     <div className={classes.root}>
       <Grid container spacing={0}>
         <Grid item sm={12} md={3} className={classes.p1}>
           <div className="stickyWrapper">
-            <Paper className={classes.paper}>
-              <ProfileMenu />
-            </Paper>
-            <Box pt={2}>
-              <Paper>
-                <Menu />
-              </Paper>
-            </Box>
+            <Menu />
           </div>
         </Grid>
         <Grid item xs={6} className={classes.p1}>

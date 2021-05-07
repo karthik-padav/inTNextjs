@@ -13,7 +13,7 @@ import Fade from "@material-ui/core/Fade";
 import classNames from "classnames";
 import Button from "@material-ui/core/Button";
 import IconButton from "@material-ui/core/IconButton";
-import EditProfile from "components/common/EditProfile";
+import EditProfile from "pages/profilePage/EditProfile";
 import Link from "next/link";
 
 const Client_Secret = "JI4VLN5YzeasPsjn0qoVUkAJ";
@@ -45,7 +45,7 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(2),
     color: theme.palette.text.secondary,
     backgroundColor: theme.palette.background.paper,
-    boxShadow: theme.shadows[5],
+    // boxShadow: theme.shadows[5],
   },
   mx_md: {
     width: "568px",

@@ -19,6 +19,7 @@ import _find from "lodash/find";
 import _findIndex from "lodash/findIndex";
 import _cloneDeep from "lodash/cloneDeep";
 import RequestBloodForm from "pages/bloodbank/AddBloodRequestWrapper/RequestBloodForm";
+import DialogBox from "components/common/DialogBoxWrapper/DialogBox";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -29,7 +30,7 @@ const useStyles = makeStyles((theme) => ({
     marginBottom: theme.spacing(2),
     color: theme.palette.text.secondary,
     backgroundColor: theme.palette.background.paper,
-    boxShadow: theme.shadows[5],
+    // boxShadow: theme.shadows[5],
   },
   mx_md: {
     width: "568px",
@@ -48,46 +49,23 @@ function AddBloodRequestModal(props) {
 
   return (
     <div className={classes.root}>
-      <Modal
-        className={classes.modal}
-        open={isModalOpen}
-        closeAfterTransition
-        BackdropComponent={Backdrop}
-        BackdropProps={{
-          timeout: 500,
-        }}
-      >
-        <Fade in={isModalOpen}>
-          <Paper className={classNames(classes.paper, classes.mx_md)}>
-            <Box alignItems="center" display="flex">
-              <Box flexGrow={1}>
-                <Typography variant="h1" align="center">
-                  <b>Create Post</b>
-                </Typography>
-              </Box>
-              <Box>
-                <IconButton
-                  variant="contained"
-                  size="medium"
-                  color="primary"
-                  onClick={() => toggleBloodModal(false)}
-                >
-                  <Icon className="fa fa-times" fontSize="small" />
-                </IconButton>
-              </Box>
-            </Box>
-            <Divider mt={1} mb={1.5} />
+      <DialogBox
+        isModalOpen={isModalOpen}
+        onClose={() => toggleBloodModal(false)}
+        headerTitle={<Typography variant="h1">Create Post</Typography>}
+        body={
+          <Box>
             <RequestBloodForm />
-          </Paper>
-        </Fade>
-      </Modal>
+          </Box>
+        }
+      />
     </div>
   );
 }
 
 const mapStateToProps = (state) => {
   return {
-    isModalOpen: _get(state, "ui.postBloodModal.show"),
+    isModalOpen: _get(state, "ui.postBloodModal.show", false),
   };
 };
 const mapDispatchToProps = (dispatch) => {

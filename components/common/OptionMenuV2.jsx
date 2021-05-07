@@ -2,19 +2,12 @@ import Icon from "@material-ui/core/Icon";
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
 import { connect } from "react-redux";
-import { isLoggedIn } from "dataService/Utils";
+import { isLoggedIn } from "Function/Common";
 import _get from "lodash/get";
 import ButtonWrapper from "components/common/ButtonWrapper";
 
 function OptionMenuV2(props) {
-  const {
-    menuItem = [],
-    data,
-    borderRadius = "100px",
-    bgColor = "color3",
-    hoverBgColor = "color2",
-    color = "color1",
-  } = props;
+  const { menuItem = [], data } = props;
   const [anchorEl, setAnchorEl] = React.useState(null);
 
   const openOptionMenu = (event) => {
@@ -27,15 +20,8 @@ function OptionMenuV2(props) {
 
   return (
     <>
-      <ButtonWrapper
-        type="IconButton"
-        borderRadius
-        bgColor={bgColor}
-        hoverBgColor={hoverBgColor}
-        color={color}
-        onClick={openOptionMenu}
-      >
-        <Icon className={"fa fa-ellipsis-v"} style={{ fontSize: 15 }} />
+      <ButtonWrapper type="IconButton" onClick={openOptionMenu}>
+        <Icon className={"fa fa-ellipsis-h"} style={{ fontSize: 15 }} />
       </ButtonWrapper>
       <Menu
         anchorEl={anchorEl}

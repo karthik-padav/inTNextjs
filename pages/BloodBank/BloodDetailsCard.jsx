@@ -1,16 +1,11 @@
 import { makeStyles } from "@material-ui/core/styles";
-import AppBar from "@material-ui/core/AppBar";
 import Box from "@material-ui/core/Box";
 import Typography from "@material-ui/core/Typography";
 import Grid from "@material-ui/core/Grid";
-import Avatar from "@material-ui/core/Avatar";
-import MenuIcon from "@material-ui/icons/Menu";
-import { connect } from "react-redux";
-import { loadCSS } from "fg-loadcss";
 import _get from "lodash/get";
 import _isEmpty from "lodash/isEmpty";
-import moment from "moment";
-import MuiAlert from "@material-ui/lab/Alert";
+import { placeCodeToTitle } from "Function/Common";
+import locationList from "dataService/Json/LocationList.json";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -18,43 +13,12 @@ const useStyles = makeStyles((theme) => ({
   },
   paper: {
     padding: theme.spacing(2),
-    color: theme.palette.text.secondary,
-    backgroundColor: theme.palette.background.paper,
-    boxShadow: theme.shadows[5],
-  },
-  raiseRequestBtn: {
-    borderRadius: "50px",
-  },
-  closeBtn: {
-    padding: theme.spacing(1),
-  },
-  p1: {
-    padding: theme.spacing(1),
-  },
-  pl1: {
-    paddingLeft: theme.spacing(1),
-  },
-  large: {
-    width: theme.spacing(7),
-    height: theme.spacing(7),
-  },
-  modal: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  mx_md: {
-    width: "568px",
-    maxWidth: "100%",
   },
   pt2: {
     paddingTop: theme.spacing(2),
   },
-  mb2: {
-    marginBottom: theme.spacing(2),
-  },
-  extendedIcon: {
-    marginLeft: theme.spacing(1),
+  wordBreak: {
+    wordBreak: "break-all",
   },
 }));
 
@@ -73,93 +37,72 @@ function BloodDetailsCard({
       <Grid container spacing={1} alignItems="center" className={classes.pt2}>
         {bloodType && (
           <Grid item sm={12} md={4} className={classes.pt1}>
-            <Typography variant="caption">Blood Required:</Typography>
-            <Box
-              component="p"
-              m={0}
-              variant="body1"
-              fontWeight="fontWeightBold"
-            >
-              {bloodType}
-            </Box>
+            <Typography className={classes.wordBreak} variant="caption">
+              Blood Required:
+            </Typography>
+            <Typography className={classes.wordBreak} variant="body1">
+              <b>{bloodType}</b>
+            </Typography>
           </Grid>
         )}
         {contactName && (
           <Grid item sm={12} md={4} className={classes.pt1}>
-            <Typography variant="caption">Contact Name:</Typography>
-            <Box
-              component="p"
-              m={0}
-              variant="body1"
-              fontWeight="fontWeightBold"
-            >
-              {contactName}
-            </Box>
+            <Typography className={classes.wordBreak} variant="caption">
+              Contact Name:
+            </Typography>
+            <Typography className={classes.wordBreak} variant="body1">
+              <b>{contactName}</b>
+            </Typography>
           </Grid>
         )}
         {contactNumber && (
           <Grid item sm={12} md={4} className={classes.pt1}>
-            <Typography variant="caption">Contact Number:</Typography>
-            <Box
-              component="p"
-              m={0}
-              variant="body1"
-              fontWeight="fontWeightBold"
-            >
-              {contactNumber}
-            </Box>
+            <Typography className={classes.wordBreak} variant="caption">
+              Contact Number:
+            </Typography>
+            <Typography className={classes.wordBreak} variant="body1">
+              <b>{contactNumber}</b>
+            </Typography>
           </Grid>
         )}
         {state && (
           <Grid item sm={12} md={4} className={classes.pt1}>
-            <Typography variant="caption">State:</Typography>
-            <Box
-              component="p"
-              m={0}
-              variant="body1"
-              fontWeight="fontWeightBold"
-            >
-              {state}
-            </Box>
+            <Typography className={classes.wordBreak} variant="caption">
+              State:
+            </Typography>
+            <Typography className={classes.wordBreak} variant="body1">
+              <b>{state}</b>
+            </Typography>
           </Grid>
         )}
         {district && (
           <Grid item sm={12} md={4} className={classes.pt1}>
-            <Typography variant="caption">District:</Typography>
-            <Box
-              component="p"
-              m={0}
-              variant="body1"
-              fontWeight="fontWeightBold"
-            >
-              {district}
-            </Box>
+            <Typography className={classes.wordBreak} variant="caption">
+              District:
+            </Typography>
+            <Typography className={classes.wordBreak} variant="body1">
+              <b>{district}</b>
+            </Typography>
           </Grid>
         )}
         {taluk && (
           <Grid item sm={12} md={4} className={classes.pt1}>
-            <Typography variant="caption">Taluk:</Typography>
-            <Box
-              component="p"
-              m={0}
-              variant="body1"
-              fontWeight="fontWeightBold"
-            >
-              {taluk}
-            </Box>
+            <Typography className={classes.wordBreak} variant="caption">
+              Taluk:
+            </Typography>
+            <Typography className={classes.wordBreak} variant="body1">
+              <b>{taluk}</b>
+            </Typography>
           </Grid>
         )}
         {description && (
           <Grid item sm={12} md={4} className={classes.pt1}>
-            <Typography variant="caption">Description:</Typography>
-            <Box
-              component="p"
-              m={0}
-              variant="body1"
-              fontWeight="fontWeightBold"
-            >
-              {description}
-            </Box>
+            <Typography className={classes.wordBreak} variant="caption">
+              Description:
+            </Typography>
+            <Typography className={classes.wordBreak} variant="body1">
+              <b>{description}</b>
+            </Typography>
           </Grid>
         )}
       </Grid>

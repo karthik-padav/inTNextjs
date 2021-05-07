@@ -105,7 +105,6 @@ function Profile(props) {
       >
         {(formikProps) => (
           <form>
-            {console.log(formikProps, "props123123")}
             <Grid container spacing={1}>
               <Grid item sm={12}>
                 <Avatar

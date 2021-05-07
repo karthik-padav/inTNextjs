@@ -11,9 +11,9 @@ const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
   },
-  large: {
-    width: theme.spacing(7),
-    height: theme.spacing(7),
+  avatarSize: {
+    width: theme.spacing(5),
+    height: theme.spacing(5),
   },
 }));
 
@@ -33,7 +33,7 @@ function UserHeaderCard(props) {
         <Grid item>
           <Avatar
             src={profilePicture}
-            className={avatarClass ? avatarClass : classes.large}
+            className={avatarClass ? avatarClass : classes.avatarSize}
           />
         </Grid>
 
@@ -46,13 +46,10 @@ function UserHeaderCard(props) {
           >
             <Box display="flex" flexDirection="column">
               <Typography component="p" variant="body1" m={0}>
-                {givenName} {familyName}
+                <b>
+                  {givenName} {familyName}
+                </b>
               </Typography>
-              {email && (
-                <Typography component="p" variant="body1" m={0}>
-                  {email}
-                </Typography>
-              )}
               {createdAt && (
                 <Typography variant="caption">
                   {moment(createdAt).fromNow()}

@@ -18,6 +18,40 @@ export const getUserDetails = (userId) => {
   });
 };
 
+export const getNotification = () => {
+  return new Promise((resolve, reject) => {
+    axios({
+      method: "get",
+      url: constants.baseUrl + `/getNotification`,
+      headers: { Authorization: `Bearer ${getToken()}` },
+    })
+      .then((res) => {
+        if (res && res.data) resolve(res.data);
+      })
+      .catch((err) => {
+        reject(err);
+      });
+  });
+};
+
+export const readNotification = (notificationId) => {
+  const data = { unread: 0, notificationId };
+  return new Promise((resolve, reject) => {
+    axios({
+      method: "post",
+      url: constants.baseUrl + `/readNotification`,
+      headers: { Authorization: `Bearer ${getToken()}` },
+      data,
+    })
+      .then((res) => {
+        if (res && res.data) resolve(res.data);
+      })
+      .catch((err) => {
+        reject(err);
+      });
+  });
+};
+
 export const updateUserDetails = (data) => {
   return new Promise((resolve, reject) => {
     axios({
@@ -183,6 +217,23 @@ export const deleteComment = (id) => {
  * COMMENTS API
  */
 
+export const handleLike = (data) => {
+  return new Promise((resolve, reject) => {
+    axios({
+      method: "post",
+      url: `${constants.baseUrl}/handleLike`,
+      headers: { Authorization: `Bearer ${getToken()}` },
+      data,
+    })
+      .then((res) => {
+        if (res && res.data) resolve(res.data);
+      })
+      .catch((err) => {
+        reject(err);
+      });
+  });
+};
+
 export const postFeed = (body, flag) => {
   return new Promise((resolve, reject) => {
     let url = constants.baseUrl;
@@ -208,6 +259,10 @@ export const getQuestions = (querry) => {
     axios({
       method: "get",
       url: constants.baseUrl + `/getAllFeeds${querry}`,
+      headers:
+        typeof window !== "undefined"
+          ? { Authorization: `Bearer ${getToken()}` }
+          : "",
     })
       .then((res) => {
         if (res && res.data) resolve(res.data);
@@ -236,3 +291,63 @@ export const deletePostFeed = (id) => {
       });
   });
 };
+
+/** Shop - START */
+export const getAllShop = (querry) => {
+  return new Promise((resolve, reject) => {
+    axios({
+      method: "get",
+      url: constants.baseUrl + `/getAllShop${querry}`,
+      headers:
+        typeof window !== "undefined"
+          ? { Authorization: `Bearer ${getToken()}` }
+          : "",
+    })
+      .then((res) => {
+        if (res && res.data) resolve(res.data);
+      })
+      .catch((err) => {
+        reject(err);
+      });
+  });
+};
+
+export const postShop = (body, flag) => {
+  return new Promise((resolve, reject) => {
+    let url = constants.baseUrl;
+    if (flag === "post") url += "/postShop";
+    else url += "/updateShop";
+    axios({
+      method: "post",
+      url,
+      headers: { Authorization: `Bearer ${getToken()}` },
+      data: body,
+    })
+      .then((res) => {
+        if (res && res.data) resolve(res.data);
+      })
+      .catch((err) => {
+        reject(err);
+      });
+  });
+};
+
+export const deleteShop = (id) => {
+  return new Promise((resolve, reject) => {
+    axios({
+      method: "post",
+      url: `${constants.baseUrl}/deleteShop`,
+      headers: { Authorization: `Bearer ${getToken()}` },
+      data: {
+        shopId: id,
+      },
+    })
+      .then((res) => {
+        if (res && res.data) resolve(res.data);
+      })
+      .catch((err) => {
+        reject(err);
+      });
+  });
+};
+/** Shop - END */

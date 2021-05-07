@@ -1,7 +1,5 @@
 import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
-import Button from "@material-ui/core/Button";
-import Icon from "@material-ui/core/Icon";
 import { connect } from "react-redux";
 import _get from "lodash/get";
 import _isEmpty from "lodash/isEmpty";
@@ -17,6 +15,9 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 import locationList from "dataService/Json/LocationList.json";
 import constants from "dataService/Constants";
 import { postBloodRequest } from "dataService/Services";
+import ButtonWrapper from "components/common/ButtonWrapper";
+import { grey, red, blue } from "@material-ui/core/colors";
+import colors from "Themes/ThemeColors";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -87,7 +88,7 @@ function RequestBloodForm(props) {
     setStateValues(_get(props, "isEditRequest.state", ""));
     setDistrictValues(_get(props, "isEditRequest.district", ""));
     setTalukValues(_get(props, "isEditRequest.taluk", ""));
-  }, []);
+  }, [isEditRequest]);
 
   React.useEffect(() => {
     generateLocationList();
@@ -169,24 +170,32 @@ function RequestBloodForm(props) {
               <Grid item sm={12} md={4}>
                 <Field
                   type="text"
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
                   label="Contact Person"
                   name="contactName"
                   component={FTextField}
                   fullWidth
+                  value={_get(formikProps, "values.contactName", "")}
                 />
               </Grid>
               <Grid item sm={12} md={4}>
                 <Field
                   type="text"
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
                   label="Contact number"
                   name="contactNumber"
                   component={FTextField}
                   fullWidth
+                  value={_get(formikProps, "values.contactNumber", "")}
                 />
               </Grid>
               <Grid item sm={12} md={4}>
                 <Field
-                  label="Blood Type"
+                  label="Blood Group"
                   name="bloodType"
                   select
                   value={_get(formikProps, "values.bloodType", "")}
@@ -259,33 +268,40 @@ function RequestBloodForm(props) {
               <Grid item sm={12} md={12}>
                 <Field
                   type="text"
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
                   label="Description"
                   name="description"
                   component={FTextField}
                   fullWidth
+                  value={_get(formikProps, "values.description", "")}
                 />
                 <Typography variant="caption">
                   {_get(formikProps, "values.description", "").length}/100
                 </Typography>
               </Grid>
             </Grid>
-            <Box display="flex" justifyContent="flex-end">
-              <Button
-                variant="contained"
-                color="primary"
-                size="medium"
+            <Box px={1} py={1} display="flex" justifyContent="flex-end">
+              <ButtonWrapper
+                onClick={() => toggleBloodModal(false)}
                 disabled={loader}
-                className={classes.mt2}
-                onClick={formikProps.handleSubmit}
+                bgColor={grey[100]}
+                color={colors.blue}
+                mr={1}
               >
-                Sumbit
+                <Typography variant="button">Close</Typography>
+              </ButtonWrapper>
+              <ButtonWrapper onClick={formikProps.handleSubmit}>
+                <Typography variant="button">Sumbit</Typography>
+
                 {loader && (
                   <CircularProgress
                     size={24}
                     className={classes.submitLoaderBtn}
                   />
                 )}
-              </Button>
+              </ButtonWrapper>
             </Box>
           </form>
         )}

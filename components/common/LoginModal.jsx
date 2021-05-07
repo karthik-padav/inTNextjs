@@ -15,39 +15,37 @@ import { GoogleLogin } from "react-google-login";
 import { connect } from "react-redux";
 import { login } from "dataService/Services";
 import { bindActionCreators } from "redux";
+import DialogBox from "components/common/DialogBoxWrapper/DialogBox";
+import ButtonWrapper from "components/common/ButtonWrapper";
+import { grey, red, blue } from "@material-ui/core/colors";
+import colors from "Themes/ThemeColors";
 
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
   },
-  mb2: {
-    marginBottom: theme.spacing(2),
-  },
-  mt2: {
-    marginTop: theme.spacing(2),
-  },
-  ml1: {
-    marginLeft: theme.spacing(1),
-  },
-  modal: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  paper: {
-    padding: theme.spacing(2),
-    color: theme.palette.text.secondary,
-    backgroundColor: theme.palette.background.paper,
-    boxShadow: theme.shadows[5],
-  },
   mx_md: {
     width: "300px",
     maxWidth: "100%",
+  },
+  blueWrapper: {
+    backgroundColor: theme.palette.common.blue,
+    color: theme.palette.common.white,
+  },
+  logo: {
+    height: "25px",
+    width: "auto",
+  },
+  loginBtn: {
+    width: "100%",
+    marginTop: theme.spacing(2),
   },
 }));
 
 function LoginModal(props) {
   const classes = useStyles();
+  const { showLoginModal, toggleLoginModal } = props;
+
   const responseGoogle = (response) => {
     if (_get(response, "googleId")) {
       const params = {
@@ -85,44 +83,62 @@ function LoginModal(props) {
   };
 
   return (
-    <Modal
-      className={classes.modal}
-      open={props.showLoginModal}
-      closeAfterTransition
-      onClose={() => props.toggleLoginModal(false)}
-      BackdropComponent={Backdrop}
-      BackdropProps={{
-        timeout: 500,
-      }}
-    >
-      <Fade in={props.showLoginModal}>
-        <Paper className={classNames(classes.paper, classes.mx_md)}>
-          <Box
-            component="p"
-            variant="body1"
-            m={0}
-            className={classes.mb2}
-            fontWeight="fontWeightBold"
-          >
-            Login
+    <DialogBox
+      isModalOpen={showLoginModal}
+      onClose={() => toggleLoginModal(false)}
+      body={
+        <>
+          <Box className={classes.blueWrapper}>
+            <Box display="flex" justifyContent="flex-end">
+              <ButtonWrapper
+                type="IconButton"
+                bgColor={colors.blue}
+                color="#fff"
+                onClick={() => toggleLoginModal(false)}
+              >
+                <Icon className="fas fa-times" fontSize="small" />
+              </ButtonWrapper>
+            </Box>
+            <Box px={2} mt={1} mb={5}>
+              <Typography align="center" variant="body1">
+                WELCONE TO
+              </Typography>
+              <Box display="flex" justifyContent="center">
+                <img
+                  src="/images/INT.png"
+                  alt="in Tulunadu"
+                  className={classes.logo}
+                />
+              </Box>
+            </Box>
           </Box>
-          <GoogleLogin
-            clientId={constants.clientId}
-            className="loginBtn"
-            onSuccess={responseGoogle}
-            buttonText="Login with Google"
-            onFailure={responseGoogle}
-            cookiePolicy={"single_host_origin"}
-          />
-        </Paper>
-      </Fade>
-    </Modal>
+
+          <Box mt={-4} mx={2} mb={2}>
+            {/* <Paper>
+              <Box p={2}>
+                <Typography align="center" variant="h2">
+                  Login
+                </Typography> */}
+            <GoogleLogin
+              clientId={constants.clientId}
+              className={classes.loginBtn}
+              onSuccess={responseGoogle}
+              buttonText="Login with Google"
+              onFailure={responseGoogle}
+              cookiePolicy={"single_host_origin"}
+            />
+            {/* </Box>
+            </Paper> */}
+          </Box>
+        </>
+      }
+    />
   );
 }
 
 const mapStateToProps = (state) => {
   return {
-    showLoginModal: _get(state, "ui.loginModal"),
+    showLoginModal: _get(state, "ui.loginModal", false),
   };
 };
 const mapDispatchToProps = (dispatch) => {

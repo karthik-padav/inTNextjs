@@ -16,6 +16,9 @@ import WifiIcon from "@material-ui/icons/Wifi";
 import BluetoothIcon from "@material-ui/icons/Bluetooth";
 import Divider from "components/common/Divider";
 import Theme from "pages/settings/Theme";
+import BloodValunteer from "pages/settings/BloodValunteer";
+import { useRouter } from "next/router";
+import { isLoggedIn } from "Function/Common";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -25,7 +28,12 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(2),
     color: theme.palette.text.secondary,
     backgroundColor: theme.palette.background.paper,
-    boxShadow: theme.shadows[5],
+    // boxShadow: theme.shadows[5],
+  },
+  headerTitle: {
+    color: theme.palette.common.white,
+    backgroundColor: theme.palette.common.blue,
+    padding: theme.spacing(1, 2),
   },
   p1: {
     padding: theme.spacing(1),
@@ -33,30 +41,31 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function Settings(props) {
-  const { theme, updateTheme } = props;
+  const { theme, updateTheme, userDetails } = props;
   const classes = useStyles();
+  const router = useRouter();
+
+  useEffect(() => {
+    // console.log(userDetails, "userDetails123");
+    // if (!userDetails) router.push("/");
+  }, []);
 
   return (
     <div className={classes.root}>
       <Grid container spacing={0}>
         <Grid item sm={12} md={3} className={classes.p1}>
           <div className="stickyWrapper">
-            <Paper className={classes.paper}>
-              <ProfileMenu />
-            </Paper>
-            <Box pt={2}>
-              <Paper>
-                <Menu />
-              </Paper>
-            </Box>
+            <Menu />
           </div>
         </Grid>
         <Grid item sm={12} md={6} className={classes.p1}>
-          <Paper className={classes.paper}>
+          <Paper className={classes.headerTitle}>
             <Typography variant="h1">Settings</Typography>
-            <Divider mt={1} mb={1} color="primary" />
-
+          </Paper>
+          {/* <Divider mt={1} mb={1} color="primary" /> */}
+          <Paper className={classes.paper}>
             <Theme />
+            {isLoggedIn() && <BloodValunteer />}
           </Paper>
         </Grid>
         <Grid item sm={12} md={3} className={classes.p1}>

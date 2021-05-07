@@ -13,7 +13,7 @@ import _get from "lodash/get";
 import _isEmpty from "lodash/isEmpty";
 import _find from "lodash/find";
 import _findIndex from "lodash/findIndex";
-import { isLoggedIn } from "dataService/Utils";
+import { isLoggedIn } from "Function/Common";
 import LoaderComponent from "pages/questions/LoaderComponent";
 // import { getAllQuestions } from "actions/questions";
 import PostCardWrapper from "components/common/PostCard/PostCardWrapper";
@@ -23,16 +23,13 @@ import NoDataFound from "components/common/NoDataFound";
 import ButtonWrapper from "components/common/ButtonWrapper";
 import InfiniteScroll from "components/common/InfiniteScroll";
 import LoadMore from "components/common/LoadMore";
+import Typography from "@material-ui/core/Typography";
+import { grey, red, blue } from "@material-ui/core/colors";
+import colors from "Themes/ThemeColors";
 
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
-  },
-  paper: {
-    padding: theme.spacing(2),
-    color: theme.palette.text.secondary,
-    backgroundColor: theme.palette.background.paper,
-    boxShadow: theme.shadows[5],
   },
   p1: {
     padding: theme.spacing(1),
@@ -58,66 +55,62 @@ function QuestionsWrapper(props) {
     toggleLoginModal,
     updateToastMsg,
     userDetails,
-    questionList,
-    setQuestionList,
+    list,
+    setList,
     postedBy,
     showAddPost = true,
   } = props;
-  const [questionStartIndex, setQuestionStartIndex] = useState(0);
-  const [hasMoreQuestionToLoad, setHasMoreQuestionToLoad] = useState(true);
+  const [listStartIndex, setListStartIndex] = useState(0);
+  const [hasMoreListToLoad, setHasMoreListToLoad] = useState(true);
   const [showConfirmBox, setConfirmAlert] = useState(false);
 
   const [limit, setLimit] = useState(15);
 
   const [querry, setQuerry] = useState(null);
 
-  const [questionLoader, setQuestionLoader] = useState(false);
+  const [listLoader, setListLoader] = useState(false);
 
-  const LoadMoreQuestion = async () => {
-    if (hasMoreQuestionToLoad) {
-      setQuestionStartIndex((prev) => prev + limit);
+  const userId = _get(userDetails, "userId");
+
+  const LoadMoreList = async () => {
+    if (hasMoreListToLoad) {
+      setListStartIndex((prev) => (prev ? prev : 0 + limit));
     }
   };
 
   useEffect(() => {
-    setQuestionList({ data: [] });
+    setList(null);
   }, []);
 
   useEffect(() => {
-    let querryString = `?offset=${questionStartIndex}&limit=${limit}`;
+    let querryString = `?offset=${
+      listStartIndex ? listStartIndex : 0
+    }&limit=${limit}`;
     if (postedBy) querryString += `&postedBy=${postedBy}`;
+    // if (userId) querryString += `&userId=${userId}`;
     if (querry) querryString += `${querry}`;
-    getQuestionFnc(querryString);
-  }, [questionStartIndex]);
+    getListFnc(querryString, listStartIndex ? listStartIndex : 0 > 0);
+  }, [listStartIndex]);
 
-  // useEffect(() => {
-  //   let querryString = `?offset=${questionStartIndex}&limit=${limit}`;
-  //   if (querry) querryString += `${querry}`;
-  //   setHasMoreQuestionToLoad(true);
-  //   setQuestionStartIndex(0);
-  //   getQuestionFnc(querryString, false);
-  // }, [querry]);
-
-  const getQuestionFnc = (querryString, isAppend = true) => {
-    setQuestionLoader(true);
+  const getListFnc = (querryString, isAppend = true) => {
+    setListLoader(true);
     getQuestions(querryString)
       .then((res) => {
         if (_get(res, "status")) {
           if (!_isEmpty(res.data)) {
-            if (isAppend)
-              setQuestionList({ data: [...questionList, ...res.data] });
-            else setQuestionList({ data: res.data });
+            if (isAppend) setList({ data: [...list, ...res.data] });
+            else setList({ data: res.data });
           } else {
             if (!isAppend) {
-              setQuestionList({ data: res.data });
+              setList({ data: res.data });
             }
-            setHasMoreQuestionToLoad(false);
+            setHasMoreListToLoad(false);
           }
         }
-        setQuestionLoader(false);
+        setListLoader(false);
       })
       .catch((err) => {
-        setQuestionLoader(false);
+        setListLoader(false);
       });
   };
 
@@ -128,18 +121,22 @@ function QuestionsWrapper(props) {
   const deletePost = (data) => {
     const feedId = _get(data, "feedId");
     if (feedId) {
-      deletePostFeed(data.feedId).then((res) => {
-        if (_get(res, "status")) {
-          let newList = questionList.filter((item) => {
-            return item.feedId !== data.feedId;
-          });
-          setQuestionList({ data: newList });
-          setConfirmAlert(false);
-          updateToastMsg({ msg: res.message, type: "success" });
-        } else {
-          updateToastMsg({ msg: res.message, type: "error" });
-        }
-      });
+      deletePostFeed(feedId)
+        .then((res) => {
+          if (_get(res, "status")) {
+            let newList = list.filter((item) => {
+              return item.feedId !== feedId;
+            });
+            setList({ data: newList });
+            setConfirmAlert(false);
+            updateToastMsg({ msg: res.message, type: "success" });
+          } else {
+            updateToastMsg({ msg: res.message, type: "error" });
+          }
+        })
+        .catch((err) => {
+          updateToastMsg({ msg: "Something went wrong", type: "error" });
+        });
     }
   };
 
@@ -149,6 +146,8 @@ function QuestionsWrapper(props) {
       code: "no",
       cb: () => setConfirmAlert(false),
       mr: 2,
+      color: colors.blue,
+      bgColor: grey[100],
     },
     {
       title: "Yes",
@@ -163,23 +162,22 @@ function QuestionsWrapper(props) {
       {showAddPost && (
         <Box mb={2} mt={2}>
           <ButtonWrapper
+            variant="contained"
             onClick={() => {
               if (isLoggedIn()) {
                 togglePostModal(true);
               } else toggleLoginModal(true);
             }}
           >
-            Add
-            <Box ml={1} lineHeight="1">
-              <Icon className={"fa fa-plus"} fontSize="small" />
-            </Box>
+            <Typography variant="button">What's on your mind?</Typography>
           </ButtonWrapper>
         </Box>
       )}
-      {questionList.map((item, index) => {
+      {list.map((item, index) => {
         let menuItem = [];
         const userId = _get(userDetails, "userId");
         const postedBy = _get(item, "user_details.userId");
+        const feedId = _get(item, "feedId");
         if (userId && userId === postedBy)
           menuItem.push(
             {
@@ -197,25 +195,30 @@ function QuestionsWrapper(props) {
           );
         return (
           <Box key={index} mb={2}>
-            <PostCardWrapper data={item} menuItem={menuItem}>
+            <PostCardWrapper
+              data={item}
+              menuItem={menuItem}
+              redirect_href={`/questions/${feedId}`}
+              showRating={false}
+            >
               <CardWrapper data={item} />
             </PostCardWrapper>
           </Box>
         );
       })}
 
-      {questionLoader ? (
+      {listLoader ? (
         <LoaderComponent />
-      ) : _isEmpty(questionList) ? (
+      ) : _isEmpty(list) ? (
         <Box display="flex" justifyContent="center" m={3}>
           <NoDataFound />
         </Box>
-      ) : hasMoreQuestionToLoad ? (
+      ) : hasMoreListToLoad ? (
         <Box display="flex" justifyContent="center" my={2}>
           <LoadMore
             label="Load More"
-            loader={questionLoader}
-            onTrigger={LoadMoreQuestion}
+            loader={listLoader}
+            onTrigger={LoadMoreList}
             width="30%"
           />
         </Box>
@@ -223,7 +226,7 @@ function QuestionsWrapper(props) {
 
       <ConfirmAlertBox
         menu={confirmAlertButtons}
-        title="Delete Post"
+        title={<Typography variant="h1">Delete Post</Typography>}
         subtitle="Are You Sure You Want To Delete This Post?"
         data={showConfirmBox}
         isModalOpen={showConfirmBox}
@@ -235,7 +238,7 @@ function QuestionsWrapper(props) {
 const mapStateToProps = (state) => {
   return {
     userDetails: state.userDetails,
-    questionList: _get(state, "questionList.data", []),
+    list: _get(state, "questionList.data", []),
   };
 };
 const mapDispatchToProps = (dispatch) => {
@@ -258,7 +261,7 @@ const mapDispatchToProps = (dispatch) => {
         payload: toastMsg,
       });
     },
-    setQuestionList: (payload) => {
+    setList: (payload) => {
       dispatch({
         type: "ADD_Q",
         payload,

@@ -12,10 +12,12 @@ import _get from "lodash/get";
 import _isEmpty from "lodash/isEmpty";
 import { connect } from "react-redux";
 import { getAllComments, postComments } from "dataService/Services";
-import { isLoggedIn } from "dataService/Utils";
+import { isLoggedIn } from "Function/Common";
 import UserHeaderCard from "components/common/UserHeaderCard";
 import ButtonWrapper from "components/common/ButtonWrapper";
 import OptionMenuV2 from "components/common/OptionMenuV2";
+import { grey, red, blue } from "@material-ui/core/colors";
+import colors from "Themes/ThemeColors";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -50,27 +52,17 @@ function TextEditor(props) {
         }}
       />
 
-      <Box display="flex" justifyContent="flex-end">
+      <Box display="flex" justifyContent="flex-end" mt={2}>
         <ButtonWrapper
-          // borderRadius="100px"
-          mt={2}
-          mr={1}
-          bgColor="color3"
-          hoverBgColor="color2"
-          color="color1"
           onClick={onCancel}
+          bgColor={grey[100]}
+          color={colors.blue}
         >
-          <Typography component="span" variant="caption">
-            Cancel
-          </Typography>
+          <Typography variant="button">Cancel</Typography>
         </ButtonWrapper>
-
         <ButtonWrapper
-          // borderRadius="100px"
-          mt={2}
-          bgColor="color3"
-          hoverBgColor="color2"
-          color="color1"
+          ml={1}
+          variant="contained"
           onClick={() => {
             if (onSave)
               onSave({
@@ -79,9 +71,7 @@ function TextEditor(props) {
               });
           }}
         >
-          <Typography component="span" variant="caption">
-            Save
-          </Typography>
+          <Typography variant="button">Save</Typography>
         </ButtonWrapper>
       </Box>
     </div>

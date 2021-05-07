@@ -11,7 +11,7 @@ import {
 import React, { useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { connect } from "react-redux";
-import EditProfile from "components/common/EditProfile";
+import EditProfile from "pages/profilePage/EditProfile";
 import ProfileMenu from "components/common/ProfileMenu";
 import Menu from "components/common/Menu";
 import Divider from "components/common/Divider";
@@ -21,19 +21,13 @@ import FormControlLabel from "@material-ui/core/FormControlLabel";
 import FormControl from "@material-ui/core/FormControl";
 import Icon from "@material-ui/core/Icon";
 import Switch from "@material-ui/core/Switch";
+import constants from "dataService/Constants";
+import { orange } from "@material-ui/core/colors";
+import classNames from "classnames";
 
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
-  },
-  paper: {
-    padding: theme.spacing(2),
-    color: theme.palette.text.secondary,
-    backgroundColor: theme.palette.background.paper,
-    boxShadow: theme.shadows[5],
-  },
-  p1: {
-    padding: theme.spacing(1),
   },
 }));
 
@@ -43,16 +37,19 @@ function Theme(props) {
 
   return (
     <div className={classes.root}>
-      {/* <Typography variant="h1">Theme</Typography> */}
-      <Box
-        display="flex"
-        justifyContent="space-between"
-        alignItems="center"
-        mt={2}
-      >
+      <Box display="flex" justifyContent="space-between" alignItems="center">
         <Box display="flex" alignItems="center">
-          <Avatar>
-            <Icon className={"fas fa-palette"} fontSize="small" />
+          <Avatar
+            style={{
+              color: orange[500],
+              backgroundColor: orange[100],
+            }}
+          >
+            <Icon
+              className={classNames("fas fa-palette")}
+              style={{ color: orange[500], width: "auto" }}
+              fontSize="small"
+            />
           </Avatar>
           <Box ml={2}>
             <Typography variant="body1">Theme</Typography>
@@ -66,7 +63,7 @@ function Theme(props) {
           edge="end"
           // onChange={handleToggle('wifi')}
           // checked={checked.indexOf('wifi') !== -1}
-          inputProps={{ "aria-labelledby": "switch-list-label-wifi" }}
+          color="primary"
         />
       </Box>
 
@@ -78,7 +75,7 @@ function Theme(props) {
       >
         <Box display="flex" alignItems="center">
           <Avatar>
-            <Icon className={"fas fa-moon"} fontSize="small" />
+            <Icon className={classNames("fas fa-moon")} fontSize="small" />
           </Avatar>
           <Box ml={2}>
             <Typography variant="body1">Dark Mode</Typography>
@@ -91,9 +88,22 @@ function Theme(props) {
 
         <Switch
           edge="end"
-          // onChange={handleToggle('wifi')}
-          // checked={checked.indexOf('wifi') !== -1}
-          inputProps={{ "aria-labelledby": "switch-list-label-wifi" }}
+          onChange={(e) => {
+            const mode = e.target.checked
+              ? constants.THEME.DARK
+              : constants.THEME.LIGHT;
+            updateTheme(mode);
+            localStorage.setItem(
+              "theme",
+              JSON.stringify({
+                themeData: {
+                  mode,
+                },
+              })
+            );
+          }}
+          checked={theme === constants.THEME.DARK}
+          color="primary"
         />
       </Box>
     </div>
@@ -101,10 +111,11 @@ function Theme(props) {
 }
 
 const mapStateToProps = (state) => {
+  console.log(state, "state123");
   return {
     toastMsg: state.toastMsg,
     userDetails: state.userDetails,
-    theme: state.theme,
+    theme: state.ui.theme,
   };
 };
 const mapDispatchToProps = (dispatch) => {

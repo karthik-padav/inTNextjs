@@ -13,13 +13,10 @@ const useStyles = makeStyles((theme) => ({
   paper: {
     padding: theme.spacing(2),
     marginBottom: theme.spacing(2),
-    color: theme.palette.text.secondary,
-    backgroundColor: theme.palette.background.paper,
-    boxShadow: theme.shadows[5],
   },
   large: {
-    width: theme.spacing(7),
-    height: theme.spacing(7),
+    width: theme.spacing(5),
+    height: theme.spacing(5),
   },
 }));
 
@@ -50,7 +47,7 @@ function LoaderComponent() {
         <Box my={1}>
           <Grid container>
             {[1, 2, 3].map((item, index) => (
-              <Grid md={4} xs={12} key={index}>
+              <Grid item md={4} xs={12} key={index}>
                 <Box px={0.3}>
                   <Skeleton
                     variant="rect"

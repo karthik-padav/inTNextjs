@@ -15,6 +15,9 @@ import {
 } from "@material-ui/core";
 import _get from "lodash/get";
 import locationList from "dataService/Json/LocationList.json";
+import ButtonWrapper from "components/common/ButtonWrapper";
+import { grey, red, blue } from "@material-ui/core/colors";
+import colors from "Themes/ThemeColors";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -22,9 +25,15 @@ const useStyles = makeStyles((theme) => ({
   },
   paper: {
     padding: theme.spacing(2),
-    color: theme.palette.text.secondary,
-    backgroundColor: theme.palette.background.paper,
-    boxShadow: theme.shadows[5],
+    // color: theme.palette.text.secondary,
+    // backgroundColor: theme.palette.background.paper,
+    // boxShadow: theme.shadows[5],
+  },
+
+  filterBy: {
+    color: theme.palette.common.white,
+    backgroundColor: theme.palette.common.blue,
+    padding: theme.spacing(1, 2),
   },
   formControl: {
     margin: theme.spacing(1),
@@ -36,7 +45,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function FilterWrapper(props) {
-  const { showBloodType, showState, isFilterShow } = props;
+  const { showBloodType, showState, isFilterShow, setFilterToggle } = props;
   const classes = useStyles();
 
   const [bloodType, setBloodType] = useState("");
@@ -116,6 +125,7 @@ export default function FilterWrapper(props) {
     setBloodType("");
     props.applyFilter(null);
     props.setBadgeContent(0);
+    setFilterToggle(!isFilterShow);
   };
 
   const applyFilter = () => {
@@ -144,161 +154,159 @@ export default function FilterWrapper(props) {
   const filterComponent = () => {
     return (
       <div className={classes.root}>
-        <Typography component="p" variant="body1" className={classes.m1}>
-          Filter By:
-        </Typography>
+        <Paper className={classes.filterBy}>
+          <Typography variant="h2">Filter By</Typography>
+        </Paper>
 
-        {showBloodType && (
-          <>
-            {bloodType ? (
-              <Chip
-                variant="outlined"
-                className={classes.m1}
-                color="primary"
-                label={bloodType}
-                onDelete={() => toggleBloodType("", "setBloodType")}
-              />
-            ) : (
-              <FormControl className={classes.formControl}>
-                <Select
-                  id="chip"
-                  displayEmpty
-                  inputProps={{ "aria-label": "Without label" }}
-                  value={bloodType ? bloodType : ""}
-                  onChange={(e) => toggleBloodType(e, "setBloodType")}
-                  input={<Input id="select-multiple-chip" />}
-                >
-                  <MenuItem value="" disabled>
-                    Blood Type
-                  </MenuItem>
-                  {constants.bloodType.map((item, index) => (
-                    <MenuItem key={index} value={item.code}>
-                      {item.name}
+        <Paper className={classes.paper}>
+          {showBloodType && (
+            <>
+              {bloodType ? (
+                <Chip
+                  variant="outlined"
+                  className={classes.m1}
+                  color="primary"
+                  label={bloodType}
+                  onDelete={() => toggleBloodType("", "setBloodType")}
+                />
+              ) : (
+                <FormControl className={classes.formControl}>
+                  <Select
+                    id="chip"
+                    displayEmpty
+                    inputProps={{ "aria-label": "Without label" }}
+                    value={bloodType ? bloodType : ""}
+                    onChange={(e) => toggleBloodType(e, "setBloodType")}
+                    input={<Input id="select-multiple-chip" />}
+                  >
+                    <MenuItem value="" disabled>
+                      Blood Type
                     </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            )}
-          </>
-        )}
+                    {constants.bloodType.map((item, index) => (
+                      <MenuItem key={index} value={item.code}>
+                        {item.name}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              )}
+            </>
+          )}
 
-        {showState && (
-          <>
-            {stateCode ? (
-              <Chip
-                variant="outlined"
-                color="primary"
-                className={classes.m1}
-                label={stateCode}
-                onDelete={() => toggleBloodType("", "setStateValues")}
-              />
-            ) : (
-              <FormControl className={classes.formControl}>
-                <Select
-                  id="chip"
-                  value={stateCode ? stateCode : ""}
-                  displayEmpty
-                  inputProps={{ "aria-label": "Without label" }}
-                  onChange={(e) => toggleBloodType(e, "setStateValues")}
-                  input={<Input id="select-multiple-chip" />}
-                >
-                  <MenuItem value="" disabled>
-                    State
-                  </MenuItem>
-                  {stateList.map((item, index) => (
-                    <MenuItem key={index} value={item.code}>
-                      {item.name}
+          {showState && (
+            <>
+              {stateCode ? (
+                <Chip
+                  variant="outlined"
+                  color="primary"
+                  className={classes.m1}
+                  label={stateCode}
+                  onDelete={() => toggleBloodType("", "setStateValues")}
+                />
+              ) : (
+                <FormControl className={classes.formControl}>
+                  <Select
+                    id="chip"
+                    value={stateCode ? stateCode : ""}
+                    displayEmpty
+                    inputProps={{ "aria-label": "Without label" }}
+                    onChange={(e) => toggleBloodType(e, "setStateValues")}
+                    input={<Input id="select-multiple-chip" />}
+                  >
+                    <MenuItem value="" disabled>
+                      State
                     </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            )}
-            {districtCode ? (
-              <Chip
-                variant="outlined"
-                color="primary"
-                className={classes.m1}
-                label={districtCode}
-                onDelete={() => toggleBloodType("", "setDistrictValues")}
-              />
-            ) : (
-              <FormControl className={classes.formControl}>
-                <Select
-                  id="chip"
-                  value={districtCode ? districtCode : ""}
-                  displayEmpty
-                  inputProps={{ "aria-label": "Without label" }}
-                  onChange={(e) => toggleBloodType(e, "setDistrictValues")}
-                  input={<Input id="select-multiple-chip" />}
-                  disabled={!stateCode}
-                >
-                  <MenuItem value="" disabled>
-                    District
-                  </MenuItem>
-                  {districtList.map((item, index) => (
-                    <MenuItem key={index} value={item.code}>
-                      {item.name}
+                    {stateList.map((item, index) => (
+                      <MenuItem key={index} value={item.code}>
+                        {item.name}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              )}
+              {districtCode ? (
+                <Chip
+                  variant="outlined"
+                  color="primary"
+                  className={classes.m1}
+                  label={districtCode}
+                  onDelete={() => toggleBloodType("", "setDistrictValues")}
+                />
+              ) : (
+                <FormControl className={classes.formControl}>
+                  <Select
+                    id="chip"
+                    value={districtCode ? districtCode : ""}
+                    displayEmpty
+                    inputProps={{ "aria-label": "Without label" }}
+                    onChange={(e) => toggleBloodType(e, "setDistrictValues")}
+                    input={<Input id="select-multiple-chip" />}
+                    disabled={!stateCode}
+                  >
+                    <MenuItem value="" disabled>
+                      District
                     </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            )}
-            {talukCode ? (
-              <Chip
-                variant="outlined"
-                color="primary"
-                className={classes.m1}
-                label={talukCode}
-                onDelete={() => toggleBloodType("", "setTalukValues")}
-              />
-            ) : (
-              <FormControl className={classes.formControl}>
-                <Select
-                  id="chip"
-                  value={talukCode ? talukCode : ""}
-                  displayEmpty
-                  inputProps={{ "aria-label": "Without label" }}
-                  onChange={(e) => toggleBloodType(e, "setTalukValues")}
-                  disabled={!districtCode}
-                  input={<Input id="select-multiple-chip" />}
-                >
-                  <MenuItem value="" disabled>
-                    Taluk
-                  </MenuItem>
-                  {talukList.map((item, index) => (
-                    <MenuItem key={index} value={item.code}>
-                      {item.name}
+                    {districtList.map((item, index) => (
+                      <MenuItem key={index} value={item.code}>
+                        {item.name}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              )}
+              {talukCode ? (
+                <Chip
+                  variant="outlined"
+                  color="primary"
+                  className={classes.m1}
+                  label={talukCode}
+                  onDelete={() => toggleBloodType("", "setTalukValues")}
+                />
+              ) : (
+                <FormControl className={classes.formControl}>
+                  <Select
+                    id="chip"
+                    value={talukCode ? talukCode : ""}
+                    displayEmpty
+                    inputProps={{ "aria-label": "Without label" }}
+                    onChange={(e) => toggleBloodType(e, "setTalukValues")}
+                    disabled={!districtCode}
+                    input={<Input id="select-multiple-chip" />}
+                  >
+                    <MenuItem value="" disabled>
+                      Taluk
                     </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            )}
-          </>
-        )}
-
-        <Box display="flex" justifyContent="flex-end" mt={1}>
-          <Box mr={1}>
-            <Button size="small" onClick={resetFilter}>
-              <Typography variant="caption">Reset</Typography>
-            </Button>
+                    {talukList.map((item, index) => (
+                      <MenuItem key={index} value={item.code}>
+                        {item.name}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              )}
+            </>
+          )}
+          <Box display="flex" justifyContent="flex-end" mt={1}>
+            <ButtonWrapper
+              onClick={resetFilter}
+              bgColor={grey[100]}
+              color={colors.blue}
+            >
+              <Typography variant="button">Reset</Typography>
+            </ButtonWrapper>
+            <Box ml={1}>
+              <ButtonWrapper
+                disabled={!(bloodType || stateCode)}
+                onClick={applyFilter}
+              >
+                <Typography variant="button">Apply</Typography>
+              </ButtonWrapper>
+            </Box>
           </Box>
-          <Button
-            size="small"
-            disabled={!(bloodType || stateCode)}
-            onClick={applyFilter}
-          >
-            <Typography variant="caption">Apply</Typography>
-          </Button>
-        </Box>
+        </Paper>
       </div>
     );
   };
 
-  return (
-    <>
-      {isFilterShow && (
-        <Paper className={classes.paper}>{filterComponent()}</Paper>
-      )}
-    </>
-  );
+  return <>{isFilterShow && filterComponent()}</>;
 }

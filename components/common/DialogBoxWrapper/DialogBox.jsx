@@ -21,28 +21,22 @@ function DialogBox(props) {
       open={isModalOpen}
       TransitionComponent={Transition}
       keepMounted
+      fullWidth
       onClose={() => onClose(false)}
       aria-labelledby="alert-dialog-slide-title"
       aria-describedby="alert-dialog-slide-description"
     >
       {_get(props, "headerTitle") && (
-        <DialogTitle id="alert-dialog-slide-title">
+        <DialogTitle id="alert-dialog-slide-title" disableTypography>
           <Typography variant="h1" align="center">
             {props.headerTitle}
           </Typography>
-          <Divider mt={1} mb={1.5} />
         </DialogTitle>
       )}
       {_get(props, "body") && (
-        <DialogContent>
-          <DialogContentText id="alert-dialog-slide-description">
-            {props.body}
-          </DialogContentText>
-        </DialogContent>
+        <DialogContent dividers>{props.body}</DialogContent>
       )}
-      <DialogActions>
-        {_get(props, "footer") && <>{props.footer}</>}
-      </DialogActions>
+      {_get(props, "footer") && <DialogActions>{props.footer}</DialogActions>}
     </Dialog>
   );
 }
