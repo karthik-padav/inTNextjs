@@ -25,6 +25,10 @@ import ConfirmAlertBox from "components/common/ConfirmAlertBox";
 import { deletePostFeed } from "dataService/Services";
 import ButtonWrapper from "components/common/ButtonWrapper";
 import { isLoggedIn } from "Function/Common";
+import { grey, red, blue } from "@material-ui/core/colors";
+import colors from "Themes/ThemeColors";
+import { NextSeo } from "next-seo";
+import { getSeoDetails } from "SEO/getSEO";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -55,6 +59,7 @@ function FeedPost(props) {
     updateToastMsg,
     questionObj,
     setQuestionList,
+    SEO = {},
   } = props;
   const feedResp = _get(props, "questionList[0]");
   const userId = _get(userDetails, "userId");
@@ -129,6 +134,8 @@ function FeedPost(props) {
       code: "no",
       cb: () => setConfirmAlert(false),
       mr: 2,
+      color: colors.blue,
+      bgColor: grey[100],
     },
     {
       title: "Yes",
@@ -143,6 +150,7 @@ function FeedPost(props) {
 
   return (
     <div className={classes.root}>
+      <NextSeo {...SEO} />
       <Grid container spacing={0}>
         <Grid item sm={12} md={3} className={classes.p1}>
           <div className="stickyWrapper">
@@ -150,7 +158,31 @@ function FeedPost(props) {
           </div>
         </Grid>
         <Grid item sm={12} md={6} className={classes.p1}>
-          Online shop by id
+          {feedResp && (
+            <PostCardWrapper
+              data={feedResp}
+              menuItem={moreMenuItem}
+              showCommentList={true}
+              showRating={false}
+            >
+              <CardWrapper data={feedResp} />
+            </PostCardWrapper>
+          )}
+
+          <ConfirmAlertBox
+            menu={confirmAlertButtons}
+            title={<Typography variant="h1">Delete Post</Typography>}
+            loader={loader}
+            subtitle="Are You Sure You Want To Delete This Post?"
+            data={showConfirmBox}
+            isModalOpen={showConfirmBox}
+          />
+
+          {_isEmpty(feedResp) && (
+            <Box display="flex" justifyContent="center" m={3}>
+              <NoDataFound title="Post Not Found." />
+            </Box>
+          )}
         </Grid>
         <Grid item sm={12} md={3} className={classes.p1}>
           <Paper className={classes.paper}>xs=6</Paper>
@@ -164,11 +196,17 @@ FeedPost.getInitialProps = async function (ctx) {
   const { id } = ctx.query;
   const { pathname } = ctx;
   let questionObj = {};
+  let SEO = {};
   const query = `?id=${id}`;
   if (_includes(pathname.split("/"), "questions")) {
     questionObj = await getQuestions(query);
+    console.log(questionObj, "questionObj123");
+    SEO = await getSeoDetails({
+      title: _get(questionObj, "data[0].content"),
+      description: _get(questionObj, "data[0].content"),
+    });
   }
-  return { questionObj };
+  return { questionObj, SEO };
 };
 
 const mapStateToProps = (state) => {
