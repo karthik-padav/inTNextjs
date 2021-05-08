@@ -44,9 +44,10 @@ function ConfirmAlertBox(props) {
               title = "",
               hasLoader = false,
               loader = false,
-              bgColor,
-              color,
+              bgColor = null,
+              color = null,
             } = item;
+            console.log(item, "123123");
             return (
               <ButtonWrapper
                 mr={index == 0 ? 1 : 0}

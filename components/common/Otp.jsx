@@ -43,6 +43,7 @@ function Otp(props) {
     <DialogBox
       isModalOpen={isModalOpen}
       onClose={toggleOtpModal}
+      fullWidth
       headerTitle={<Typography variant="h1">Change Phone Number</Typography>}
       body={<Box>Phone number</Box>}
       footer={

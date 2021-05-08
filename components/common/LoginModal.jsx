@@ -85,6 +85,7 @@ function LoginModal(props) {
   return (
     <DialogBox
       isModalOpen={showLoginModal}
+      fullWidth
       onClose={() => toggleLoginModal(false)}
       body={
         <>

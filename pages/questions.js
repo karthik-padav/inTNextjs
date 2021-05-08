@@ -1,28 +1,13 @@
 import React, { useState, useEffect } from "react";
-import { bindActionCreators } from "redux";
-import { getQuestions } from "dataService/Services";
 import { makeStyles } from "@material-ui/core/styles";
 import { Grid, Paper, Box, Icon } from "@material-ui/core";
 import { connect } from "react-redux";
 
-import ProfileMenu from "components/common/ProfileMenu";
 import Menu from "components/common/Menu";
-import classNames from "classnames";
-import CardWrapper from "./questions/CardWrapper";
 import _get from "lodash/get";
 import _isEmpty from "lodash/isEmpty";
 import _find from "lodash/find";
 import _findIndex from "lodash/findIndex";
-import { isLoggedIn } from "Function/Common";
-import LoaderComponent from "pages/questions/LoaderComponent";
-// import { getAllQuestions } from "actions/questions";
-import PostCardWrapper from "components/common/PostCard/PostCardWrapper";
-import ConfirmAlertBox from "components/common/ConfirmAlertBox";
-import { deletePostFeed } from "dataService/Services";
-import NoDataFound from "components/common/NoDataFound";
-import ButtonWrapper from "components/common/ButtonWrapper";
-import InfiniteScroll from "components/common/InfiniteScroll";
-import LoadMore from "components/common/LoadMore";
 import QuestionsWrapper from "pages/questions/QuestionsWrapper";
 
 const useStyles = makeStyles((theme) => ({

@@ -25,6 +25,8 @@ import ConfirmAlertBox from "components/common/ConfirmAlertBox";
 import { deletePostFeed } from "dataService/Services";
 import ButtonWrapper from "components/common/ButtonWrapper";
 import { isLoggedIn } from "Function/Common";
+import { grey, red, blue } from "@material-ui/core/colors";
+import colors from "Themes/ThemeColors";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -106,10 +108,10 @@ function FeedPost(props) {
   }
 
   const deletePost = (data) => {
-    const feedId = _get(data, "feedId");
-    if (feedId) {
+    const postId = _get(data, "postId");
+    if (postId) {
       setLoader(true);
-      deletePostFeed(data.feedId).then((res) => {
+      deletePostFeed(data.postId).then((res) => {
         if (_get(res, "status")) {
           setQuestionList({ data: [] });
           setConfirmAlert(false);
@@ -129,6 +131,8 @@ function FeedPost(props) {
       code: "no",
       cb: () => setConfirmAlert(false),
       mr: 2,
+      color: colors.blue,
+      bgColor: grey[100],
     },
     {
       title: "Yes",

@@ -34,6 +34,8 @@ import { isLoggedIn } from "Function/Common";
 import OptionMenu from "./OptionMenu";
 import CommentCard from "components/common/CommentCard/index";
 import Divider from "components/common/Divider";
+import { grey, red, blue } from "@material-ui/core/colors";
+import colors from "Themes/ThemeColors";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -96,8 +98,7 @@ function BloodPost(props) {
     setRaiseRequestLoader(true);
     const isEdit = !_isEmpty(isEditRequest);
     let data = {};
-    if (isEdit)
-      data = { ...values, bloodRequestId: isEditRequest.bloodRequestId };
+    if (isEdit) data = { ...values, postId: isEditRequest.postId };
     else data = values;
     postBloodRequest(data, isEdit).then((res) => {
       console.log(res, "response");
@@ -240,8 +241,8 @@ function BloodPost(props) {
               <Divider mt={1.5} mb={1.5} />
               Comments: {_get(bloodReceiver, "comments", 0)}
               <Divider mt={1.5} mb={1.5} />
-              {_get(bloodReceiver, "bloodRequestId") && (
-                <CommentCard id={bloodReceiver.bloodRequestId} />
+              {_get(bloodReceiver, "postId") && (
+                <CommentCard id={bloodReceiver.postId} />
               )}
             </Paper>
           ) : (

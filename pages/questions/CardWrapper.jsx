@@ -26,7 +26,7 @@ function CardWrapper(props) {
   return (
     <div className={classes.root}>
       {_get(data, "content") && (
-        <Link href="/questions/[id]" as={`/questions/${_get(data, "feedId")}`}>
+        <Link href="/questions/[id]" as={`/questions/${_get(data, "postId")}`}>
           <a>
             <Box my={1}>
               <Typography variant="body1" className={classes.wordBreak}>
@@ -40,7 +40,7 @@ function CardWrapper(props) {
         <Box my={1}>
           <ImagePreview
             contentImage={data.contentImage}
-            imagePath={`/uploads/feedPost/${_get(data, "feedId")}`}
+            imagePath={`/uploads/feedPost/${_get(data, "postId")}`}
           />
         </Box>
       )}

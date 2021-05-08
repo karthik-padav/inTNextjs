@@ -34,7 +34,7 @@ function CardWrapper(props) {
         <Box my={1}>
           <ImagePreview
             contentImage={data.contentImage}
-            imagePath={`/uploads/shopPost/${_get(data, "shopId")}`}
+            imagePath={`/uploads/shopPost/${_get(data, "postId")}`}
           />
         </Box>
       )}
@@ -42,7 +42,7 @@ function CardWrapper(props) {
         {_get(data, "description") && (
           <Link
             href="/onlineShop/[id]"
-            as={`/onlineShop/${_get(data, "shopId")}`}
+            as={`/onlineShop/${_get(data, "postId")}`}
           >
             <a>
               {_get(data, "shopName") && (

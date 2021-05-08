@@ -99,7 +99,7 @@ function AddPostComponent(props) {
   const handleSubmit = async (values) => {
     const formData = await generateFinalFormData(values);
     setSubmitLoader(true);
-    postFeed(formData, _get(isEditRequest, "feedId") ? "update" : "post").then(
+    postFeed(formData, _get(isEditRequest, "postId") ? "update" : "post").then(
       (res) => {
         if (_get(res, "status")) {
           props.updateToastMsg({
@@ -109,7 +109,7 @@ function AddPostComponent(props) {
           togglePostModal(false);
           if (isEditRequest) {
             const feedIndex = _findIndex(questionList, (item) => {
-              return item.feedId === res.data.feedId;
+              return item.postId === res.data.postId;
             });
             if (feedIndex > -1) {
               const newList = _cloneDeep(questionList);
@@ -145,8 +145,8 @@ function AddPostComponent(props) {
       const document = _omit(values, "images");
       formData.set("document", JSON.stringify(document));
     }
-    if (_get(isEditRequest, "feedId"))
-      formData.set("feedId", isEditRequest.feedId);
+    if (_get(isEditRequest, "postId"))
+      formData.set("postId", isEditRequest.postId);
     console.log(formData, "formData123");
     return formData;
   };
@@ -166,6 +166,7 @@ function AddPostComponent(props) {
         <DialogBox
           isModalOpen={isModalOpen}
           onClose={togglePostModal}
+          fullWidth
           headerTitle={<Typography variant="h1">Create Post</Typography>}
           body={
             <Box>

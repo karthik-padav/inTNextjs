@@ -3,11 +3,18 @@ import constants from "../DataService/Constants";
 import _get from "lodash/get";
 import { getToken } from "./Utils";
 
+const getHeader = () => {
+  return typeof window !== "undefined"
+    ? { Authorization: `Bearer ${getToken()}` }
+    : "";
+};
+
 export const getUserDetails = (userId) => {
   return new Promise((resolve, reject) => {
     axios({
       method: "get",
       url: constants.baseUrl + `/getUserDetails/${userId}`,
+      headers: getHeader(),
     })
       .then((res) => {
         if (res && res.data) resolve(res.data);
@@ -23,7 +30,7 @@ export const getNotification = () => {
     axios({
       method: "get",
       url: constants.baseUrl + `/getNotification`,
-      headers: { Authorization: `Bearer ${getToken()}` },
+      headers: getHeader(),
     })
       .then((res) => {
         if (res && res.data) resolve(res.data);
@@ -40,7 +47,7 @@ export const readNotification = (notificationId) => {
     axios({
       method: "post",
       url: constants.baseUrl + `/readNotification`,
-      headers: { Authorization: `Bearer ${getToken()}` },
+      headers: getHeader(),
       data,
     })
       .then((res) => {
@@ -57,7 +64,7 @@ export const updateUserDetails = (data) => {
     axios({
       method: "post",
       url: constants.baseUrl + `/updateUserDetails`,
-      headers: { Authorization: `Bearer ${getToken()}` },
+      headers: getHeader(),
       data,
     })
       .then((res) => {
@@ -74,6 +81,7 @@ export const login = (body) => {
     axios({
       method: "post",
       url: constants.baseUrl + "/login",
+      headers: getHeader(),
       data: body,
     })
       .then((res) => {
@@ -92,7 +100,7 @@ export const postBloodRequest = (body, isEdit) => {
       url: `${constants.baseUrl}/${
         isEdit ? "updateBloodRequest" : "postBloodRequest"
       }`,
-      headers: { Authorization: `Bearer ${getToken()}` },
+      headers: getHeader(),
       data: body,
     })
       .then((res) => {
@@ -109,9 +117,9 @@ export const deleteBloodRequest = (id) => {
     axios({
       method: "post",
       url: `${constants.baseUrl}/deleteBloodRequest`,
-      headers: { Authorization: `Bearer ${getToken()}` },
+      headers: getHeader(),
       data: {
-        bloodRequestId: id,
+        postId: id,
       },
     })
       .then((res) => {
@@ -128,6 +136,7 @@ export const getBloodReceiver = (querry) => {
     axios({
       method: "get",
       url: constants.baseUrl + `/getAllBloodRequest${querry}`,
+      headers: getHeader(),
     })
       .then((res) => {
         if (res && res.data) resolve(res.data);
@@ -144,6 +153,7 @@ export const getBloodDonor = (querry) => {
     axios({
       method: "get",
       url: constants.baseUrl + `/wp-json/api/v1/questions${querry}`,
+      headers: getHeader(),
     })
       .then((res) => {
         if (res && res.data) resolve(res.data);
@@ -163,6 +173,7 @@ export const getAllComments = (querry) => {
     axios({
       method: "get",
       url: constants.baseUrl + `/getAllComments${querry}`,
+      headers: getHeader(),
     })
       .then((res) => {
         if (res && res.data) resolve(res.data);
@@ -181,7 +192,7 @@ export const postComments = (data) => {
     axios({
       method: "post",
       url,
-      headers: { Authorization: `Bearer ${getToken()}` },
+      headers: getHeader(),
       data,
     })
       .then((res) => {
@@ -198,7 +209,7 @@ export const deleteComment = (id) => {
     axios({
       method: "post",
       url: `${constants.baseUrl}/deleteComment`,
-      headers: { Authorization: `Bearer ${getToken()}` },
+      headers: getHeader(),
       data: {
         commentId: id,
       },
@@ -222,7 +233,7 @@ export const handleLike = (data) => {
     axios({
       method: "post",
       url: `${constants.baseUrl}/handleLike`,
-      headers: { Authorization: `Bearer ${getToken()}` },
+      headers: getHeader(),
       data,
     })
       .then((res) => {
@@ -242,7 +253,7 @@ export const postFeed = (body, flag) => {
     axios({
       method: "post",
       url,
-      headers: { Authorization: `Bearer ${getToken()}` },
+      headers: getHeader(),
       data: body,
     })
       .then((res) => {
@@ -259,10 +270,7 @@ export const getQuestions = (querry) => {
     axios({
       method: "get",
       url: constants.baseUrl + `/getAllFeeds${querry}`,
-      headers:
-        typeof window !== "undefined"
-          ? { Authorization: `Bearer ${getToken()}` }
-          : "",
+      headers: getHeader(),
     })
       .then((res) => {
         if (res && res.data) resolve(res.data);
@@ -278,7 +286,7 @@ export const deletePostFeed = (id) => {
     axios({
       method: "post",
       url: `${constants.baseUrl}/deletePostFeed`,
-      headers: { Authorization: `Bearer ${getToken()}` },
+      headers: getHeader(),
       data: {
         feedId: id,
       },
@@ -298,10 +306,7 @@ export const getAllShop = (querry) => {
     axios({
       method: "get",
       url: constants.baseUrl + `/getAllShop${querry}`,
-      headers:
-        typeof window !== "undefined"
-          ? { Authorization: `Bearer ${getToken()}` }
-          : "",
+      headers: getHeader(),
     })
       .then((res) => {
         if (res && res.data) resolve(res.data);
@@ -320,7 +325,7 @@ export const postShop = (body, flag) => {
     axios({
       method: "post",
       url,
-      headers: { Authorization: `Bearer ${getToken()}` },
+      headers: getHeader(),
       data: body,
     })
       .then((res) => {
@@ -337,7 +342,7 @@ export const deleteShop = (id) => {
     axios({
       method: "post",
       url: `${constants.baseUrl}/deleteShop`,
-      headers: { Authorization: `Bearer ${getToken()}` },
+      headers: getHeader(),
       data: {
         shopId: id,
       },

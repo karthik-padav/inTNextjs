@@ -26,6 +26,8 @@ import LoadMore from "components/common/LoadMore";
 import ButtonWrapper from "components/common/ButtonWrapper";
 import NoDataFound from "components/common/NoDataFound";
 import CardWrapper from "./CardWrapper";
+import { grey, red, blue } from "@material-ui/core/colors";
+import colors from "Themes/ThemeColors";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -107,13 +109,13 @@ function OnlineShopWrapper(props) {
   };
 
   const deletePost = (data) => {
-    const id = _get(data, "shopId");
+    const id = _get(data, "postId");
     if (id) {
       deleteShop(id)
         .then((res) => {
           if (_get(res, "status")) {
             let newList = list.filter((item) => {
-              return item.shopId !== id;
+              return item.postId !== id;
             });
             setList({ data: newList });
             setConfirmAlert(false);
@@ -144,13 +146,13 @@ function OnlineShopWrapper(props) {
       code: "no",
       cb: () => setConfirmAlert(false),
       mr: 2,
+      bgColor: grey[100],
+      color: colors.blue,
     },
     {
       title: "Yes",
       authCheck: true,
       code: "yes",
-      color: "primary",
-      variant: "contained",
       cb: deletePost,
     },
   ];

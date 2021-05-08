@@ -15,13 +15,13 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 });
 
 function DialogBox(props) {
-  const { isModalOpen = false, onClose = () => {} } = props;
+  const { isModalOpen = false, onClose = () => {}, fullWidth = false } = props;
   return (
     <Dialog
       open={isModalOpen}
       TransitionComponent={Transition}
       keepMounted
-      fullWidth
+      fullWidth={fullWidth}
       onClose={() => onClose(false)}
       aria-labelledby="alert-dialog-slide-title"
       aria-describedby="alert-dialog-slide-description"

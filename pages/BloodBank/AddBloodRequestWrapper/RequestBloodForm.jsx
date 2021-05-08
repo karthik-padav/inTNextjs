@@ -124,8 +124,7 @@ function RequestBloodForm(props) {
     setLoader(true);
     const isEdit = !_isEmpty(isEditRequest);
     let data = {};
-    if (isEdit)
-      data = { ...values, bloodRequestId: isEditRequest.bloodRequestId };
+    if (isEdit) data = { ...values, postId: isEditRequest.postId };
     else data = values;
     postBloodRequest(data, isEdit)
       .then((res) => {
@@ -134,7 +133,7 @@ function RequestBloodForm(props) {
           toggleBloodModal(false);
           if (isEdit) {
             const feedIndex = _findIndex(bRequestList, (item) => {
-              return item.bloodRequestId === res.data.bloodRequestId;
+              return item.postId === res.data.postId;
             });
             if (feedIndex > -1) {
               const newList = _cloneDeep(bRequestList);
@@ -292,7 +291,10 @@ function RequestBloodForm(props) {
               >
                 <Typography variant="button">Close</Typography>
               </ButtonWrapper>
-              <ButtonWrapper onClick={formikProps.handleSubmit}>
+              <ButtonWrapper
+                onClick={formikProps.handleSubmit}
+                disabled={loader}
+              >
                 <Typography variant="button">Sumbit</Typography>
 
                 {loader && (

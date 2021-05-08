@@ -106,10 +106,10 @@ function FeedPost(props) {
   }
 
   const deletePost = (data) => {
-    const feedId = _get(data, "feedId");
-    if (feedId) {
+    const postId = _get(data, "postId");
+    if (postId) {
       setLoader(true);
-      deletePostFeed(data.feedId).then((res) => {
+      deletePostFeed(data.postId).then((res) => {
         if (_get(res, "status")) {
           setQuestionList({ data: [] });
           setConfirmAlert(false);

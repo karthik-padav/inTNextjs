@@ -85,6 +85,7 @@ function ImagePreview({ contentImage = [], imagePath = "" }) {
                     <img
                       src={`${imagePath}/${img.fileName}`}
                       className={classes.imageSizeWrapper}
+                      alt="in Tulunadu"
                     />
                     {/* <p style={{ fontSize: "10px" }}>
                       {`${imagePath}/${img.fileName}`}
@@ -129,6 +130,7 @@ function ImagePreview({ contentImage = [], imagePath = "" }) {
                 <img
                   className={classes.imageWrapper}
                   src={`${imagePath}/${img.fileName}`}
+                  alt="in Tulunadu"
                 />
               </Box>
             ))}

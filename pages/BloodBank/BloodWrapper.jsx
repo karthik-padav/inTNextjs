@@ -25,6 +25,8 @@ import LoaderComponent from "pages/bloodbank/LoaderComponent";
 import LoadMore from "components/common/LoadMore";
 import ButtonWrapper from "components/common/ButtonWrapper";
 import NoDataFound from "components/common/NoDataFound";
+import { grey, red, blue } from "@material-ui/core/colors";
+import colors from "Themes/ThemeColors";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -106,13 +108,13 @@ function BloodWrapper(props) {
   };
 
   const deletePost = (data) => {
-    const id = _get(data, "bloodRequestId");
+    const id = _get(data, "postId");
     if (id) {
       deleteBloodRequest(id)
         .then((res) => {
           if (_get(res, "status")) {
             let newList = list.filter((item) => {
-              return item.bloodRequestId !== id;
+              return item.postId !== id;
             });
             setList({ data: newList });
             setConfirmAlert(false);
@@ -143,6 +145,8 @@ function BloodWrapper(props) {
       code: "no",
       cb: () => setConfirmAlert(false),
       mr: 2,
+      color: colors.blue,
+      bgColor: grey[100],
     },
     {
       title: "Yes",
@@ -227,10 +231,7 @@ function BloodWrapper(props) {
         return (
           <Box key={index} mb={2}>
             <PostCardWrapper data={item} menuItem={menuItem} showRating={false}>
-              <Link
-                href="/bloodbank/[id]"
-                as={`/bloodbank/${item.bloodRequestId}`}
-              >
+              <Link href="/bloodbank/[id]" as={`/bloodbank/${item.postId}`}>
                 <a>
                   <BloodDetailsCard
                     bloodType={_get(item, "bloodType")}

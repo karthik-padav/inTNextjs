@@ -32,7 +32,12 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function UiComponents(props) {
-  const { postQuestionModal, shopModal, userDetails } = props;
+  const {
+    userDetails,
+    postQuestionModal,
+    shopModal,
+    bloodRequestModal,
+  } = props;
 
   const [loader, setLoader] = React.useState(false);
 
@@ -75,7 +80,7 @@ function UiComponents(props) {
 
       <LoginModal />
       {postQuestionModal && <AddPostComponent />}
-      <AddBloodRequestModal />
+      {bloodRequestModal && <AddBloodRequestModal />}
       {shopModal && <AddShopComponent />}
       <Otp />
     </div>
@@ -87,6 +92,7 @@ const mapStateToProps = (state) => {
     userDetails: state.userDetails,
     toastMsg: _get(state, "ui.toast"),
     postQuestionModal: _get(state, "ui.postQuestionModal.show"),
+    bloodRequestModal: _get(state, "ui.postBloodModal.show", false),
     shopModal: _get(state, "ui.shopModal.show"),
   };
 };

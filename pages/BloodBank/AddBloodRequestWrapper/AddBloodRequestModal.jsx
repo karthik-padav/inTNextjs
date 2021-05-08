@@ -51,6 +51,7 @@ function AddBloodRequestModal(props) {
     <div className={classes.root}>
       <DialogBox
         isModalOpen={isModalOpen}
+        fullWidth
         onClose={() => toggleBloodModal(false)}
         headerTitle={<Typography variant="h1">Create Post</Typography>}
         body={

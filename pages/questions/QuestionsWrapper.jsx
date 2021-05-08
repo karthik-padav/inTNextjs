@@ -119,13 +119,13 @@ function QuestionsWrapper(props) {
   };
 
   const deletePost = (data) => {
-    const feedId = _get(data, "feedId");
-    if (feedId) {
-      deletePostFeed(feedId)
+    const postId = _get(data, "postId");
+    if (postId) {
+      deletePostFeed(postId)
         .then((res) => {
           if (_get(res, "status")) {
             let newList = list.filter((item) => {
-              return item.feedId !== feedId;
+              return item.postId !== postId;
             });
             setList({ data: newList });
             setConfirmAlert(false);
@@ -177,7 +177,7 @@ function QuestionsWrapper(props) {
         let menuItem = [];
         const userId = _get(userDetails, "userId");
         const postedBy = _get(item, "user_details.userId");
-        const feedId = _get(item, "feedId");
+        const postId = _get(item, "postId");
         if (userId && userId === postedBy)
           menuItem.push(
             {
@@ -198,7 +198,7 @@ function QuestionsWrapper(props) {
             <PostCardWrapper
               data={item}
               menuItem={menuItem}
-              redirect_href={`/questions/${feedId}`}
+              redirect_href={`/questions/${postId}`}
               showRating={false}
             >
               <CardWrapper data={item} />

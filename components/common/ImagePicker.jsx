@@ -145,10 +145,15 @@ function ImagePicker(props) {
                 <img
                   src={item.imagesUrl}
                   className={classes.imageSizeWrapper}
+                  alt="in Tulunadu"
                 />
               )}
               {_get(item, "fileName") && (
-                <img src={item.fileName} className={classes.imageSizeWrapper} />
+                <img
+                  src={item.fileName}
+                  className={classes.imageSizeWrapper}
+                  alt="in Tulunadu"
+                />
               )}
             </Box>
           </GridListTile>

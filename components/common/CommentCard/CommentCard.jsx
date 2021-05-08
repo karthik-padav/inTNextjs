@@ -29,6 +29,8 @@ import TextEditor from "./TextEditor";
 import ButtonWrapper from "components/common/ButtonWrapper";
 import LoadMore from "components/common/LoadMore";
 import LoaderComponent from "./LoaderComponent";
+import { grey, red, blue } from "@material-ui/core/colors";
+import colors from "Themes/ThemeColors";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -180,6 +182,8 @@ function CommentCard(props) {
       code: "no",
       cb: () => setConfirmAlert(false),
       mr: 2,
+      color: colors.blue,
+      bgColor: grey[100],
     },
     {
       title: "Yes",

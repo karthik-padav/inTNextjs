@@ -166,10 +166,7 @@ function SimpleTabs(props) {
           return (
             <Box key={index} mb={2}>
               <PostCardWrapper data={item} menuItem={menuItem}>
-                <Link
-                  href="/bloodbank/[id]"
-                  as={`/bloodbank/${item.bloodRequestId}`}
-                >
+                <Link href="/bloodbank/[id]" as={`/bloodbank/${item.postId}`}>
                   <a>
                     <BloodDetailsCard
                       bloodType={_get(item, "bloodType")}

@@ -45,7 +45,7 @@ function PostCardWrapper(props) {
   const [liked, setLike] = useState(hasLiked ? 1 : 0);
   const [likeCount, setLikeCount] = useState(_get(data, "likes", 0));
 
-  const postId = _get(data, "feedId");
+  const postId = _get(data, "postId");
   const userDetails = _get(props, "data.user_details");
   const createdAt = _get(data, "createdAt");
 
@@ -154,7 +154,7 @@ function PostCardWrapper(props) {
         <>
           <Divider />
           <Box px={2} py={1}>
-            <CommentCard id={data.feedId} />
+            <CommentCard id={data.postId} />
           </Box>
         </>
       )}

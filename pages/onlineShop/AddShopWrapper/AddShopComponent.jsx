@@ -85,7 +85,7 @@ function AddShopComponent(props) {
   const handleSubmit = async (values) => {
     const formData = await generateFinalFormData(values);
     setSubmitLoader(true);
-    postShop(formData, _get(isEditRequest, "shopId") ? "update" : "post").then(
+    postShop(formData, _get(isEditRequest, "postId") ? "update" : "post").then(
       (res) => {
         if (_get(res, "status")) {
           props.updateToastMsg({
@@ -95,7 +95,7 @@ function AddShopComponent(props) {
           togglePostModal(false);
           if (isEditRequest) {
             const feedIndex = _findIndex(shopList, (item) => {
-              return item.shopId === res.data.shopId;
+              return item.postId === res.data.postId;
             });
             if (feedIndex > -1) {
               const newList = _cloneDeep(shopList);
@@ -126,8 +126,8 @@ function AddShopComponent(props) {
         formData.set("document", JSON.stringify(document));
       }
     });
-    if (_get(isEditRequest, "shopId"))
-      formData.set("shopId", isEditRequest.shopId);
+    if (_get(isEditRequest, "postId"))
+      formData.set("postId", isEditRequest.postId);
     return formData;
   };
 
@@ -146,6 +146,7 @@ function AddShopComponent(props) {
         <DialogBox
           isModalOpen={isModalOpen}
           onClose={togglePostModal}
+          fullWidth
           headerTitle={<Typography variant="h1">Create Online Shop</Typography>}
           body={
             <Box>
