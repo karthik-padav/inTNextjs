@@ -14,10 +14,10 @@ import MuiAlert from "@material-ui/lab/Alert";
 
 import Snackbar from "@material-ui/core/Snackbar";
 import LoginModal from "components/common/LoginModal";
+import UserDeactivated from "components/common/UserDeactivated";
 import AddPostComponent from "pages/questions/AddPostWrapper/AddPostComponent";
 import AddShopComponent from "pages/onlineShop/AddShopWrapper/AddShopComponent";
 import AddBloodRequestModal from "pages/bloodbank/AddBloodRequestWrapper/AddBloodRequestModal";
-import Otp from "components/common/Otp";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -37,6 +37,7 @@ function UiComponents(props) {
     postQuestionModal,
     shopModal,
     bloodRequestModal,
+    deactivatedModal,
   } = props;
 
   const [loader, setLoader] = React.useState(false);
@@ -82,7 +83,7 @@ function UiComponents(props) {
       {postQuestionModal && <AddPostComponent />}
       {bloodRequestModal && <AddBloodRequestModal />}
       {shopModal && <AddShopComponent />}
-      <Otp />
+      {deactivatedModal && <UserDeactivated />}
     </div>
   );
 }
@@ -94,6 +95,7 @@ const mapStateToProps = (state) => {
     postQuestionModal: _get(state, "ui.postQuestionModal.show"),
     bloodRequestModal: _get(state, "ui.postBloodModal.show", false),
     shopModal: _get(state, "ui.shopModal.show"),
+    deactivatedModal: _get(state, "ui.deactivatedModal.show"),
   };
 };
 const mapDispatchToProps = (dispatch) => {

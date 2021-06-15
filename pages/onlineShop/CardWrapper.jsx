@@ -34,17 +34,14 @@ function CardWrapper(props) {
         <Box my={1}>
           <ImagePreview
             contentImage={data.contentImage}
-            imagePath={`/uploads/shopPost/${_get(data, "postId")}`}
+            imagePath={`/uploads/shopPost/${_get(data, "_id")}`}
           />
         </Box>
       )}
-      <Grid container spacing={1}>
-        {_get(data, "description") && (
-          <Link
-            href="/onlineShop/[id]"
-            as={`/onlineShop/${_get(data, "postId")}`}
-          >
-            <a>
+      {_get(data, "description") && (
+        <Link href="/onlineShop/[id]" as={`/onlineShop/${_get(data, "_id")}`}>
+          <a>
+            <Grid container spacing={1}>
               {_get(data, "shopName") && (
                 <Grid item sm={12} md={12}>
                   <Typography className={classes.wordBreak} variant="caption">
@@ -66,9 +63,11 @@ function CardWrapper(props) {
                   <Divider mt={1.5} mb={1} />
                 </Grid>
               )}
-            </a>
-          </Link>
-        )}
+            </Grid>
+          </a>
+        </Link>
+      )}
+      <Grid container spacing={1}>
         {_get(data, "contactName") && (
           <Grid item sm={12} md={4}>
             <Typography className={classes.wordBreak} variant="caption">

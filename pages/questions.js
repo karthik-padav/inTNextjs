@@ -44,39 +44,4 @@ function Questions(props) {
   );
 }
 
-const mapStateToProps = (state) => {
-  return {
-    userDetails: state.userDetails,
-    questionList: _get(state, "questionList.data", []),
-  };
-};
-const mapDispatchToProps = (dispatch) => {
-  return {
-    toggleLoginModal: (flag) => {
-      dispatch({
-        type: "SHOW_LOGIN_MODAL",
-        payload: flag,
-      });
-    },
-    togglePostModal: (show, data) => {
-      dispatch({
-        type: "SHOW_Q_MODAL",
-        payload: { show, data },
-      });
-    },
-    updateToastMsg: (toastMsg) => {
-      dispatch({
-        type: "UPDATE_TOAST",
-        payload: toastMsg,
-      });
-    },
-    setQuestionList: (payload) => {
-      dispatch({
-        type: "ADD_Q",
-        payload,
-      });
-    },
-  };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(Questions);
+export default Questions;

@@ -55,7 +55,8 @@ function OnlineShopWrapper(props) {
     toggleShopModal,
     updateToastMsg,
     toggleLoginModal,
-    userDetails,
+    loggedInUser,
+    showAddPost = true,
   } = props;
   const [listStartIndex, setListStartIndex] = useState(0);
   const [hasMoreListToLoad, setHasMoreListToLoad] = useState(true);
@@ -163,33 +164,35 @@ function OnlineShopWrapper(props) {
 
   return (
     <div className={classes.root}>
-      <Box
-        justifyContent="space-between"
-        display="flex"
-        alignItems="center"
-        mb={1}
-        mt={1}
-      >
-        <ButtonWrapper
-          variant="contained"
-          onClick={() => {
-            if (isLoggedIn()) {
-              toggleShopModal(true);
-            } else toggleLoginModal(true);
-          }}
+      {showAddPost && (
+        <Box
+          justifyContent="space-between"
+          display="flex"
+          alignItems="center"
+          mb={1}
+          mt={1}
         >
-          <Typography variant="button">Add Your Shop</Typography>
-        </ButtonWrapper>
+          <ButtonWrapper
+            variant="contained"
+            onClick={() => {
+              if (isLoggedIn()) {
+                toggleShopModal(true);
+              } else toggleLoginModal(true);
+            }}
+          >
+            <Typography variant="button">Add Your Shop</Typography>
+          </ButtonWrapper>
 
-        <ButtonWrapper
-          type="IconButton"
-          onClick={() => setFilterToggle(!isFilterShow)}
-        >
-          <StyledBadge badgeContent={badgeContent} color="secondary">
-            <Icon className="fa fa-filter" style={{ fontSize: 15 }} />
-          </StyledBadge>
-        </ButtonWrapper>
-      </Box>
+          <ButtonWrapper
+            type="IconButton"
+            onClick={() => setFilterToggle(!isFilterShow)}
+          >
+            <StyledBadge badgeContent={badgeContent} color="secondary">
+              <Icon className="fa fa-filter" style={{ fontSize: 15 }} />
+            </StyledBadge>
+          </ButtonWrapper>
+        </Box>
+      )}
 
       <Box my={1}>
         <FilterWrapper
@@ -204,8 +207,8 @@ function OnlineShopWrapper(props) {
 
       {list.map((item, index) => {
         let menuItem = [];
-        const userId = _get(userDetails, "userId");
-        const postedBy = _get(item, "user_details.userId");
+        const userId = _get(loggedInUser, "_id");
+        const postedBy = _get(item, "user._id");
         if (userId && userId === postedBy)
           menuItem.push(
             {
@@ -260,7 +263,7 @@ function OnlineShopWrapper(props) {
 
 const mapStateToProps = (state) => {
   return {
-    userDetails: state.userDetails,
+    loggedInUser: state.userDetails,
     list: _get(state, "shopList.data", []),
     state,
   };

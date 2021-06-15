@@ -1,17 +1,13 @@
 import React, { useEffect, useState } from "react";
-import PropTypes from "prop-types";
-import { withStyles } from "@material-ui/core/styles";
 import Rating from "@material-ui/lab/Rating";
 import StarBorderIcon from "@material-ui/icons/StarBorder";
-import FavoriteIcon from "@material-ui/icons/Favorite";
-import SentimentVeryDissatisfiedIcon from "@material-ui/icons/SentimentVeryDissatisfied";
-import SentimentDissatisfiedIcon from "@material-ui/icons/SentimentDissatisfied";
-import SentimentSatisfiedIcon from "@material-ui/icons/SentimentSatisfied";
-import SentimentSatisfiedAltIcon from "@material-ui/icons/SentimentSatisfiedAltOutlined";
-import SentimentVerySatisfiedIcon from "@material-ui/icons/SentimentVerySatisfied";
 import Typography from "@material-ui/core/Typography";
 import Box from "@material-ui/core/Box";
 import { makeStyles } from "@material-ui/core/styles";
+import { handleReview } from "dataService/Services";
+import _get from "lodash/get";
+import { isLoggedIn } from "Function/Common";
+import { connect } from "react-redux";
 
 const useStyles = makeStyles((theme) => ({
   reviewSubTitle: {
@@ -21,19 +17,41 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function RatingWrapper() {
+function RatingWrapper(props) {
+  const { postId, review, toggleLoginModal } = props;
   const classes = useStyles();
-  const [value, setValue] = useState(0);
+  const myReview = _get(review, "myReview", 0);
+  const [value, setValue] = useState(myReview);
+  const avgReview = _get(review, "avgReview");
+  const totalReview = _get(review, "totalReview", 0);
+  const handleRate = (newValue) => {
+    setValue(newValue);
+    handleReview({ postId, points: newValue })
+      .then((resp) => {
+        if (_get(resp, "status")) {
+        } else {
+          updateToastMsg({
+            msg: "Something went wrong.",
+            type: "error",
+          });
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+  const isLogged = isLoggedIn();
   return (
     <Box>
       <Rating
-        name="customized-empty"
-        // defaultValue={2}
+        name={`${postId}-simple-controlled`}
         precision={0.5}
-        value={value}
+        readOnly={isLogged ? false : true}
+        value={isLogged ? value || myReview : avgReview}
         onChange={(event, newValue) => {
-          console.log(newValue, "newValue123");
-          setValue(newValue);
+          if (isLogged) {
+            handleRate(newValue);
+          } else toggleLoginModal(true);
         }}
         emptyIcon={<StarBorderIcon fontSize="inherit" />}
       />
@@ -42,8 +60,22 @@ export default function RatingWrapper() {
         className={classes.reviewSubTitle}
         component="p"
       >
-        200 Reviews
+        {avgReview && <>{avgReview} out of 5 |</>} {totalReview}{" "}
+        {totalReview === 0 ? "Review" : "Reviews"}
       </Typography>
     </Box>
   );
 }
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    toggleLoginModal: (flag) => {
+      dispatch({
+        type: "SHOW_LOGIN_MODAL",
+        payload: flag,
+      });
+    },
+  };
+};
+
+export default connect(null, mapDispatchToProps)(RatingWrapper);

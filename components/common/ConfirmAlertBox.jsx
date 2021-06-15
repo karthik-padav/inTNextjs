@@ -30,6 +30,7 @@ function ConfirmAlertBox(props) {
     <DialogBox
       isModalOpen={isModalOpen}
       // onClose={() => onClose(false)}
+      TransitionComponent={Transition}
       headerTitle={props.title}
       body={
         <Box px={2} pb={1}>
@@ -47,7 +48,6 @@ function ConfirmAlertBox(props) {
               bgColor = null,
               color = null,
             } = item;
-            console.log(item, "123123");
             return (
               <ButtonWrapper
                 mr={index == 0 ? 1 : 0}

@@ -20,6 +20,8 @@ import LoginModal from "components/common/LoginModal";
 import ButtonWrapper from "components/common/ButtonWrapper";
 import NotificationBadge from "components/common/NotificationBadge";
 import ProfileBadge from "components/common/ProfileBadge";
+import constants from "dataService/Constants";
+import permission from "dataService/Permission";
 
 import { isLoggedIn } from "Function/Common";
 
@@ -72,7 +74,7 @@ function Header(props) {
             <Box>
               {isLoggedIn() ? (
                 <Box display="flex" alignItems="center">
-                  <NotificationBadge />
+                  {permission?.NOTIFICATION?.show && <NotificationBadge />}
                   <ProfileBadge />
                 </Box>
               ) : (

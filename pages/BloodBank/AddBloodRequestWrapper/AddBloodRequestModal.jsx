@@ -53,7 +53,7 @@ function AddBloodRequestModal(props) {
         isModalOpen={isModalOpen}
         fullWidth
         onClose={() => toggleBloodModal(false)}
-        headerTitle={<Typography variant="h1">Create Post</Typography>}
+        headerTitle={"Create Post"}
         body={
           <Box>
             <RequestBloodForm />

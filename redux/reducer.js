@@ -62,6 +62,8 @@ const ui = (ui = {}, action) => {
       break;
     case "SHOW_LOGIN_MODAL":
       ui = { ...ui, loginModal: action.payload };
+    case "SHOW_USER_DEACTIVATED_MODAL":
+      ui = { ...ui, deactivatedModal: action.payload };
       break;
     case "SHOW_Q_MODAL":
       ui = { ...ui, postQuestionModal: action.payload };

@@ -54,7 +54,7 @@ function QuestionsWrapper(props) {
     togglePostModal,
     toggleLoginModal,
     updateToastMsg,
-    userDetails,
+    loggedUser,
     list,
     setList,
     postedBy,
@@ -70,7 +70,7 @@ function QuestionsWrapper(props) {
 
   const [listLoader, setListLoader] = useState(false);
 
-  const userId = _get(userDetails, "userId");
+  const userId = _get(loggedUser, "_id");
 
   const LoadMoreList = async () => {
     if (hasMoreListToLoad) {
@@ -119,13 +119,13 @@ function QuestionsWrapper(props) {
   };
 
   const deletePost = (data) => {
-    const postId = _get(data, "postId");
+    const postId = _get(data, "_id");
     if (postId) {
       deletePostFeed(postId)
         .then((res) => {
           if (_get(res, "status")) {
             let newList = list.filter((item) => {
-              return item.postId !== postId;
+              return item._id !== postId;
             });
             setList({ data: newList });
             setConfirmAlert(false);
@@ -153,6 +153,7 @@ function QuestionsWrapper(props) {
       title: "Yes",
       authCheck: true,
       code: "yes",
+      hasLoader: true,
       cb: deletePost,
     },
   ];
@@ -175,10 +176,8 @@ function QuestionsWrapper(props) {
       )}
       {list.map((item, index) => {
         let menuItem = [];
-        const userId = _get(userDetails, "userId");
-        const postedBy = _get(item, "user_details.userId");
-        const postId = _get(item, "postId");
-        if (userId && userId === postedBy)
+        const postId = _get(item, "_id");
+        if (userId && userId === _get(item, "user._id"))
           menuItem.push(
             {
               title: "Edit",
@@ -237,7 +236,7 @@ function QuestionsWrapper(props) {
 
 const mapStateToProps = (state) => {
   return {
-    userDetails: state.userDetails,
+    loggedUser: state.userDetails,
     list: _get(state, "questionList.data", []),
   };
 };

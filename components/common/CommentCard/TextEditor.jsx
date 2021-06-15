@@ -66,7 +66,7 @@ function TextEditor(props) {
           onClick={() => {
             if (onSave)
               onSave({
-                commentId: _get(data, "commentId"),
+                commentId: _get(data, "_id"),
                 content: comments,
               });
           }}

@@ -56,13 +56,8 @@ const validationSchema = Yup.object().shape({
 
 function AddShopComponent(props) {
   const classes = useStyles();
-  const {
-    togglePostModal,
-    isEditRequest,
-    setList,
-    shopList,
-    isModalOpen,
-  } = props;
+  const { togglePostModal, isEditRequest, setList, shopList, isModalOpen } =
+    props;
 
   const [initialValues, setInitialValues] = React.useState();
   const [submitLoader, setSubmitLoader] = React.useState(false);
@@ -83,9 +78,11 @@ function AddShopComponent(props) {
   }, [isEditRequest]);
 
   const handleSubmit = async (values) => {
-    const formData = await generateFinalFormData(values);
+    let data = values;
+    if (_get(isEditRequest, "_id")) data._id = isEditRequest._id;
+    const formData = await generateFinalFormData(data);
     setSubmitLoader(true);
-    postShop(formData, _get(isEditRequest, "postId") ? "update" : "post").then(
+    postShop(formData, _get(isEditRequest, "_id") ? "update" : "post").then(
       (res) => {
         if (_get(res, "status")) {
           props.updateToastMsg({
@@ -95,7 +92,7 @@ function AddShopComponent(props) {
           togglePostModal(false);
           if (isEditRequest) {
             const feedIndex = _findIndex(shopList, (item) => {
-              return item.postId === res.data.postId;
+              return item._id === res.data._id;
             });
             if (feedIndex > -1) {
               const newList = _cloneDeep(shopList);
@@ -126,8 +123,6 @@ function AddShopComponent(props) {
         formData.set("document", JSON.stringify(document));
       }
     });
-    if (_get(isEditRequest, "postId"))
-      formData.set("postId", isEditRequest.postId);
     return formData;
   };
 
@@ -147,7 +142,7 @@ function AddShopComponent(props) {
           isModalOpen={isModalOpen}
           onClose={togglePostModal}
           fullWidth
-          headerTitle={<Typography variant="h1">Create Online Shop</Typography>}
+          headerTitle={"Create Online Shop"}
           body={
             <Box>
               {console.log(formikProps, "formikProps123")}

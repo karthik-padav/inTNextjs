@@ -54,16 +54,18 @@ const useStyles = makeStyles((theme) => ({
 function FeedPost(props) {
   const classes = useStyles();
   const {
-    userDetails,
+    loggedUser,
     togglePostModal,
     updateToastMsg,
     questionObj,
     setQuestionList,
+    questionList,
     SEO = {},
   } = props;
-  const feedResp = _get(props, "questionList[0]");
-  const userId = _get(userDetails, "userId");
-  const postedBy = _get(feedResp, "user_details.userId");
+  console.log(questionList, "questionList123");
+  const feedResp = _get(questionList, "[0]");
+  const userId = _get(loggedUser, "_id");
+  const postedBy = _get(feedResp, "user._id");
 
   const [showConfirmBox, setConfirmAlert] = useState(false);
   const [loader, setLoader] = React.useState(false);
@@ -75,7 +77,7 @@ function FeedPost(props) {
 
   useEffect(() => {
     const id = _get(query, "id");
-    if (id) {
+    if (id && isLoggedIn()) {
       getQuestions(`?id=${id}`)
         .then((res) => {
           if (_get(res, "status")) {
@@ -92,9 +94,9 @@ function FeedPost(props) {
     togglePostModal(true, value);
   };
 
-  const moreMenuItem = [];
+  const menuItem = [];
   if (userId && userId === postedBy) {
-    moreMenuItem.push(
+    menuItem.push(
       {
         title: "Edit",
         authCheck: true,
@@ -111,10 +113,10 @@ function FeedPost(props) {
   }
 
   const deletePost = (data) => {
-    const postId = _get(data, "postId");
+    const postId = _get(data, "_id");
     if (postId) {
       setLoader(true);
-      deletePostFeed(data.postId).then((res) => {
+      deletePostFeed(postId).then((res) => {
         if (_get(res, "status")) {
           setQuestionList({ data: [] });
           setConfirmAlert(false);
@@ -142,8 +144,6 @@ function FeedPost(props) {
       authCheck: true,
       code: "yes",
       hasLoader: true,
-      color: "primary",
-      variant: "contained",
       cb: deletePost,
     },
   ];
@@ -161,7 +161,7 @@ function FeedPost(props) {
           {feedResp && (
             <PostCardWrapper
               data={feedResp}
-              menuItem={moreMenuItem}
+              menuItem={menuItem}
               showCommentList={true}
               showRating={false}
             >
@@ -197,21 +197,20 @@ FeedPost.getInitialProps = async function (ctx) {
   const { pathname } = ctx;
   let questionObj = {};
   let SEO = {};
-  const query = `?id=${id}`;
-  if (_includes(pathname.split("/"), "questions")) {
-    questionObj = await getQuestions(query);
-    console.log(questionObj, "questionObj123");
-    SEO = await getSeoDetails({
-      title: _get(questionObj, "data[0].content"),
-      description: _get(questionObj, "data[0].content"),
-    });
-  }
+  const query = `?_id=${id}`;
+  // if (_includes(pathname.split("/"), "questions")) {
+  questionObj = await getQuestions(query);
+  SEO = await getSeoDetails({
+    title: _get(questionObj, "data[0].content"),
+    description: _get(questionObj, "data[0].content"),
+  });
+  // }
   return { questionObj, SEO };
 };
 
 const mapStateToProps = (state) => {
   return {
-    userDetails: state.userDetails,
+    loggedUser: state.userDetails,
     questionList: _get(state, "questionList.data", []),
   };
 };

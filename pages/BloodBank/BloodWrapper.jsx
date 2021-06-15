@@ -55,12 +55,13 @@ function BloodWrapper(props) {
     updateToastMsg,
     toggleLoginModal,
     userDetails,
+    showAddPost = true,
   } = props;
   const [listStartIndex, setListStartIndex] = useState(0);
   const [hasMoreListToLoad, setHasMoreListToLoad] = useState(true);
 
   const [listLoader, setListLoader] = useState(false);
-  const [limit, setLimit] = useState(1);
+  const [limit, setLimit] = useState(15);
 
   const [querry, setQuerry] = useState(null);
 
@@ -164,39 +165,41 @@ function BloodWrapper(props) {
 
   return (
     <div className={classes.root}>
-      <Box
-        justifyContent="space-between"
-        display="flex"
-        alignItems="center"
-        mb={1}
-        mt={1}
-      >
-        <ButtonWrapper
-          variant="contained"
-          onClick={() => {
-            if (isLoggedIn()) {
-              toggleBloodModal(true);
-            } else toggleLoginModal(true);
-          }}
+      {showAddPost && (
+        <Box
+          justifyContent="space-between"
+          display="flex"
+          alignItems="center"
+          mb={1}
+          mt={1}
         >
-          <Typography variant="button">Add</Typography>
-          <Icon
-            className={classNames("fa fa-plus", classes.extendedIcon)}
-            style={{
-              fontSize: "18px",
+          <ButtonWrapper
+            variant="contained"
+            onClick={() => {
+              if (isLoggedIn()) {
+                toggleBloodModal(true);
+              } else toggleLoginModal(true);
             }}
-          />
-        </ButtonWrapper>
+          >
+            <Typography variant="button">Add</Typography>
+            <Icon
+              className={classNames("fa fa-plus", classes.extendedIcon)}
+              style={{
+                fontSize: "18px",
+              }}
+            />
+          </ButtonWrapper>
 
-        <ButtonWrapper
-          type="IconButton"
-          onClick={() => setFilterToggle(!isFilterShow)}
-        >
-          <StyledBadge badgeContent={badgeContent} color="secondary">
-            <Icon className="fa fa-filter" style={{ fontSize: 15 }} />
-          </StyledBadge>
-        </ButtonWrapper>
-      </Box>
+          <ButtonWrapper
+            type="IconButton"
+            onClick={() => setFilterToggle(!isFilterShow)}
+          >
+            <StyledBadge badgeContent={badgeContent} color="secondary">
+              <Icon className="fa fa-filter" style={{ fontSize: 15 }} />
+            </StyledBadge>
+          </ButtonWrapper>
+        </Box>
+      )}
 
       <Box my={1}>
         <FilterWrapper

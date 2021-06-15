@@ -20,10 +20,9 @@ import Avatar from "@material-ui/core/Avatar";
 import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import moment from "moment";
-import ListSubheader from "@material-ui/core/ListSubheader";
 import Box from "@material-ui/core/Box";
-import Link from "next/link";
 import Divider from "components/common/Divider";
+import { isLoggedIn } from "Function/Common";
 
 import _get from "lodash/get";
 import _cloneDeep from "lodash/cloneDeep";

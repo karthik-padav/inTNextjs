@@ -44,7 +44,13 @@ const useStyles = makeStyles((theme) => ({
 
 function LoginModal(props) {
   const classes = useStyles();
-  const { showLoginModal, toggleLoginModal } = props;
+  const {
+    showLoginModal,
+    toggleLoginModal,
+    toggleDeactivatedModal,
+    updateUser,
+    updateToastMsg,
+  } = props;
 
   const responseGoogle = (response) => {
     if (_get(response, "googleId")) {
@@ -56,26 +62,38 @@ function LoginModal(props) {
         givenName: response.profileObj.givenName,
         provider: "Google",
       };
+      console.log(JSON.stringify(params), "params123");
       login(params).then((res) => {
         if (_get(res, "status")) {
-          const userData = _get(res, "data", null);
-          props.toggleLoginModal(false);
-          props.updateUser(userData);
-          localStorage.setItem(
-            "userDetails",
-            JSON.stringify({
-              accesstoken: userData.accesstoken,
-              userId: userData.userId,
-            })
-          );
-          props.updateToastMsg({
-            msg: `Howdy ${userData.givenName} ${userData.familyName}`,
-            type: "success",
-          });
+          if (
+            _get(res, "data.activeAccount") === 0 ||
+            _get(res, "data.status") === 0
+          ) {
+            toggleLoginModal(false);
+            toggleDeactivatedModal(true, {
+              ...res.data,
+              message: res.message,
+            });
+          } else {
+            const userData = _get(res, "data", null);
+            toggleLoginModal(false);
+            updateUser(userData);
+            localStorage.setItem(
+              "userDetails",
+              JSON.stringify({
+                accesstoken: userData.accesstoken,
+                userId: userData.userId,
+              })
+            );
+            updateToastMsg({
+              msg: `Howdy ${userData.givenName} ${userData.familyName}`,
+              type: "success",
+            });
+          }
         }
       });
     } else {
-      props.updateToastMsg({
+      updateToastMsg({
         msg: "Something went wrong.",
         type: "error",
       });
@@ -144,6 +162,12 @@ const mapStateToProps = (state) => {
 };
 const mapDispatchToProps = (dispatch) => {
   return {
+    toggleLoginModal: (flag) => {
+      dispatch({
+        type: "SHOW_LOGIN_MODAL",
+        payload: flag,
+      });
+    },
     updateUser: (userDetails) => {
       dispatch({
         type: "UPDATE_USER",
@@ -156,10 +180,10 @@ const mapDispatchToProps = (dispatch) => {
         payload: toastMsg,
       });
     },
-    toggleLoginModal: (flag) => {
+    toggleDeactivatedModal: (show, data) => {
       dispatch({
-        type: "SHOW_LOGIN_MODAL",
-        payload: flag,
+        type: "SHOW_USER_DEACTIVATED_MODAL",
+        payload: { show, data },
       });
     },
   };

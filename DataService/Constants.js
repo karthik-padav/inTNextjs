@@ -2,7 +2,8 @@ import { red, orange, blue, pink, grey } from "@material-ui/core/colors";
 import colors from "Themes/ThemeColors";
 
 const constants = {
-  baseUrl: "http://localhost:8081",
+  baseUrl: "http://localhost:5000",
+  s3BaseUrl: "https://in-tulunadu-files.s3.ap-south-1.amazonaws.com/",
   dpImagePath: "./uploads/displayPhoto/",
   postImagePath: "./uploads/feedPost/",
   Client_Secret: "JI4VLN5YzeasPsjn0qoVUkAJ",

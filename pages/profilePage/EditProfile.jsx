@@ -51,7 +51,8 @@ const useStyles = makeStyles((theme) => ({
     height: theme.spacing(20),
   },
 }));
-const phoneRegExp = /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
+const phoneRegExp =
+  /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
 
 const validationSchema = Yup.object().shape({
   givenName: Yup.string(),
@@ -210,7 +211,7 @@ function EditProfile(props) {
                   fullWidth
                 />
               </Grid>
-              <Grid item sm={12} md={6}>
+              {/* <Grid item sm={12} md={6}>
                 <Field
                   type="text"
                   InputLabelProps={{
@@ -221,7 +222,7 @@ function EditProfile(props) {
                   component={FTextField}
                   fullWidth
                 />
-              </Grid>
+              </Grid> */}
               <Grid item sm={12} md={12}>
                 <Field
                   type="text"

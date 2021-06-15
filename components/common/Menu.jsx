@@ -55,11 +55,11 @@ function Menu(props) {
     if (_get(menuLists, "BLOODBANK.show")) menuItem.push(menuLists.BLOODBANK);
     if (_get(menuLists, "BLOG.show")) menuItem.push(menuLists.BLOG);
     if (_get(menuLists, "RECIPES.show")) menuItem.push(menuLists.RECIPES);
-    if (_get(menuLists, "ONLINESHOP.show")) menuItem.push(menuLists.ONLINESHOP);
+    if (_get(menuLists, "ONLINE_SHOP.show"))
+      menuItem.push(menuLists.ONLINE_SHOP);
     if (_get(menuLists, "PROFILE.show") && isLoggedIn())
       menuItem.push(menuLists.PROFILE);
-    if (_get(menuLists, "SETTINGS.show") && isLoggedIn())
-      menuItem.push(menuLists.SETTINGS);
+    if (_get(menuLists, "SETTINGS.show")) menuItem.push(menuLists.SETTINGS);
 
     return menuItem;
   };
@@ -69,7 +69,7 @@ function Menu(props) {
     if (_get(item, "redirect")) router.push(item.redirect);
   };
 
-  console.log(getPageCode(router), "getPageCode123");
+  // console.log(getPageCode(router), "getPageCode123");
 
   return (
     <Paper>

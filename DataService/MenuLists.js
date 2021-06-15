@@ -1,5 +1,7 @@
 import { red, orange, blue, pink, grey, green } from "@material-ui/core/colors";
 import colors from "Themes/ThemeColors";
+import permission from "dataService/Permission";
+
 const menuLists = {
   HOME: {
     title: "Home",
@@ -39,7 +41,7 @@ const menuLists = {
     iconColor: red[500],
     iconBgColor: red[100],
     redirect: "/bloodbank",
-    show: true,
+    show: permission?.BLOODBANK?.show,
   },
   ABOUT: {
     title: "About",
@@ -68,9 +70,9 @@ const menuLists = {
     iconColor: pink[500],
     iconBgColor: pink[100],
     redirect: "/settings",
-    show: true,
+    show: permission?.JOBS?.show,
   },
-  ONLINESHOP: {
+  ONLINE_SHOP: {
     title: "Online Shop",
     code: "onlineShop",
     icon: "fas fa-shopping-cart",
@@ -78,7 +80,7 @@ const menuLists = {
     iconColor: green[500],
     iconBgColor: green[100],
     redirect: "/onlineShop",
-    show: true,
+    show: permission?.ONLINE_SHOP?.show,
   },
   BLOG: {
     title: "Blog",
@@ -88,7 +90,7 @@ const menuLists = {
     iconColor: red[500],
     iconBgColor: red[100],
     redirect: "/settings",
-    show: true,
+    show: permission?.BLOG?.show,
   },
   RECIPES: {
     title: "Recipes",
@@ -98,7 +100,7 @@ const menuLists = {
     iconColor: orange[500],
     iconBgColor: orange[100],
     redirect: "/settings",
-    show: true,
+    show: permission?.RECIPES?.show,
   },
 };
 export default menuLists;

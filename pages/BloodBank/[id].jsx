@@ -273,9 +273,9 @@ BloodPost.getInitialProps = async function (ctx) {
   const { pathname } = ctx;
   let bloodReceiver = {};
   const query = `?id=${id}`;
-  if (_includes(pathname.split("/"), "bloodbank")) {
-    bloodReceiver = await getBloodReceiver(query);
-  }
+  // if (_includes(pathname.split("/"), "bloodbank")) {
+  bloodReceiver = await getBloodReceiver(query);
+  // }
   return { bloodReceiver };
 };
 

@@ -21,24 +21,19 @@ const dummyImage = [
     url: "https://miro.medium.com/max/1050/1*MI686k5sDQrISBM6L8pf5A.jpeg",
   },
   {
-    url:
-      "https://image.freepik.com/free-photo/astonished-unshaven-man-gazes-through-hole-yellow-paper_273609-27035.jpg",
+    url: "https://image.freepik.com/free-photo/astonished-unshaven-man-gazes-through-hole-yellow-paper_273609-27035.jpg",
   },
   {
-    url:
-      "https://image.freepik.com/free-photo/image-unrecognizable-man-makes-thumb-up-gesture_273609-25537.jpg",
+    url: "https://image.freepik.com/free-photo/image-unrecognizable-man-makes-thumb-up-gesture_273609-25537.jpg",
   },
   {
-    url:
-      "https://image.freepik.com/free-vector/golden-new-year-2021-background_23-2148782784.jpg",
+    url: "https://image.freepik.com/free-vector/golden-new-year-2021-background_23-2148782784.jpg",
   },
   {
-    url:
-      "https://image.freepik.com/free-photo/image-unrecognizable-man-makes-thumb-up-gesture_273609-25537.jpg",
+    url: "https://image.freepik.com/free-photo/image-unrecognizable-man-makes-thumb-up-gesture_273609-25537.jpg",
   },
   {
-    url:
-      "https://image.freepik.com/free-photo/astonished-unshaven-man-gazes-through-hole-yellow-paper_273609-27035.jpg",
+    url: "https://image.freepik.com/free-photo/astonished-unshaven-man-gazes-through-hole-yellow-paper_273609-27035.jpg",
   },
 ];
 
@@ -83,13 +78,10 @@ function ImagePreview({ contentImage = [], imagePath = "" }) {
                     position="relative"
                   >
                     <img
-                      src={`${imagePath}/${img.fileName}`}
+                      src={`${imagePath}${img}`}
                       className={classes.imageSizeWrapper}
                       alt="in Tulunadu"
                     />
-                    {/* <p style={{ fontSize: "10px" }}>
-                      {`${imagePath}/${img.fileName}`}
-                    </p> */}
                     {contentImage.length > ImagePreviewCount &&
                       imgIndex + 1 === ImagePreviewCount && (
                         <Box
@@ -129,7 +121,7 @@ function ImagePreview({ contentImage = [], imagePath = "" }) {
               <Box width="100%" height="100%" key={imgIndex}>
                 <img
                   className={classes.imageWrapper}
-                  src={`${imagePath}/${img.fileName}`}
+                  src={`${imagePath}${img}`}
                   alt="in Tulunadu"
                 />
               </Box>

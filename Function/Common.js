@@ -11,20 +11,10 @@ import _find from "lodash/find";
 
 import menuLists from "dataService/MenuLists";
 
-export const getToken = () => {
-  let userDetails = localStorage.getItem("userDetails");
-  if (userDetails) {
-    userDetails = JSON.parse(userDetails);
-    return _get(userDetails, "accesstoken", false);
-  }
-  return false;
-};
-
 export const isLoggedIn = () => {
   const state = store.getState();
-  const userDetails = _get(state, "userDetails");
-  if (userDetails) return true;
-  else return false;
+  console.log({ state });
+  return _get(state, "userDetails", false);
 };
 
 export const getPostTypeFromURL = (url) => {
@@ -66,32 +56,10 @@ export const getPageCode = (router) => {
 
   if (_includes(array, menuLists.PROFILE.code)) return menuLists.PROFILE.code;
 
-  if (_includes(array, menuLists.ONLINESHOP.code))
-    return menuLists.ONLINESHOP.code;
+  if (_includes(array, menuLists.ONLINE_SHOP.code))
+    return menuLists.ONLINE_SHOP.code;
 
   return false;
-};
-
-export const placeCodeToTitle = async (lists, code) => {
-  // debugger;
-  // let title = null;
-  // for (const listObj of lists) {
-  //   // debugger;
-  //   if (_get(listObj, "code") && listObj.code === code) {
-  //     debugger;
-  //     title = _get(listObj, "name");
-  //     return title;
-  //   } else {
-  //     // debugger;
-  //     for (const key of Object.keys(listObj)) {
-  //       // debugger;
-  //       if (_isArray(listObj[key])) {
-  //         // debugger;
-  //         await placeCodeToTitle(listObj[key], code);
-  //       }
-  //     }
-  //   }
-  // }
 };
 
 export const codeToName = (list, code) => {

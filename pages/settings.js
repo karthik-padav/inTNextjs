@@ -17,6 +17,7 @@ import BluetoothIcon from "@material-ui/icons/Bluetooth";
 import Divider from "components/common/Divider";
 import Theme from "pages/settings/Theme";
 import BloodValunteer from "pages/settings/BloodValunteer";
+import AccountSettings from "pages/settings/AccountSettings";
 import { useRouter } from "next/router";
 import { isLoggedIn } from "Function/Common";
 
@@ -62,11 +63,21 @@ function Settings(props) {
           <Paper className={classes.headerTitle}>
             <Typography variant="h1">Settings</Typography>
           </Paper>
-          {/* <Divider mt={1} mb={1} color="primary" /> */}
-          <Paper className={classes.paper}>
-            <Theme />
-            {isLoggedIn() && <BloodValunteer />}
-          </Paper>
+
+          <Box mb={1}>
+            <Paper className={classes.paper}>
+              <Theme />
+              {isLoggedIn() && <BloodValunteer />}
+            </Paper>
+          </Box>
+
+          {isLoggedIn() && (
+            <Box mb={1}>
+              <Paper className={classes.paper}>
+                <AccountSettings />
+              </Paper>
+            </Box>
+          )}
         </Grid>
         <Grid item sm={12} md={3} className={classes.p1}>
           <div className="stickyWrapper">

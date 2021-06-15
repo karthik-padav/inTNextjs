@@ -97,9 +97,11 @@ function AddPostComponent(props) {
   }, [isEditRequest]);
 
   const handleSubmit = async (values) => {
-    const formData = await generateFinalFormData(values);
+    let data = values;
+    if (_get(isEditRequest, "_id")) data._id = isEditRequest._id;
+    const formData = await generateFinalFormData(data);
     setSubmitLoader(true);
-    postFeed(formData, _get(isEditRequest, "postId") ? "update" : "post").then(
+    postFeed(formData, _get(isEditRequest, "_id") ? "update" : "post").then(
       (res) => {
         if (_get(res, "status")) {
           props.updateToastMsg({
@@ -145,9 +147,6 @@ function AddPostComponent(props) {
       const document = _omit(values, "images");
       formData.set("document", JSON.stringify(document));
     }
-    if (_get(isEditRequest, "postId"))
-      formData.set("postId", isEditRequest.postId);
-    console.log(formData, "formData123");
     return formData;
   };
 
@@ -167,7 +166,7 @@ function AddPostComponent(props) {
           isModalOpen={isModalOpen}
           onClose={togglePostModal}
           fullWidth
-          headerTitle={<Typography variant="h1">Create Post</Typography>}
+          headerTitle={"Create Post"}
           body={
             <Box>
               {console.log(formikProps, "formikProps123")}

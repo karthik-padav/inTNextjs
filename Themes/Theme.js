@@ -3,90 +3,97 @@ import { grey, red, blue, lime, orange } from "@material-ui/core/colors";
 import colors from "./themeColors";
 import constants from "DataService/Constants";
 
-export const defaultTheme = {
-  typography: {
-    fontFamily: "BrighterSansRegular",
-    h1: {
-      fontSize: 22,
-    },
-    h2: {
-      fontSize: 20,
-    },
-    h3: {
-      fontSize: 18,
-    },
-    h4: {
-      fontSize: 16,
-    },
-    h5: {
-      fontSize: 14,
-    },
-    h6: {
-      fontSize: 12,
-    },
-    subtitle1: {
-      fontSize: 14,
-      fontWeight: 400,
-    },
-    subtitle2: {
-      fontSize: 14,
-      fontWeight: 500,
-    },
-    body1: {
-      fontSize: 14,
-    },
-    button: {
-      fontSize: 11,
-      letterSpacing: "1px",
-    },
-  },
-
-  overrides: {
-    MuiListItemIcon: {
-      root: {
-        minWidth: "auto",
-        marginRight: "10px",
+export const defaultTheme = (theme) => {
+  const isDark = theme === constants.THEME.DARK;
+  return {
+    typography: {
+      fontFamily: "BrighterSansRegular",
+      h1: {
+        fontSize: 22,
       },
-    },
-    MuiListItem: {
+      h2: {
+        fontSize: 20,
+      },
+      h3: {
+        fontSize: 18,
+      },
+      h4: {
+        fontSize: 16,
+      },
+      h5: {
+        fontSize: 14,
+      },
+      h6: {
+        fontSize: 12,
+      },
+      subtitle1: {
+        fontSize: 14,
+        fontWeight: 400,
+      },
+      subtitle2: {
+        fontSize: 14,
+        fontWeight: 500,
+      },
+      body1: {
+        fontSize: 14,
+      },
       button: {
-        "&:hover": {
-          backgroundColor: grey[100],
-        },
-      },
-    },
-    MuiList: { padding: { paddingTop: 0, paddingBottom: 0 } },
-
-    MuiPaper: {
-      elevation1: {
-        boxShadow:
-          "0px 0px 2px -1px rgb(0 0 0 / 20%), 0px 1px 1px 0px rgb(0 0 0 / 14%), 0px 1px 3px 0px rgb(0 0 0 / 12%)",
+        fontSize: 11,
+        letterSpacing: "1px",
       },
     },
 
-    MuiCssBaseline: {
-      "@global": {
-        "*::-webkit-scrollbar": {
-          width: "0.4em",
-          height: "0.4em",
+    overrides: {
+      MuiListItemIcon: {
+        root: {
+          minWidth: "auto",
+          marginRight: "10px",
         },
-        "*::-webkit-scrollbar-track": {
-          "-webkit-box-shadow": "inset 0 0 6px rgba(0,0,0,0.00)",
+      },
+      MuiListItem: {
+        button: {
+          "&:hover": {
+            backgroundColor: isDark ? "rgba(255, 255, 255, 0.1)" : grey[100],
+          },
         },
-        "*::-webkit-scrollbar-thumb": {
-          backgroundColor: blue[100],
-          outline: "1px solid slategrey",
-          borderRadius: "50px",
+      },
+      MuiList: { padding: { paddingTop: 0, paddingBottom: 0 } },
+
+      MuiPaper: {
+        elevation1: {
+          boxShadow:
+            "0px 0px 2px -1px rgb(0 0 0 / 20%), 0px 1px 1px 0px rgb(0 0 0 / 14%), 0px 1px 3px 0px rgb(0 0 0 / 12%)",
+        },
+      },
+
+      MuiAppBar: {
+        backgroundColor: grey[100],
+      },
+
+      MuiCssBaseline: {
+        "@global": {
+          "*::-webkit-scrollbar": {
+            width: "0.4em",
+            height: "0.4em",
+          },
+          "*::-webkit-scrollbar-track": {
+            "-webkit-box-shadow": "inset 0 0 6px rgba(0,0,0,0.00)",
+          },
+          "*::-webkit-scrollbar-thumb": {
+            backgroundColor: blue[100],
+            outline: "1px solid slategrey",
+            borderRadius: "50px",
+          },
         },
       },
     },
-  },
+  };
 };
 
 export const getTheme = (theme) => {
   const isDark = theme === constants.THEME.DARK;
   return createMuiTheme({
-    ...defaultTheme,
+    ...defaultTheme(theme),
     palette: {
       type: theme,
       action: {
@@ -117,8 +124,12 @@ export const getTheme = (theme) => {
           color: "#fff",
         },
         IconButton: {
-          bgColor: grey[50],
+          bgColor: `rgb(227 242 253 / ${isDark ? "10%" : "40%"})`,
           color: colors.blue,
+        },
+        tabs: {
+          bgColor: isDark ? `rgb(227 242 253 / 10%)` : colors.blue,
+          color: isDark ? colors.blue : "#fff",
         },
         blue: colors.blue,
         gray: grey[300],

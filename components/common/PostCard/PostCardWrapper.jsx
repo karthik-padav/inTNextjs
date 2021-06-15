@@ -4,9 +4,11 @@ import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import _get from "lodash/get";
 import _isEmpty from "lodash/isEmpty";
+import _includes from "lodash/includes";
 import { connect } from "react-redux";
 import Divider from "components/common/Divider";
 import RatingWrapper from "components/common/RatingWrapper";
+import SharePost from "components/common/SharePost";
 import Icon from "@material-ui/core/Icon";
 import OptionMenuV2 from "components/common/OptionMenuV2";
 import CommentCard from "components/common/CommentCard/index";
@@ -16,16 +18,14 @@ import Box from "@material-ui/core/Box";
 import ButtonWrapper from "components/common/ButtonWrapper";
 import Link from "next/link";
 import { isLoggedIn, getPostTypeFromURL } from "Function/Common";
+import { usePrevious } from "Function/CustomHooks";
+
 import { handleLike } from "dataService/Services";
 import { red } from "@material-ui/core/colors";
+import constants from "dataService/Constants";
 
 const useStyles = makeStyles((theme) => ({
-  paper: {
-    // padding: theme.spacing(2),
-    color: theme.palette.text.secondary,
-    backgroundColor: theme.palette.background.paper,
-    // boxShadow: theme.shadows[1],
-  },
+  paper: {},
 }));
 
 function PostCardWrapper(props) {
@@ -33,35 +33,40 @@ function PostCardWrapper(props) {
   const {
     children,
     updateToastMsg,
-    data,
+    data: postCardData = {},
     showCommentList = false,
     menuItem = [],
     redirect_href = null,
     showLike = true,
     showComment = true,
     showRating = true,
+    loggedUser,
   } = props;
-  const hasLiked = _get(data, "hasLiked", 0) > 0;
-  const [liked, setLike] = useState(hasLiked ? 1 : 0);
-  const [likeCount, setLikeCount] = useState(_get(data, "likes", 0));
-
-  const postId = _get(data, "postId");
-  const userDetails = _get(props, "data.user_details");
-  const createdAt = _get(data, "createdAt");
-
-  const router = useRouter();
-
+  console.log(props.data, "data123");
+  const {
+    review = 0,
+    _id: postId,
+    user: authorDetails,
+    createdAt,
+    collectionName,
+    like = {},
+    comment = {},
+  } = postCardData;
+  const { count: likeCount = 0, hasLiked = [] } = like;
+  const { count: commentCount = 0 } = comment;
+  const [liked, setLike] = useState(0);
   useEffect(() => {
-    setLike(liked === 1 ? liked : hasLiked ? 1 : 0);
+    setLike(hasLiked.length);
   }, [hasLiked]);
 
-  const onLike = (postId) => {
-    const postType = getPostTypeFromURL(router.pathname);
-    handleLike({ postId, postType })
+  const router = useRouter();
+  const isLogged = isLoggedIn();
+
+  const onLike = ({ postId }) => {
+    handleLike({ postId, collectionName })
       .then((resp) => {
         if (_get(resp, "status")) {
-          const likeStatus = _get(resp, "data.status", 0);
-          setLike(likeStatus);
+          // const likeStatus = _get(resp, "data.status", 0);
         } else {
           updateToastMsg({
             msg: "Something went wrong.",
@@ -73,14 +78,13 @@ function PostCardWrapper(props) {
         console.log(err);
       });
   };
-
   return (
     <Paper className={classes.paper} elevation={1}>
-      {userDetails && (
+      {authorDetails && (
         <Box px={2} pt={2} pb={1}>
-          <UserHeaderCard {...userDetails} createdAt={createdAt}>
+          <UserHeaderCard {...authorDetails} createdAt={createdAt}>
             {!_isEmpty(menuItem) && (
-              <OptionMenuV2 menuItem={menuItem} data={data} />
+              <OptionMenuV2 menuItem={menuItem} data={postCardData} />
             )}
           </UserHeaderCard>
         </Box>
@@ -107,18 +111,15 @@ function PostCardWrapper(props) {
                 type="IconButton"
                 color={red[500]}
                 onClick={() => {
-                  if (isLoggedIn()) {
-                    postId && onLike(postId);
+                  if (isLogged) {
+                    setLike(!liked);
+                    postId && onLike({ postId });
                   } else props.toggleLoginModal(true);
                 }}
               >
                 <Icon
                   className={
-                    isLoggedIn()
-                      ? liked === 1
-                        ? "fas fa-heart"
-                        : "far fa-heart"
-                      : "far fa-heart"
+                    isLogged && liked ? "fas fa-heart" : "far fa-heart"
                   }
                   style={{ fontSize: "18px" }}
                 />
@@ -141,20 +142,21 @@ function PostCardWrapper(props) {
                 <Icon className="far fa-comment" style={{ fontSize: "18px" }} />
               </ButtonWrapper>
               <Box ml={0.5}>
-                <Typography variant="body1">
-                  {_get(data, "comments", 0)}
-                </Typography>
+                <Typography variant="body1">{commentCount}</Typography>
               </Box>
             </Box>
           )}
+          <SharePost />
         </Box>
-        <div>{showRating && <RatingWrapper />}</div>
+        <div>
+          {showRating && <RatingWrapper postId={postId} review={review} />}
+        </div>
       </Box>
       {showComment && showCommentList && (
         <>
           <Divider />
           <Box px={2} py={1}>
-            <CommentCard id={data.postId} />
+            <CommentCard data={postCardData} />
           </Box>
         </>
       )}
@@ -164,7 +166,7 @@ function PostCardWrapper(props) {
 
 const mapStateToProps = (state) => {
   return {
-    userDetails: _get(state, "userDetails"),
+    loggedUser: _get(state, "userDetails"),
   };
 };
 const mapDispatchToProps = (dispatch) => {

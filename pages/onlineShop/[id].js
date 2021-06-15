@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { getQuestions } from "../../DataService/Services";
+import { getAllShop } from "../../DataService/Services";
 import Typography from "@material-ui/core/Typography";
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
@@ -27,6 +27,8 @@ import ButtonWrapper from "components/common/ButtonWrapper";
 import { isLoggedIn } from "Function/Common";
 import { grey, red, blue } from "@material-ui/core/colors";
 import colors from "Themes/ThemeColors";
+import { NextSeo } from "next-seo";
+import { getSeoDetails } from "SEO/getSEO";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -34,31 +36,23 @@ const useStyles = makeStyles((theme) => ({
   },
   paper: {
     padding: theme.spacing(2),
-    color: theme.palette.text.secondary,
-    backgroundColor: theme.palette.background.paper,
-    // boxShadow: theme.shadows[5],
-  },
-  raiseRequestBtn: {
-    borderRadius: "50px",
   },
   p1: {
     padding: theme.spacing(1),
   },
-  pt2: {
-    paddingTop: theme.spacing(2),
-  },
 }));
 
-function FeedPost(props) {
+function Post(props) {
   const classes = useStyles();
   const {
     userDetails,
-    togglePostModal,
+    toggleShopModal,
     updateToastMsg,
-    questionObj,
-    setQuestionList,
+    shopObj,
+    setList,
+    SEO = {},
   } = props;
-  const feedResp = _get(props, "questionList[0]");
+  const feedResp = _get(props, "shopList[0]");
   const userId = _get(userDetails, "userId");
   const postedBy = _get(feedResp, "user_details.userId");
 
@@ -67,17 +61,17 @@ function FeedPost(props) {
   const { query } = useRouter();
 
   useEffect(() => {
-    setQuestionList({ data: _get(questionObj, "data", []) });
-  }, [questionObj]);
+    setList({ data: _get(shopObj, "data", []) });
+  }, [shopObj]);
 
   useEffect(() => {
     const id = _get(query, "id");
-    if (id) {
-      getQuestions(`?id=${id}`)
+    if (id && isLoggedIn()) {
+      getAllShop(`?id=${id}`)
         .then((res) => {
           if (_get(res, "status")) {
             if (!_isEmpty(res.data)) {
-              setQuestionList({ data: _get(res, "data", []) });
+              setList({ data: _get(res, "data", []) });
             }
           }
         })
@@ -86,7 +80,7 @@ function FeedPost(props) {
   }, []);
 
   const editClicked = (value) => {
-    togglePostModal(true, value);
+    toggleShopModal(true, value);
   };
 
   const moreMenuItem = [];
@@ -111,9 +105,9 @@ function FeedPost(props) {
     const postId = _get(data, "postId");
     if (postId) {
       setLoader(true);
-      deletePostFeed(data.postId).then((res) => {
+      deleteShop(data.postId).then((res) => {
         if (_get(res, "status")) {
-          setQuestionList({ data: [] });
+          setList({ data: [] });
           setConfirmAlert(false);
           updateToastMsg({ msg: res.message, type: "success" });
           setLoader(false);
@@ -147,6 +141,7 @@ function FeedPost(props) {
 
   return (
     <div className={classes.root}>
+      <NextSeo {...SEO} />
       <Grid container spacing={0}>
         <Grid item sm={12} md={3} className={classes.p1}>
           <div className="stickyWrapper">
@@ -154,26 +149,11 @@ function FeedPost(props) {
           </div>
         </Grid>
         <Grid item sm={12} md={6} className={classes.p1}>
-          {/* <Box mb={2} mt={2}>
-            <ButtonWrapper
-              onClick={() => {
-                if (isLoggedIn()) {
-                  togglePostModal(true);
-                } else toggleLoginModal(true);
-              }}
-            >
-              Add
-              <Box ml={1} lineHeight="1">
-                <Icon className={"fa fa-plus"} fontSize="small" />
-              </Box>
-            </ButtonWrapper>
-          </Box> */}
           {feedResp && (
             <PostCardWrapper
               data={feedResp}
               menuItem={moreMenuItem}
               showCommentList={true}
-              showRating={false}
             >
               <CardWrapper data={feedResp} />
             </PostCardWrapper>
@@ -202,21 +182,23 @@ function FeedPost(props) {
   );
 }
 
-FeedPost.getInitialProps = async function (ctx) {
+Post.getInitialProps = async function (ctx) {
   const { id } = ctx.query;
   const { pathname } = ctx;
-  let questionObj = {};
+  let shopObj = [];
   const query = `?id=${id}`;
-  if (_includes(pathname.split("/"), "questions")) {
-    questionObj = await getQuestions(query);
-  }
-  return { questionObj };
+  shopObj = await getAllShop(query);
+  let SEO = await getSeoDetails({
+    title: `${_get(shopObj, "data[0].shopName")}`,
+    description: _get(shopObj, "data[0].description"),
+  });
+  return { shopObj, SEO };
 };
 
 const mapStateToProps = (state) => {
   return {
     userDetails: state.userDetails,
-    questionList: _get(state, "questionList.data", []),
+    shopList: _get(state, "shopList.data", []),
   };
 };
 const mapDispatchToProps = (dispatch) => {
@@ -227,9 +209,9 @@ const mapDispatchToProps = (dispatch) => {
         payload: flag,
       });
     },
-    togglePostModal: (show, data) => {
+    toggleShopModal: (show, data) => {
       dispatch({
-        type: "SHOW_Q_MODAL",
+        type: "SHOW_SHOP_MODAL",
         payload: { show, data },
       });
     },
@@ -239,13 +221,13 @@ const mapDispatchToProps = (dispatch) => {
         payload: toastMsg,
       });
     },
-    setQuestionList: (payload) => {
+    setList: (payload) => {
       dispatch({
-        type: "ADD_Q",
+        type: "ADD_SHOP",
         payload,
       });
     },
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(FeedPost);
+export default connect(mapStateToProps, mapDispatchToProps)(Post);

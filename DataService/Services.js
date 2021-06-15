@@ -1,19 +1,24 @@
 import axios from "axios";
 import constants from "../DataService/Constants";
 import _get from "lodash/get";
-import { getToken } from "./Utils";
+import { isLoggedIn } from "Function/Common";
 
 const getHeader = () => {
-  return typeof window !== "undefined"
-    ? { Authorization: `Bearer ${getToken()}` }
+  const loggedIn = isLoggedIn();
+  const token = _get(loggedIn, "accesstoken");
+  console.log({ token });
+  return typeof window !== "undefined" && token
+    ? { Authorization: `Bearer ${token}` }
     : "";
 };
 
 export const getUserDetails = (userId) => {
+  let url = `${constants.baseUrl}/getUserDetails`;
+  if (userId) url += `?userId=${userId}`;
   return new Promise((resolve, reject) => {
     axios({
       method: "get",
-      url: constants.baseUrl + `/getUserDetails/${userId}`,
+      url,
       headers: getHeader(),
     })
       .then((res) => {
@@ -186,8 +191,9 @@ export const getAllComments = (querry) => {
 
 export const postComments = (data) => {
   let url = "";
-  if (_get(data, "commentId")) url = `${constants.baseUrl}/editComment`;
+  if (_get(data, "_id")) url = `${constants.baseUrl}/editComment`;
   else url = `${constants.baseUrl}/postComments`;
+  console.log(getHeader(), "getHeader()");
   return new Promise((resolve, reject) => {
     axios({
       method: "post",
@@ -207,12 +213,9 @@ export const postComments = (data) => {
 export const deleteComment = (id) => {
   return new Promise((resolve, reject) => {
     axios({
-      method: "post",
-      url: `${constants.baseUrl}/deleteComment`,
+      method: "delete",
+      url: `${constants.baseUrl}/deleteComment/${id}`,
       headers: getHeader(),
-      data: {
-        commentId: id,
-      },
     })
       .then((res) => {
         if (res && res.data) resolve(res.data);
@@ -245,7 +248,25 @@ export const handleLike = (data) => {
   });
 };
 
+export const handleReview = (data) => {
+  return new Promise((resolve, reject) => {
+    axios({
+      method: "post",
+      url: `${constants.baseUrl}/handleReview`,
+      headers: getHeader(),
+      data,
+    })
+      .then((res) => {
+        if (res && res.data) resolve(res.data);
+      })
+      .catch((err) => {
+        reject(err);
+      });
+  });
+};
+
 export const postFeed = (body, flag) => {
+  console.log(body, "body123");
   return new Promise((resolve, reject) => {
     let url = constants.baseUrl;
     if (flag === "post") url += "/postFeedDetails";
@@ -253,7 +274,7 @@ export const postFeed = (body, flag) => {
     axios({
       method: "post",
       url,
-      headers: getHeader(),
+      headers: { ...getHeader(), "Content-Type": "multipart/form-data" },
       data: body,
     })
       .then((res) => {
@@ -284,12 +305,9 @@ export const getQuestions = (querry) => {
 export const deletePostFeed = (id) => {
   return new Promise((resolve, reject) => {
     axios({
-      method: "post",
-      url: `${constants.baseUrl}/deletePostFeed`,
+      method: "delete",
+      url: `${constants.baseUrl}/deletePostFeed/${id}`,
       headers: getHeader(),
-      data: {
-        feedId: id,
-      },
     })
       .then((res) => {
         if (res && res.data) resolve(res.data);

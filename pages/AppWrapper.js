@@ -26,8 +26,8 @@ function AppWrapper(props) {
   const [userDetailsLoaderLoader, setUserDetailsLoader] = useState(false);
 
   const themeObj = getTheme(theme);
-  console.log(themeObj, "theme1123", theme);
-  console.log(props, "props1213");
+  // console.log(themeObj, "theme1123", theme);
+  // console.log(props, "props1213");
 
   const prevUserDetails = usePrevious(userDetails);
   const mounted = React.useRef();
@@ -35,7 +35,7 @@ function AppWrapper(props) {
     if (!mounted.current) {
       mounted.current = true;
     } else {
-      if (prevUserDetails !== userDetails) {
+      if (_get(prevUserDetails, "userId") !== _get(userDetails, "userId")) {
         setLoader(true);
         setTimeout(() => {
           setLoader(false);
@@ -56,28 +56,45 @@ function AppWrapper(props) {
     }
   }, []);
 
-  const getUserData = () => {
+  const getUserData = async () => {
+    setLoader(true);
     let localstorageUserData = localStorage.getItem("userDetails");
-    if (localstorageUserData)
+    if (localstorageUserData) {
       localstorageUserData = JSON.parse(localstorageUserData);
-    if (!userDetails && _get(localstorageUserData, "userId")) {
-      setLoader(true);
-      getUserDetails(localstorageUserData.userId).then((res) => {
-        const userData = _get(res, "data");
-        if (_get(res, "status") && userData) {
-          updateUser(userData);
-        }
-        setLoader(false);
-      });
+      if (localstorageUserData.accesstoken)
+        await updateUser({
+          accesstoken: localstorageUserData.accesstoken,
+        });
+    }
+    if (
+      !_get(userDetails, "userId") &&
+      _get(localstorageUserData, "accesstoken")
+    ) {
+      getUserDetails()
+        .then((res) => {
+          const userData = _get(res, "data");
+          if (_get(res, "status") && userData) {
+            updateUser({
+              ...userData,
+              accesstoken: localstorageUserData.accesstoken,
+            });
+          }
+          setLoader(false);
+        })
+        .catch((err) => {
+          setLoader(false);
+        });
+    } else {
+      setLoader(false);
     }
   };
 
   return (
     <ThemeProvider theme={themeObj}>
       <CssBaseline />
-      <Header />
       {!loader && (
         <>
+          <Header />
           <Component {...pageProps} />
           <UiComponents />
         </>

@@ -9,6 +9,7 @@ import _findIndex from "lodash/findIndex";
 import _cloneDeep from "lodash/cloneDeep";
 import Link from "next/link";
 import ImagePreview from "components/common/ImagePreview";
+import constants from "DataService/Constants";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -26,7 +27,7 @@ function CardWrapper(props) {
   return (
     <div className={classes.root}>
       {_get(data, "content") && (
-        <Link href="/questions/[id]" as={`/questions/${_get(data, "postId")}`}>
+        <Link href="/questions/[id]" as={`/questions/${_get(data, "_id")}`}>
           <a>
             <Box my={1}>
               <Typography variant="body1" className={classes.wordBreak}>
@@ -36,11 +37,12 @@ function CardWrapper(props) {
           </a>
         </Link>
       )}
-      {_get(data, "contentImage") && !_isEmpty(data.contentImage) && (
+      {data?.contentImage && !_isEmpty(data.contentImage) && (
         <Box my={1}>
+          {console.log(data.contentImage, "contentImage123")}
           <ImagePreview
             contentImage={data.contentImage}
-            imagePath={`/uploads/feedPost/${_get(data, "postId")}`}
+            imagePath={constants.s3BaseUrl}
           />
         </Box>
       )}

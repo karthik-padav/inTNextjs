@@ -53,7 +53,8 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function CommentCard(props) {
-  const { id, userDetails } = props;
+  const { data, userDetails } = props;
+  const { _id: postId, collectionName = null } = data;
   const classes = useStyles();
   const [comments, setComments] = useState("");
 
@@ -77,8 +78,8 @@ function CommentCard(props) {
   useEffect(
     (props) => {
       setScrollLoader(true);
-      if (id) {
-        let querry = `?id=${id}&&offset=${commentStartIndex}&limit=${limit}`;
+      if (postId) {
+        let querry = `/${postId}?offset=${commentStartIndex}&limit=${limit}`;
         getAllComments(querry)
           .then((res) => {
             if (_get(res, "status")) {
@@ -103,27 +104,25 @@ function CommentCard(props) {
   };
 
   const sumbmitComment = (value) => {
-    const postId = _get(props, "id");
-    const postType = getPostTypeFromURL(router.pathname);
-    let data = {};
+    let params = {};
     if (value)
-      data = {
-        commentId: _get(value, "commentId"),
+      params = {
+        _id: _get(value, "commentId"),
         content: _get(value, "content"),
       };
     else
-      data = {
+      params = {
         postId,
         content: comments,
-        postType,
+        collectionName,
       };
-    if ((data.postId || data.commentId) && !_isEmpty(data.content)) {
+    if ((params.postId || params._id) && !_isEmpty(params.content)) {
       setLoader(true);
-      postComments(data).then((res) => {
+      postComments(params).then((res) => {
         if (_get(res, "status")) {
           if (editId) {
             const commentIndex = _findIndex(commentList, (item) => {
-              return item.commentId === editId;
+              return item._id === editId;
             });
             if (commentIndex > -1) {
               commentList[commentIndex] = res.data;
@@ -142,11 +141,11 @@ function CommentCard(props) {
 
   const editClicked = (value) => {
     console.log(value, "editClicked123");
-    setEditId(value.commentId);
+    setEditId(value._id);
   };
 
   const deleteConfirmAlert = (value) => {
-    setConfirmAlert(value.commentId);
+    setConfirmAlert(value._id);
   };
 
   const deleteConfirmed = () => {
@@ -154,7 +153,7 @@ function CommentCard(props) {
     deleteComment(isConfirmAlertBox).then((res) => {
       if (_get(res, "status")) {
         let newList = commentList.filter((item) => {
-          return item.commentId !== isConfirmAlertBox;
+          return item._id !== isConfirmAlertBox;
         });
         setCommentList(newList);
         setConfirmAlert(false);
@@ -191,76 +190,75 @@ function CommentCard(props) {
       code: "yes",
       hasLoader: true,
       cb: deleteConfirmed,
-      color: "primary",
-      variant: "contained",
     },
   ];
 
   return (
     <div className={classes.root}>
-      <Box mt={2}>
-        <Grid container display="flex" justify="center">
-          <Grid item>
-            <Avatar
-              src={_get(userDetails, "profilePicture", "")}
-              className={classes.small}
-            />
-          </Grid>
-          <Grid item xs>
-            <Box pl={1}>
-              <Paper className={classes.paper}>
-                <TextField
-                  id="standard-name"
-                  value={comments}
-                  fullWidth
-                  placeholder="Your a comments..."
-                  multiline
-                  rowsMax={4}
-                  rows={4}
-                  InputProps={{
-                    disableUnderline: true,
-                    onChange: (e) => {
-                      handleChange(e);
-                    },
-                  }}
-                />
-                <Box display="flex" justifyContent="flex-end">
-                  <ButtonWrapper
-                    variant="contained"
-                    loader={loader}
-                    onClick={() => {
-                      if (isLoggedIn()) {
-                        sumbmitComment();
-                      } else props.toggleLoginModal(true);
+      {isLoggedIn() && (
+        <Box mt={2}>
+          <Grid container display="flex" justify="center">
+            <Grid item>
+              <Avatar
+                src={_get(userDetails, "profilePicture", "")}
+                className={classes.small}
+              />
+            </Grid>
+            <Grid item xs>
+              <Box pl={1}>
+                <Paper className={classes.paper}>
+                  <TextField
+                    id="standard-name"
+                    value={comments}
+                    fullWidth
+                    placeholder="Your a comments..."
+                    multiline
+                    rowsMax={4}
+                    rows={4}
+                    InputProps={{
+                      disableUnderline: true,
+                      onChange: (e) => {
+                        handleChange(e);
+                      },
                     }}
-                  >
-                    <Typography variant="button">Comment</Typography>
-                  </ButtonWrapper>
-                </Box>
-              </Paper>
-            </Box>
+                  />
+                  <Box display="flex" justifyContent="flex-end">
+                    <ButtonWrapper
+                      variant="contained"
+                      loader={loader}
+                      onClick={() => {
+                        if (isLoggedIn()) {
+                          sumbmitComment();
+                        } else props.toggleLoginModal(true);
+                      }}
+                    >
+                      <Typography variant="button">Comment</Typography>
+                    </ButtonWrapper>
+                  </Box>
+                </Paper>
+              </Box>
+            </Grid>
           </Grid>
-        </Grid>
-      </Box>
-
+        </Box>
+      )}
       {commentList.map((item, index) => (
-        <Box my={2} key={index}>
+        <Box mt={2} key={index}>
           <UserHeaderCard
-            profilePicture={_get(item, "user_details.profilePicture", "")}
-            givenName={_get(item, "user_details.givenName")}
-            familyName={_get(item, "user_details.familyName")}
+            profilePicture={_get(item, "user.profilePicture", "")}
+            givenName={_get(item, "user.givenName")}
+            familyName={_get(item, "user.familyName")}
             createdAt={_get(item, "createdAt")}
             avatarClass={classes.small}
           >
-            {editId === item.commentId ? null : (
+            {isLoggedIn() && userDetails._id === item.user._id ? (
               <OptionMenuV2 menuItem={menuItem} data={item} />
-            )}
+            ) : null}
           </UserHeaderCard>
 
           <Grid container spacing={0} alignItems="center">
             <Grid item>
               <Avatar
-                src={_get(item, "user_details.profilePicture", "")}
+                src={_get(item, "user.profilePicture", "")}
                 className={classes.small}
                 style={{ opacity: 0 }}
               />
@@ -268,7 +266,7 @@ function CommentCard(props) {
             <Grid item xs>
               <Box mt={1}>
                 <Paper className={classes.paper}>
-                  {editId === item.commentId ? (
+                  {editId === item._id ? (
                     <TextEditor
                       data={item}
                       onCancel={() => setEditId(null)}
@@ -303,7 +301,7 @@ function CommentCard(props) {
         menu={confirmAlertButtons}
         loader={loader}
         title={<Typography variant="h1">Delete Post</Typography>}
-        subtitle="Are You Sure You Want To Delete This Comment?"
+        subtitle="Are you sure you want to delete this comment?"
         data={isConfirmAlertBox}
         isModalOpen={isConfirmAlertBox}
       />
