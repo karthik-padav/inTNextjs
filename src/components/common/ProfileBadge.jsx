@@ -11,7 +11,7 @@ import Icon from "@material-ui/core/Icon";
 import Badge from "@material-ui/core/Badge";
 import ButtonWrapper from "src/components/common/ButtonWrapper";
 import { connect } from "react-redux";
-import { getNotification, readNotification } from "src/dataService/Services";
+import { getNotification, readNotification } from "src/dataService/Api";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";

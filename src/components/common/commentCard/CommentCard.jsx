@@ -19,7 +19,7 @@ import {
   getAllComments,
   postComments,
   deleteComment,
-} from "src/dataService/Services";
+} from "src/dataService/Api";
 import { isLoggedIn, getPostTypeFromURL } from "src/utils/Common";
 import UserHeaderCard from "src/components/common/UserHeaderCard";
 import OptionMenuV2 from "src/components/common/OptionMenuV2";

@@ -1,4 +1,4 @@
-import { getQuestions } from "src/dataService/Services";
+import { getQuestions } from "src/dataService/Api";
 import React, { useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { Grid, Paper, Box, Icon, Button, Typography } from "@material-ui/core";

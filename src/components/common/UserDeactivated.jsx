@@ -13,14 +13,14 @@ import IconButton from "@material-ui/core/IconButton";
 import constants from "src/dataService/Constants";
 import { GoogleLogin } from "react-google-login";
 import { connect } from "react-redux";
-import { login } from "src/dataService/Services";
+import { login } from "src/dataService/Api";
 import { bindActionCreators } from "redux";
 import DialogBox from "src/components/common/dialogBoxWrapper/DialogBox";
 import ButtonWrapper from "src/components/common/ButtonWrapper";
 import { grey, red, blue } from "@material-ui/core/colors";
 import ConfirmAlertBox from "src/components/common/ConfirmAlertBox";
 import colors from "src/themes/ThemeColors";
-import { getUserDetails, updateUserDetails } from "src/dataService/Services";
+import { getUserDetails, updateUserDetails } from "src/dataService/Api";
 
 const useStyles = makeStyles((theme) => ({}));
 

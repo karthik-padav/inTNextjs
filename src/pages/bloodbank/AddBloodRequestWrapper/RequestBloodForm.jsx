@@ -14,7 +14,7 @@ import { Grid, Box, MenuItem } from "@material-ui/core";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import locationList from "public/json/LocationList";
 import constants from "src/dataService/Constants";
-import { postBloodRequest } from "src/dataService/Services";
+import { postBloodRequest } from "src/dataService/Api";
 import ButtonWrapper from "src/components/common/ButtonWrapper";
 import { grey, red, blue } from "@material-ui/core/colors";
 import colors from "src/themes/ThemeColors";

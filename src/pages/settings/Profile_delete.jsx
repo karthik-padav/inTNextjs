@@ -15,7 +15,7 @@ import { Formik, Field } from "formik";
 import { TextField as FTextField } from "formik-material-ui";
 import classNames from "classnames";
 import { Grid, Box, Avatar } from "@material-ui/core";
-import { updateUserDetails } from "src/dataService/Services";
+import { updateUserDetails } from "src/dataService/Api";
 
 const useStyles = makeStyles((theme) => ({
   root: {

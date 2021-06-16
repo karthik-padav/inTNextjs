@@ -29,7 +29,7 @@ import UserHeaderCard from "src/components/common/UserHeaderCard";
 import ConfirmAlertBox from "src/components/common/ConfirmAlertBox";
 import BloodDetailsCard from "src/pages/bloodbank/BloodDetailsCard";
 
-import { getBloodReceiver, postBloodRequest } from "src/dataService/Services";
+import { getBloodReceiver, postBloodRequest } from "src/dataService/Api";
 import { isLoggedIn } from "src/utils/Common";
 import CommentCard from "src/components/common/commentCard/index";
 import Divider from "src/components/common/Divider";

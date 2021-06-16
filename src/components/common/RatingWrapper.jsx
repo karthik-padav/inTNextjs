@@ -4,7 +4,7 @@ import StarBorderIcon from "@material-ui/icons/StarBorder";
 import Typography from "@material-ui/core/Typography";
 import Box from "@material-ui/core/Box";
 import { makeStyles } from "@material-ui/core/styles";
-import { handleReview } from "src/dataService/Services";
+import { handleReview } from "src/dataService/Api";
 import _get from "lodash/get";
 import { isLoggedIn } from "src/utils/Common";
 import { connect } from "react-redux";

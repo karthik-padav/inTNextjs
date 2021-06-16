@@ -14,7 +14,7 @@ import Icon from "@material-ui/core/Icon";
 import Badge from "@material-ui/core/Badge";
 import Typography from "@material-ui/core/Typography";
 
-import { getAllShop, deleteShop } from "src/dataService/Services";
+import { getAllShop, deleteShop } from "src/dataService/Api";
 import { isLoggedIn } from "src/utils/Common";
 
 import FilterWrapper from "src/pages/bloodbank/FilterWrapper";

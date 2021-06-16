@@ -11,7 +11,7 @@ import Paper from "@material-ui/core/Paper";
 import _get from "lodash/get";
 import _isEmpty from "lodash/isEmpty";
 import { connect } from "react-redux";
-import { getAllComments, postComments } from "src/dataService/Services";
+import { getAllComments, postComments } from "src/dataService/Api";
 import { isLoggedIn } from "src/utils/Common";
 import UserHeaderCard from "src/components/common/UserHeaderCard";
 import ButtonWrapper from "src/components/common/ButtonWrapper";

@@ -3,7 +3,7 @@ import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { Grid, Avatar, Typography, Paper, Box } from "@material-ui/core";
 import Icon from "@material-ui/core/Icon";
-import { login } from "src/dataService/Services";
+import { login } from "src/dataService/Api";
 import { GoogleLogout, GoogleLogin } from "react-google-login";
 import { connect } from "react-redux";
 import _get from "lodash/get";

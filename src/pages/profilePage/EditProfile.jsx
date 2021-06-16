@@ -21,7 +21,7 @@ import Grid from "@material-ui/core/Grid";
 import Box from "@material-ui/core/Box";
 import MenuItem from "@material-ui/core/MenuItem";
 import constants from "src/dataService/Constants";
-import { updateUserDetails } from "src/dataService/Services";
+import { updateUserDetails } from "src/dataService/Api";
 import menuLists from "src/dataService/MenuLists";
 import ButtonWrapper from "src/components/common/ButtonWrapper";
 import { grey, red, blue } from "@material-ui/core/colors";

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { bindActionCreators } from "redux";
-import { getQuestions } from "src/dataService/Services";
+import { getQuestions } from "src/dataService/Api";
 import { makeStyles } from "@material-ui/core/styles";
 import { Grid, Paper, Box, Icon } from "@material-ui/core";
 import { connect } from "react-redux";
@@ -18,7 +18,7 @@ import LoaderComponent from "src/pages/questions/LoaderComponent";
 // import { getAllQuestions } from "actions/questions";
 import PostCardWrapper from "src/components/common/postCard/PostCardWrapper";
 import ConfirmAlertBox from "src/components/common/ConfirmAlertBox";
-import { deletePostFeed } from "src/dataService/Services";
+import { deletePostFeed } from "src/dataService/Api";
 import NoDataFound from "src/components/common/NoDataFound";
 import ButtonWrapper from "src/components/common/ButtonWrapper";
 import InfiniteScroll from "src/components/common/InfiniteScroll";

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { getAllShop } from "src/dataService/Services";
+import { getAllShop } from "src/dataService/Api";
 import Typography from "@material-ui/core/Typography";
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
@@ -22,7 +22,7 @@ import CardWrapper from "./CardWrapper";
 import PostCardWrapper from "src/components/common/postCard/PostCardWrapper";
 
 import ConfirmAlertBox from "src/components/common/ConfirmAlertBox";
-import { deletePostFeed } from "src/dataService/Services";
+import { deletePostFeed } from "src/dataService/Api";
 import ButtonWrapper from "src/components/common/ButtonWrapper";
 import { isLoggedIn } from "src/utils/Common";
 import { grey, red, blue } from "@material-ui/core/colors";

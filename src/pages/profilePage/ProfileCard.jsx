@@ -23,7 +23,7 @@ import Divider from "src/components/common/Divider";
 import ButtonWrapper from "src/components/common/ButtonWrapper";
 import EditProfile from "src/pages/profilePage/EditProfile";
 
-import { updateUserDetails } from "src/dataService/Services";
+import { updateUserDetails } from "src/dataService/Api";
 import _get from "lodash/get";
 import _isEmpty from "lodash/isEmpty";
 

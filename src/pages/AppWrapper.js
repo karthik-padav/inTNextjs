@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 
 import { ThemeProvider } from "@material-ui/core/styles";
 import { connect } from "react-redux";
-import { getUserDetails } from "src/dataService/Services";
+import { getUserDetails } from "src/dataService/Api";
 
 import Header from "src/components/common/Header";
 import UiComponents from "src/components/common/UiComponents";

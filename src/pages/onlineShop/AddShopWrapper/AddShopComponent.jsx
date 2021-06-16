@@ -10,7 +10,7 @@ import _cloneDeep from "lodash/cloneDeep";
 import _findIndex from "lodash/findIndex";
 import _omit from "lodash/omit";
 import { connect } from "react-redux";
-import { postShop } from "src/dataService/Services";
+import { postShop } from "src/dataService/Api";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import MenuItem from "@material-ui/core/MenuItem";
 import ButtonWrapper from "src/components/common/ButtonWrapper";

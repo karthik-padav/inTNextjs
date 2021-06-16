@@ -29,7 +29,7 @@ import classNames from "classnames";
 import ButtonWrapper from "src/components/common/ButtonWrapper";
 import _isEmpty from "lodash/isEmpty";
 import _get from "lodash/get";
-import { getUserDetails, updateUserDetails } from "src/dataService/Services";
+import { getUserDetails, updateUserDetails } from "src/dataService/Api";
 
 const useStyles = makeStyles((theme) => ({
   root: {

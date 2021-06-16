@@ -20,7 +20,7 @@ import Link from "next/link";
 import { isLoggedIn, getPostTypeFromURL } from "src/utils/Common";
 import { usePrevious } from "src/utils/CustomHooks";
 
-import { handleLike } from "src/dataService/Services";
+import { handleLike } from "src/dataService/Api";
 import { red } from "@material-ui/core/colors";
 import constants from "src/dataService/Constants";
 
