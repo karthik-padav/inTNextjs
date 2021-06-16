@@ -1,6 +1,6 @@
 import { createMuiTheme, ThemeProvider } from "@material-ui/core/styles";
 import { grey, red, blue, lime, orange } from "@material-ui/core/colors";
-import colors from "src/themes/themeColors";
+import colors from "src/themes/ThemeColors";
 import constants from "src/dataService/Constants";
 
 export const defaultTheme = (theme) => {

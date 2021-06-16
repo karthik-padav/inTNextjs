@@ -19,7 +19,7 @@ import DialogBox from "src/components/common/dialogBoxWrapper/DialogBox";
 import ButtonWrapper from "src/components/common/ButtonWrapper";
 import { grey, red, blue } from "@material-ui/core/colors";
 import ConfirmAlertBox from "src/components/common/ConfirmAlertBox";
-import colors from "src/themes/themeColors";
+import colors from "src/themes/ThemeColors";
 import { getUserDetails, updateUserDetails } from "src/dataService/Services";
 
 const useStyles = makeStyles((theme) => ({}));

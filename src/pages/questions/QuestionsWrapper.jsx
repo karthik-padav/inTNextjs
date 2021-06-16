@@ -25,7 +25,7 @@ import InfiniteScroll from "src/components/common/InfiniteScroll";
 import LoadMore from "src/components/common/LoadMore";
 import Typography from "@material-ui/core/Typography";
 import { grey, red, blue } from "@material-ui/core/colors";
-import colors from "src/themes/themeColors";
+import colors from "src/themes/ThemeColors";
 
 const useStyles = makeStyles((theme) => ({
   root: {

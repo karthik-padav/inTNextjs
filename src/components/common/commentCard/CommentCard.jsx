@@ -30,7 +30,7 @@ import ButtonWrapper from "src/components/common/ButtonWrapper";
 import LoadMore from "src/components/common/LoadMore";
 import LoaderComponent from "./LoaderComponent";
 import { grey, red, blue } from "@material-ui/core/colors";
-import colors from "src/themes/themeColors";
+import colors from "src/themes/ThemeColors";
 
 const useStyles = makeStyles((theme) => ({
   root: {

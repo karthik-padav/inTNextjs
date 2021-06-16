@@ -11,7 +11,7 @@ import Link from "next/link";
 import ImagePreview from "src/components/common/ImagePreview";
 import Divider from "src/components/common/Divider";
 import Chip from "@material-ui/core/Chip";
-import colors from "src/themes/themeColors";
+import colors from "src/themes/ThemeColors";
 import constants from "src/dataService/Constants";
 import { codeToName } from "src/utils/Common";
 

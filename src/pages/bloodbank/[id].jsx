@@ -34,7 +34,7 @@ import { isLoggedIn } from "src/utils/Common";
 import CommentCard from "src/components/common/commentCard/index";
 import Divider from "src/components/common/Divider";
 import { grey, red, blue } from "@material-ui/core/colors";
-import colors from "src/themes/themeColors";
+import colors from "src/themes/ThemeColors";
 
 const useStyles = makeStyles((theme) => ({
   root: {

@@ -25,7 +25,7 @@ import ButtonWrapper from "src/components/common/ButtonWrapper";
 import Dialog from "@material-ui/core/Dialog";
 import DialogBox from "src/components/common/dialogBoxWrapper/DialogBox";
 import { grey, red, blue } from "@material-ui/core/colors";
-import colors from "src/themes/themeColors";
+import colors from "src/themes/ThemeColors";
 import ImagePicker from "src/components/common/ImagePicker";
 import { Formik, Field } from "formik";
 import constants from "src/dataService/Constants";

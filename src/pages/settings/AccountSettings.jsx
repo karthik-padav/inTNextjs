@@ -23,7 +23,7 @@ import Icon from "@material-ui/core/Icon";
 import Switch from "@material-ui/core/Switch";
 import constants from "src/dataService/Constants";
 import { orange, grey } from "@material-ui/core/colors";
-import colors from "src/themes/themeColors";
+import colors from "src/themes/ThemeColors";
 import ConfirmAlertBox from "src/components/common/ConfirmAlertBox";
 import classNames from "classnames";
 import ButtonWrapper from "src/components/common/ButtonWrapper";

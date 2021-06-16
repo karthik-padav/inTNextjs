@@ -1,5 +1,5 @@
 import { red, orange, blue, pink, grey } from "@material-ui/core/colors";
-import colors from "src/themes/themeColors";
+import colors from "src/themes/ThemeColors";
 
 const constants = {
   baseUrl: "http://localhost:5000",

@@ -9,7 +9,7 @@ import Box from "@material-ui/core/Box";
 import { connect } from "react-redux";
 import _get from "lodash/get";
 import { grey, red, blue } from "@material-ui/core/colors";
-import colors from "src/themes/themeColors";
+import colors from "src/themes/ThemeColors";
 import QuestionsWrapper from "src/pages/questions/QuestionsWrapper";
 import BloodWrapper from "src/pages/bloodbank/BloodWrapper";
 import OnlineShopWrapper from "src/pages/onlineShop/OnlineShopWrapper";

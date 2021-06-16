@@ -1,5 +1,5 @@
 import { red, orange, blue, pink, grey, green } from "@material-ui/core/colors";
-import colors from "src/themes/themeColors";
+import colors from "src/themes/ThemeColors";
 import permission from "src/dataService/Permission";
 
 const menuLists = {

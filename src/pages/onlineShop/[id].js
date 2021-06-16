@@ -26,7 +26,7 @@ import { deletePostFeed } from "src/dataService/Services";
 import ButtonWrapper from "src/components/common/ButtonWrapper";
 import { isLoggedIn } from "src/utils/Common";
 import { grey, red, blue } from "@material-ui/core/colors";
-import colors from "src/themes/themeColors";
+import colors from "src/themes/ThemeColors";
 import { NextSeo } from "next-seo";
 import { getSeoDetails } from "src/seo/getSEO";
 

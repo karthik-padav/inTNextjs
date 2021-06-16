@@ -17,7 +17,7 @@ import UserHeaderCard from "src/components/common/UserHeaderCard";
 import ButtonWrapper from "src/components/common/ButtonWrapper";
 import OptionMenuV2 from "src/components/common/OptionMenuV2";
 import { grey, red, blue } from "@material-ui/core/colors";
-import colors from "src/themes/themeColors";
+import colors from "src/themes/ThemeColors";
 
 const useStyles = makeStyles((theme) => ({
   root: {
