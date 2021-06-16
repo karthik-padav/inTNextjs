@@ -66,7 +66,8 @@ function Menu(props) {
 
   const handleClick = (item) => {
     if (_get(item, "cb")) item.cb(item);
-    if (_get(item, "redirect")) router.push(item.redirect);
+    if (_get(item, "redirect"))
+      router.push(item.redirect, undefined, { shallow: true });
   };
 
   // console.log(getPageCode(router), "getPageCode123");
