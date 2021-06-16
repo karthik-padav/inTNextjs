@@ -31,7 +31,6 @@ import BloodDetailsCard from "pages/bloodbank/BloodDetailsCard";
 
 import { getBloodReceiver, postBloodRequest } from "dataService/Services";
 import { isLoggedIn } from "Function/Common";
-import OptionMenu from "./OptionMenu";
 import CommentCard from "components/common/CommentCard/index";
 import Divider from "components/common/Divider";
 import { grey, red, blue } from "@material-ui/core/colors";
