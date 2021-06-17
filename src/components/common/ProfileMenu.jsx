@@ -16,7 +16,6 @@ import IconButton from "@material-ui/core/IconButton";
 import EditProfile from "src/pages/profilePage/EditProfile";
 import Link from "next/link";
 
-const Client_Secret = "JI4VLN5YzeasPsjn0qoVUkAJ";
 const clientId =
   "142327848430-tmf4l94t5a7f6kcepvjhm6rqng02u6ga.apps.googleusercontent.com";
 const useStyles = makeStyles((theme) => ({
