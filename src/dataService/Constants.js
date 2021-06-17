@@ -1,17 +1,10 @@
-import { red, orange, blue, pink, grey } from "@material-ui/core/colors";
-import colors from "src/themes/ThemeColors";
-
 const constants = {
-  baseUrl: "http://localhost:5000",
-  s3BaseUrl: "https://in-tulunadu-files.s3.ap-south-1.amazonaws.com/",
-  dpImagePath: "./uploads/displayPhoto/",
-  postImagePath: "./uploads/feedPost/",
-  Client_Secret: "JI4VLN5YzeasPsjn0qoVUkAJ",
-  clientId:
-    "142327848430-tmf4l94t5a7f6kcepvjhm6rqng02u6ga.apps.googleusercontent.com",
-  pas: "*A+[d}KU0E(N}0c%",
-  dm: "mim",
-  u: "admin",
+  serverBaseUrl: process.env.SERVER_1_BASEURL,
+  s3BaseUrl: process.env.S3_BASE_URL,
+  clientId: process.env.GOOGLE_AUTH_CLIENTID,
+  // pas: "*A+[d}KU0E(N}0c%",
+  // dm: "mim",
+  // u: "admin",
 
   bloodType: [
     {

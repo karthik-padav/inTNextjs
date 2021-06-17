@@ -13,7 +13,7 @@ const getHeader = () => {
 };
 
 export const getUserDetails = (userId) => {
-  let url = `${constants.baseUrl}/getUserDetails`;
+  let url = `${constants.serverBaseUrl}/getUserDetails`;
   if (userId) url += `?userId=${userId}`;
   return new Promise((resolve, reject) => {
     axios({
@@ -34,7 +34,7 @@ export const getNotification = () => {
   return new Promise((resolve, reject) => {
     axios({
       method: "get",
-      url: constants.baseUrl + `/getNotification`,
+      url: constants.serverBaseUrl + `/getNotification`,
       headers: getHeader(),
     })
       .then((res) => {
@@ -51,7 +51,7 @@ export const readNotification = (notificationId) => {
   return new Promise((resolve, reject) => {
     axios({
       method: "post",
-      url: constants.baseUrl + `/readNotification`,
+      url: constants.serverBaseUrl + `/readNotification`,
       headers: getHeader(),
       data,
     })
@@ -68,7 +68,7 @@ export const updateUserDetails = (data) => {
   return new Promise((resolve, reject) => {
     axios({
       method: "post",
-      url: constants.baseUrl + `/updateUserDetails`,
+      url: constants.serverBaseUrl + `/updateUserDetails`,
       headers: getHeader(),
       data,
     })
@@ -85,7 +85,7 @@ export const login = (body) => {
   return new Promise((resolve, reject) => {
     axios({
       method: "post",
-      url: constants.baseUrl + "/login",
+      url: constants.serverBaseUrl + "/login",
       headers: getHeader(),
       data: body,
     })
@@ -102,7 +102,7 @@ export const postBloodRequest = (body, isEdit) => {
   return new Promise((resolve, reject) => {
     axios({
       method: "post",
-      url: `${constants.baseUrl}/${
+      url: `${constants.serverBaseUrl}/${
         isEdit ? "updateBloodRequest" : "postBloodRequest"
       }`,
       headers: getHeader(),
@@ -121,7 +121,7 @@ export const deleteBloodRequest = (id) => {
   return new Promise((resolve, reject) => {
     axios({
       method: "post",
-      url: `${constants.baseUrl}/deleteBloodRequest`,
+      url: `${constants.serverBaseUrl}/deleteBloodRequest`,
       headers: getHeader(),
       data: {
         postId: id,
@@ -140,7 +140,7 @@ export const getBloodReceiver = (querry) => {
   return new Promise((resolve, reject) => {
     axios({
       method: "get",
-      url: constants.baseUrl + `/getAllBloodRequest${querry}`,
+      url: constants.serverBaseUrl + `/getAllBloodRequest${querry}`,
       headers: getHeader(),
     })
       .then((res) => {
@@ -157,7 +157,7 @@ export const getBloodDonor = (querry) => {
   return new Promise((resolve, reject) => {
     axios({
       method: "get",
-      url: constants.baseUrl + `/wp-json/api/v1/questions${querry}`,
+      url: constants.serverBaseUrl + `/wp-json/api/v1/questions${querry}`,
       headers: getHeader(),
     })
       .then((res) => {
@@ -177,7 +177,7 @@ export const getAllComments = (querry) => {
   return new Promise((resolve, reject) => {
     axios({
       method: "get",
-      url: constants.baseUrl + `/getAllComments${querry}`,
+      url: constants.serverBaseUrl + `/getAllComments${querry}`,
       headers: getHeader(),
     })
       .then((res) => {
@@ -191,8 +191,8 @@ export const getAllComments = (querry) => {
 
 export const postComments = (data) => {
   let url = "";
-  if (_get(data, "_id")) url = `${constants.baseUrl}/editComment`;
-  else url = `${constants.baseUrl}/postComments`;
+  if (_get(data, "_id")) url = `${constants.serverBaseUrl}/editComment`;
+  else url = `${constants.serverBaseUrl}/postComments`;
   console.log(getHeader(), "getHeader()");
   return new Promise((resolve, reject) => {
     axios({
@@ -214,7 +214,7 @@ export const deleteComment = (id) => {
   return new Promise((resolve, reject) => {
     axios({
       method: "delete",
-      url: `${constants.baseUrl}/deleteComment/${id}`,
+      url: `${constants.serverBaseUrl}/deleteComment/${id}`,
       headers: getHeader(),
     })
       .then((res) => {
@@ -235,7 +235,7 @@ export const handleLike = (data) => {
   return new Promise((resolve, reject) => {
     axios({
       method: "post",
-      url: `${constants.baseUrl}/handleLike`,
+      url: `${constants.serverBaseUrl}/handleLike`,
       headers: getHeader(),
       data,
     })
@@ -252,7 +252,7 @@ export const handleReview = (data) => {
   return new Promise((resolve, reject) => {
     axios({
       method: "post",
-      url: `${constants.baseUrl}/handleReview`,
+      url: `${constants.serverBaseUrl}/handleReview`,
       headers: getHeader(),
       data,
     })
@@ -268,7 +268,7 @@ export const handleReview = (data) => {
 export const postFeed = (body, flag) => {
   console.log(body, "body123");
   return new Promise((resolve, reject) => {
-    let url = constants.baseUrl;
+    let url = constants.serverBaseUrl;
     if (flag === "post") url += "/postFeedDetails";
     else url += "/updatePostFeed";
     axios({
@@ -290,7 +290,7 @@ export const getQuestions = (querry) => {
   return new Promise((resolve, reject) => {
     axios({
       method: "get",
-      url: constants.baseUrl + `/getAllFeeds${querry}`,
+      url: constants.serverBaseUrl + `/getAllFeeds${querry}`,
       headers: getHeader(),
     })
       .then((res) => {
@@ -306,7 +306,7 @@ export const deletePostFeed = (id) => {
   return new Promise((resolve, reject) => {
     axios({
       method: "delete",
-      url: `${constants.baseUrl}/deletePostFeed/${id}`,
+      url: `${constants.serverBaseUrl}/deletePostFeed/${id}`,
       headers: getHeader(),
     })
       .then((res) => {
@@ -323,7 +323,7 @@ export const getAllShop = (querry) => {
   return new Promise((resolve, reject) => {
     axios({
       method: "get",
-      url: constants.baseUrl + `/getAllShop${querry}`,
+      url: constants.serverBaseUrl + `/getAllShop${querry}`,
       headers: getHeader(),
     })
       .then((res) => {
@@ -337,7 +337,7 @@ export const getAllShop = (querry) => {
 
 export const postShop = (body, flag) => {
   return new Promise((resolve, reject) => {
-    let url = constants.baseUrl;
+    let url = constants.serverBaseUrl;
     if (flag === "post") url += "/postShop";
     else url += "/updateShop";
     axios({
@@ -359,7 +359,7 @@ export const deleteShop = (id) => {
   return new Promise((resolve, reject) => {
     axios({
       method: "post",
-      url: `${constants.baseUrl}/deleteShop`,
+      url: `${constants.serverBaseUrl}/deleteShop`,
       headers: getHeader(),
       data: {
         shopId: id,
