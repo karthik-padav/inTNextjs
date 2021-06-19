@@ -78,40 +78,43 @@ function Menu(props) {
         {_get(props, "menuItem", getMenuList()).map((item, index) => {
           const isSelected = getPageCode(router) === item.code;
           return (
-            <ListItem
-              key={index}
-              button
-              onClick={() => handleClick(item)}
-              className={classNames(
-                classes.btn,
-                isSelected ? classes.btnSelected : ""
-              )}
-              selected={isSelected}
-            >
-              {_get(item, "icon") && (
-                <ListItemIcon>
-                  <Avatar
-                    className={classes.avatar_s}
-                    style={{
-                      color: item.iconColor,
-                      backgroundColor: "transparent",
-                    }}
-                  >
-                    <Icon
-                      className={classNames(item.icon)}
+            <Link key={index} href={_get(item, "redirect", "")}>
+              <ListItem
+                button
+                // onClick={() => handleClick(item)}
+                className={classNames(
+                  classes.btn,
+                  isSelected ? classes.btnSelected : ""
+                )}
+                selected={isSelected}
+              >
+                {_get(item, "icon") && (
+                  <ListItemIcon>
+                    <Avatar
+                      className={classes.avatar_s}
                       style={{
-                        color: isSelected ? "#fff" : item.iconColor,
-                        width: "auto",
-                        fontSize: item.iconSize,
+                        color: item.iconColor,
+                        backgroundColor: "transparent",
                       }}
-                    />
-                  </Avatar>
-                </ListItemIcon>
-              )}
-              <ListItemText
-                primary={<Typography variant="body1">{item.title}</Typography>}
-              />
-            </ListItem>
+                    >
+                      <Icon
+                        className={classNames(item.icon)}
+                        style={{
+                          color: isSelected ? "#fff" : item.iconColor,
+                          width: "auto",
+                          fontSize: item.iconSize,
+                        }}
+                      />
+                    </Avatar>
+                  </ListItemIcon>
+                )}
+                <ListItemText
+                  primary={
+                    <Typography variant="body1">{item.title}</Typography>
+                  }
+                />
+              </ListItem>
+            </Link>
           );
         })}
       </List>

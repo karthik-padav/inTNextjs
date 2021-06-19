@@ -50,13 +50,4 @@ function CardWrapper(props) {
   );
 }
 
-const mapStateToProps = (state) => {
-  return {
-    userDetails: state.userDetails,
-  };
-};
-const mapDispatchToProps = (dispatch) => {
-  return {};
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(CardWrapper);
+export default CardWrapper;

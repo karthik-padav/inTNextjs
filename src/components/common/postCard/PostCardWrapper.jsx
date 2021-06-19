@@ -40,7 +40,6 @@ function PostCardWrapper(props) {
     showLike = true,
     showComment = true,
     showRating = true,
-    loggedUser,
   } = props;
   console.log(props.data, "data123");
   const {
@@ -152,6 +151,7 @@ function PostCardWrapper(props) {
           {showRating && <RatingWrapper postId={postId} review={review} />}
         </div>
       </Box>
+
       {showComment && showCommentList && (
         <>
           <Divider />
@@ -164,11 +164,6 @@ function PostCardWrapper(props) {
   );
 }
 
-const mapStateToProps = (state) => {
-  return {
-    loggedUser: _get(state, "userDetails"),
-  };
-};
 const mapDispatchToProps = (dispatch) => {
   return {
     updateToastMsg: (toastMsg) => {
@@ -186,4 +181,4 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(PostCardWrapper);
+export default connect(null, mapDispatchToProps)(PostCardWrapper);
