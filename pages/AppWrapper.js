@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 
 import { ThemeProvider } from "@material-ui/core/styles";
-import { connect } from "react-redux";
 import { getUserDetails } from "dataService/Api";
 
 import Header from "components/common/Header";
@@ -11,31 +10,32 @@ import { getTheme } from "themes/Theme";
 
 import _get from "lodash/get";
 import constants from "dataService/Constants";
+import Menu from "components/common/Menu";
+import Grid from "@material-ui/core/Grid";
+import Box from "@material-ui/core/Box";
+import { useSelector, useDispatch } from "react-redux";
+import { getLoggedUser, loggedUserReducer } from "redux/slices/loggedUserSlice";
+import {
+  getThemeState,
+  updateToastMsg,
+  updateTheme,
+} from "redux/slices/uiSlice";
 
 function AppWrapper(props) {
-  const {
-    Component,
-    pageProps,
-    theme,
-    userDetails,
-    updateUser = () => {},
-    updateTheme = () => {},
-  } = props;
+  const { Component, pageProps } = props;
 
+  const dispatch = useDispatch();
+  const theme = useSelector(getThemeState);
   const [loader, setLoader] = useState(true);
-  const [userDetailsLoaderLoader, setUserDetailsLoader] = useState(false);
-
   const themeObj = getTheme(theme);
-  // console.log(themeObj, "theme1123", theme);
-  // console.log(props, "props1213");
-
-  const prevUserDetails = usePrevious(userDetails);
+  const loggedUser = useSelector(getLoggedUser);
+  const prevLoggedUser = usePrevious(loggedUser);
   const mounted = React.useRef();
   useEffect(() => {
     if (!mounted.current) {
       mounted.current = true;
     } else {
-      if (_get(prevUserDetails, "userId") !== _get(userDetails, "userId")) {
+      if (_get(prevLoggedUser, "_id") !== _get(loggedUser, "_id")) {
         setLoader(true);
         setTimeout(() => {
           setLoader(false);
@@ -44,90 +44,65 @@ function AppWrapper(props) {
     }
   });
 
+  const getUserData = async () => {
+    setLoader(true);
+    let accesstoken = localStorage.getItem("inTulunadu_accesstoken");
+    if (accesstoken) {
+      accesstoken = JSON.parse(accesstoken);
+      const { data, error } = await getUserDetails();
+      if (error) {
+        dispatch(
+          updateToastMsg({ msg: "Something went wrong.", type: "error" })
+        );
+        setLoader(false);
+        return;
+      }
+      if (data?.status) {
+        const loggedUser = _get(data, "data");
+        dispatch(loggedUserReducer(loggedUser));
+      }
+    }
+    setLoader(false);
+  };
+
   useEffect(() => {
     getUserData();
-    // SET THEME
     let theme = localStorage.getItem("theme");
     if (theme) {
       theme = JSON.parse(theme);
       if (_get(theme, "themeData.mode") === constants.THEME.DARK) {
-        updateTheme(constants.THEME.DARK);
+        dispatch(updateTheme(constants.THEME.DARK));
       }
     }
   }, []);
 
-  const getUserData = async () => {
-    setLoader(true);
-    let localstorageUserData = localStorage.getItem("userDetails");
-    if (localstorageUserData) {
-      localstorageUserData = JSON.parse(localstorageUserData);
-      if (localstorageUserData.accesstoken)
-        await updateUser({
-          accesstoken: localstorageUserData.accesstoken,
-        });
-    }
-    if (
-      !_get(userDetails, "userId") &&
-      _get(localstorageUserData, "accesstoken")
-    ) {
-      getUserDetails()
-        .then((res) => {
-          const userData = _get(res, "data");
-          if (_get(res, "status") && userData) {
-            updateUser({
-              ...userData,
-              accesstoken: localstorageUserData.accesstoken,
-            });
-          }
-          setLoader(false);
-        })
-        .catch((err) => {
-          setLoader(false);
-        });
-    } else {
-      setLoader(false);
-    }
-  };
-
+  console.log(loader, "loader123");
   return (
     <ThemeProvider theme={themeObj}>
       <CssBaseline />
       {!loader && (
         <>
           <Header />
-          <Component {...pageProps} />
+          <Grid container spacing={0}>
+            <Grid item sm={12} md={3}>
+              <div className="stickyWrapper">
+                <Box p={0.5}>
+                  <Menu />
+                </Box>
+              </div>
+            </Grid>
+            <Grid item xs={12} md={9}>
+              <Box p={0.5}>
+                <Component {...pageProps} />
+              </Box>
+            </Grid>
+          </Grid>
           <UiComponents />
         </>
       )}
     </ThemeProvider>
   );
 }
-
-const mapStateToProps = (state) => {
-  return {
-    ui: state.ui,
-    userDetails: state.userDetails,
-    theme: state.ui.theme,
-    state: state,
-  };
-};
-
-const mapDispatchToProps = (dispatch) => {
-  return {
-    updateUser: (userDetails) => {
-      dispatch({
-        type: "UPDATE_USER",
-        payload: userDetails,
-      });
-    },
-    updateTheme: (mode) => {
-      dispatch({
-        type: "UPDATE_THEME",
-        payload: mode,
-      });
-    },
-  };
-};
 
 function usePrevious(value) {
   const ref = React.useRef();
@@ -137,4 +112,4 @@ function usePrevious(value) {
   return ref.current;
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(AppWrapper);
+export default AppWrapper;

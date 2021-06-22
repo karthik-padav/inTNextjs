@@ -1,5 +1,5 @@
 import "../styles/globals.css";
-import { store } from "redux/reducer";
+import store from "redux/store";
 import { Provider } from "react-redux";
 import AppWrapper from "./AppWrapper";
 import { DefaultSeo } from "next-seo";

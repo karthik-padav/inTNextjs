@@ -32,7 +32,6 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function BloodValunteer(props) {
-  const { theme, updateTheme } = props;
   const classes = useStyles();
 
   return (
@@ -63,60 +62,9 @@ function BloodValunteer(props) {
             </Typography>
           </Box>
         </Box>
-
-        <Switch
-          edge="end"
-          onChange={(e) => {
-            const mode = e.target.checked
-              ? constants.THEME.DARK
-              : constants.THEME.LIGHT;
-            updateTheme(mode);
-            localStorage.setItem(
-              "theme",
-              JSON.stringify({
-                themeData: {
-                  mode,
-                },
-              })
-            );
-          }}
-          checked={theme === constants.THEME.DARK}
-          color="primary"
-        />
       </Box>
     </div>
   );
 }
 
-const mapStateToProps = (state) => {
-  console.log(state, "state123");
-  return {
-    toastMsg: state.toastMsg,
-    userDetails: state.userDetails,
-    theme: state.ui.theme,
-  };
-};
-const mapDispatchToProps = (dispatch) => {
-  return {
-    updateTheme: (mode) => {
-      dispatch({
-        type: "UPDATE_THEME",
-        payload: mode,
-      });
-    },
-    updateToastMsg: (toastMsg) => {
-      dispatch({
-        type: "UPDATE_TOAST",
-        payload: toastMsg,
-      });
-    },
-    toggleLoginModal: (flag) => {
-      dispatch({
-        type: "SHOW_LOGIN_MODAL",
-        payload: flag,
-      });
-    },
-  };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(BloodValunteer);
+export default BloodValunteer;

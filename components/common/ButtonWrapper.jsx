@@ -13,7 +13,6 @@ const useStyles = makeStyles((theme) => ({
     marginBottom: theme.spacing(props.mb ? props.mb : 0),
     marginRight: theme.spacing(props.mr ? props.mr : 0),
     marginLeft: theme.spacing(props.ml ? props.ml : 0),
-
     paddingTop: theme.spacing(
       props.pt ? props.pt : props.type === "IconButton" ? 1.5 : 0.8
     ),
@@ -22,9 +21,7 @@ const useStyles = makeStyles((theme) => ({
     ),
     paddingRight: theme.spacing(props.pr ? props.pr : 1.5),
     paddingLeft: theme.spacing(props.pl ? props.pl : 1.5),
-
     borderRadius: props.borderRadius ? props.borderRadius : "50px",
-
     backgroundColor: props.bgColor
       ? props.bgColor
       : props.type === "IconButton"
@@ -35,7 +32,6 @@ const useStyles = makeStyles((theme) => ({
       : props.type === "IconButton"
       ? theme.palette.common.IconButton.color
       : theme.palette.common.button.color,
-
     "&:hover": {
       backgroundColor: props.bgColor
         ? props.bgColor

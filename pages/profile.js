@@ -16,7 +16,7 @@ import {
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import { makeStyles } from "@material-ui/core/styles";
-import { connect } from "react-redux";
+import { connect, useSelector } from "react-redux";
 import SEO from "seo/shop";
 import { NextSeo } from "next-seo";
 import Menu from "components/common/Menu";
@@ -24,6 +24,7 @@ import ProfileCard from "./profilePage/ProfileCard";
 import ScrollableTabsButtonAuto from "./profilePage/ScrollableTabsButtonAuto";
 
 import PhoneAuthentication from "./profilePage/PhoneAuthentication";
+import { getLoggedUser } from "redux/slices/loggedUserSlice";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -38,14 +39,14 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function Profile(props) {
-  const { userDetails, togglePhoneAuthModal } = props;
+  const loggedUser = useSelector(getLoggedUser);
   const router = useRouter();
 
   const classes = useStyles();
 
   useEffect(() => {
-    if (!userDetails) router.push("/");
-  }, [userDetails]);
+    if (!loggedUser) router.push("/");
+  }, [loggedUser]);
 
   return (
     <div className={classes.root}>
@@ -77,23 +78,4 @@ function Profile(props) {
     </div>
   );
 }
-
-const mapStateToProps = (state) => {
-  return {
-    toastMsg: state.toastMsg,
-    userDetails: state.userDetails,
-    theme: state.theme,
-  };
-};
-const mapDispatchToProps = (dispatch) => {
-  return {
-    updateToastMsg: (toastMsg) => {
-      dispatch({
-        type: "UPDATE_TOAST",
-        payload: toastMsg,
-      });
-    },
-  };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(Profile);
+export default Profile;

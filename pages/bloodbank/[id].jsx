@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import { makeStyles } from "@material-ui/core/styles";
-import { connect } from "react-redux";
+import { connect, useDispatch, useSelector } from "react-redux";
 
 import classNames from "classnames";
 
@@ -30,11 +30,13 @@ import ConfirmAlertBox from "components/common/ConfirmAlertBox";
 import BloodDetailsCard from "pages/bloodbank/BloodDetailsCard";
 
 import { getBloodReceiver, postBloodRequest } from "dataService/Api";
-import { isLoggedIn } from "utils/Common";
+import { isLoggedIn } from "redux/selector";
 import CommentCard from "components/common/commentCard/index";
 import Divider from "components/common/Divider";
 import { grey, red, blue } from "@material-ui/core/colors";
 import colors from "themes/ThemeColors";
+import { toggleLoginModal, updateToastMsg } from "redux/slices/uiSlice";
+import { getLoggedUser } from "redux/slices/loggedUserSlice";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -45,9 +47,6 @@ const useStyles = makeStyles((theme) => ({
   },
   paper: {
     padding: theme.spacing(2),
-    color: theme.palette.text.secondary,
-    backgroundColor: theme.palette.background.paper,
-    // boxShadow: theme.shadows[5],
   },
   raiseRequestBtn: {
     borderRadius: "50px",
@@ -83,6 +82,8 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function BloodPost(props) {
+  const dispatch = useDispatch();
+  const loggedUser = useSelector(getLoggedUser);
   const classes = useStyles();
   const router = useRouter();
 
@@ -102,10 +103,10 @@ function BloodPost(props) {
     postBloodRequest(data, isEdit).then((res) => {
       console.log(res, "response");
       if (_get(res, "status")) {
-        props.updateToastMsg({ msg: res.message, type: "success" });
+        dispatch(updateToastMsg({ msg: res.message, type: "success" }));
         toggleModal(false);
         setEditRequest({});
-      } else props.updateToastMsg({ msg: res.message, type: "error" });
+      } else dispatch(updateToastMsg({ msg: res.message, type: "error" }));
       setRaiseRequestLoader(false);
     });
   };
@@ -120,18 +121,17 @@ function BloodPost(props) {
       deleteBloodRequest(isConfirmAlertBox).then((res) => {
         console.log(res, "response");
         if (_get(res, "status")) {
-          props.updateToastMsg({ msg: res.message, type: "success" });
+          dispatch(updateToastMsg({ msg: res.message, type: "success" }));
           setConfirmAlert(null);
           router.push("/bloodbank");
         } else {
           setConfirmAlert(null);
-          props.updateToastMsg({ msg: res.message, type: "error" });
+          dispatch(updateToastMsg({ msg: res.message, type: "error" }));
         }
       });
     }
   };
 
-  const userDetails = props.userDetails;
   const bloodReceiver = _get(props, "bloodReceiver.data[0]");
   return (
     <div className={classes.root}>
@@ -157,7 +157,7 @@ function BloodPost(props) {
                 if (isLoggedIn()) {
                   toggleModal(true);
                   setEditRequest({});
-                } else props.toggleLoginModal(true);
+                } else dispatch(toggleLoginModal());
               }}
             >
               Add
@@ -178,10 +178,10 @@ function BloodPost(props) {
               <Fade in={isModalOpen}>
                 <Paper className={classNames(classes.paper, classes.mx_md)}>
                   <UserHeaderCard
-                    profilePicture={_get(userDetails, "profilePicture", "")}
-                    email={_get(userDetails, "email")}
-                    givenName={_get(userDetails, "givenName")}
-                    familyName={_get(userDetails, "familyName")}
+                    profilePicture={_get(loggedUser, "profilePicture", "")}
+                    email={_get(loggedUser, "email")}
+                    givenName={_get(loggedUser, "givenName")}
+                    familyName={_get(loggedUser, "familyName")}
                   >
                     <IconButton
                       variant="contained"
@@ -278,27 +278,4 @@ BloodPost.getInitialProps = async function (ctx) {
   return { bloodReceiver };
 };
 
-const mapStateToProps = (state) => {
-  return {
-    toastMsg: state.toastMsg,
-    userDetails: state.userDetails,
-  };
-};
-const mapDispatchToProps = (dispatch) => {
-  return {
-    updateToastMsg: (toastMsg) => {
-      dispatch({
-        type: "UPDATE_TOAST",
-        payload: toastMsg,
-      });
-    },
-    toggleLoginModal: (flag) => {
-      dispatch({
-        type: "SHOW_LOGIN_MODAL",
-        payload: flag,
-      });
-    },
-  };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(BloodPost);
+export default BloodPost;

@@ -6,7 +6,7 @@ import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
 import Typography from "@material-ui/core/Typography";
 import Box from "@material-ui/core/Box";
-import { connect } from "react-redux";
+import { connect, useSelector } from "react-redux";
 import _get from "lodash/get";
 import { grey, red, blue } from "@material-ui/core/colors";
 import colors from "themes/ThemeColors";
@@ -14,6 +14,7 @@ import QuestionsWrapper from "pages/questions/QuestionsWrapper";
 import BloodWrapper from "pages/bloodbank/BloodWrapper";
 import OnlineShopWrapper from "pages/onlineShop/OnlineShopWrapper";
 import permission from "dataService/Permission";
+import { getLoggedUser } from "redux/slices/loggedUserSlice";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -66,8 +67,8 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function ScrollableTabsButtonAuto(props) {
-  const { userDetails } = props;
   const classes = useStyles();
+  const loggedUser = useSelector(getLoggedUser);
   const [value, setValue] = React.useState(0);
 
   const handleChange = (event, newValue) => {
@@ -112,19 +113,16 @@ function ScrollableTabsButtonAuto(props) {
       </AppBar>
       <TabPanel value={value} index={0}>
         <QuestionsWrapper
-          postedBy={_get(userDetails, "userId")}
+          postedBy={_get(loggedUser, "_id")}
           showAddPost={false}
         />
       </TabPanel>
       <TabPanel value={value} index={1}>
-        <BloodWrapper
-          postedBy={_get(userDetails, "userId")}
-          showAddPost={false}
-        />
+        <BloodWrapper postedBy={_get(loggedUser, "_id")} showAddPost={false} />
       </TabPanel>
       <TabPanel value={value} index={2}>
         <OnlineShopWrapper
-          postedBy={_get(userDetails, "userId")}
+          postedBy={_get(loggedUser, "_id")}
           showAddPost={false}
         />
       </TabPanel>
@@ -144,10 +142,4 @@ function ScrollableTabsButtonAuto(props) {
   );
 }
 
-const mapStateToProps = (state) => {
-  return {
-    userDetails: state.userDetails,
-  };
-};
-
-export default connect(mapStateToProps)(ScrollableTabsButtonAuto);
+export default ScrollableTabsButtonAuto;

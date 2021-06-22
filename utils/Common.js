@@ -1,4 +1,3 @@
-import { store } from "redux/reducer";
 import constants from "dataService/Constants";
 
 import _get from "lodash/get";
@@ -8,14 +7,8 @@ import _map from "lodash/map";
 import _trim from "lodash/trim";
 import _isArray from "lodash/isArray";
 import _find from "lodash/find";
-
 import menuLists from "dataService/MenuLists";
-
-export const isLoggedIn = () => {
-  const state = store.getState();
-  console.log({ state });
-  return _get(state, "userDetails", false);
-};
+import { useSelector } from "react-redux";
 
 export const getPostTypeFromURL = (url) => {
   let urlArray = url;

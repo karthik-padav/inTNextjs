@@ -5,7 +5,7 @@ import { Grid, Avatar, Typography, Paper, Box } from "@material-ui/core";
 import Icon from "@material-ui/core/Icon";
 import { login } from "dataService/Api";
 import { GoogleLogout, GoogleLogin } from "react-google-login";
-import { connect } from "react-redux";
+import { connect, useDispatch, useSelector } from "react-redux";
 import _get from "lodash/get";
 import Modal from "@material-ui/core/Modal";
 import Backdrop from "@material-ui/core/Backdrop";
@@ -15,6 +15,8 @@ import Button from "@material-ui/core/Button";
 import IconButton from "@material-ui/core/IconButton";
 import EditProfile from "pages/profilePage/EditProfile";
 import Link from "next/link";
+import { updateToastMsg } from "redux/slices/uiSlice";
+import { getLoggedUser, loggedUserReducer } from "redux/slices/loggedUserSlice";
 
 const clientId =
   "142327848430-tmf4l94t5a7f6kcepvjhm6rqng02u6ga.apps.googleusercontent.com";
@@ -51,9 +53,10 @@ const useStyles = makeStyles((theme) => ({
     maxWidth: "100%",
   },
 }));
-import { bindActionCreators } from "redux";
 
 function ProfileMenu(props) {
+  const dispatch = useDispatch();
+  const loggedUser = useSelector(getLoggedUser);
   const classes = useStyles();
 
   const [isEdit, toggleEditProfileModal] = React.useState(false);
@@ -71,53 +74,54 @@ function ProfileMenu(props) {
       login(params).then((res) => {
         if (_get(res, "status")) {
           const userData = _get(res, "data", null);
-          props.updateUserDetails(userData);
+          dispatch(loggedUserReducer(userData));
           localStorage.setItem(
-            "userDetails",
-            JSON.stringify({
-              accesstoken: userData.accesstoken,
-              userId: userData.userId,
+            "inTulunadu_accesstoken",
+            JSON.stringify(userData.accesstoken)
+          );
+          dispatch(
+            updateToastMsg({
+              msg: `Howdy ${userData.givenName} ${userData.familyName}`,
+              type: "success",
             })
           );
-          props.updateToastMsg({
-            msg: `Howdy ${userData.givenName} ${userData.familyName}`,
-            type: "success",
-          });
         }
       });
     } else {
-      props.updateToastMsg({
-        msg: "Something went wrong.",
-        type: "error",
-      });
+      dispatch(
+        updateToastMsg({
+          msg: "Something went wrong.",
+          type: "error",
+        })
+      );
     }
   };
 
   return (
     <>
-      {_get(props, "userDetails") ? (
+      {loggedUser ? (
         <Link href="/profile">
           <a>
             <Grid container spacing={0} alignItems="center">
               <Grid item>
                 <Avatar
-                  src={_get(props, "userDetails.profilePicture", "")}
+                  src={_get(loggedUser, "profilePicture", "")}
                   className={classes.large}
                 />
               </Grid>
               <Grid item className={classes.pl1}>
                 <Typography align="left" variant="body1">
-                  {_get(props, "userDetails.givenName", "")}{" "}
-                  {_get(props, "userDetails.familyName", "")}
+                  {_get(loggedUser, "givenName", "")}{" "}
+                  {_get(loggedUser, "familyName", "")}
                 </Typography>
                 <Typography align="left" variant="body1">
-                  {_get(props, "userDetails.email", "")}
+                  {_get(loggedUser, "email", "")}
                 </Typography>
               </Grid>
-              {_get(props, "userDetails.bio") && (
+              {_get(loggedUser, "bio") && (
                 <Grid item xs={12}>
                   <Typography align="left" variant="body1">
-                    Bio: {props.userDetails.bio}
+                    Bio: {loggedUser.bio}
                   </Typography>
                 </Grid>
               )}
@@ -174,29 +178,4 @@ function ProfileMenu(props) {
   );
 }
 
-const mapStateToProps = (state) => {
-  const { userDetails, ui } = state;
-  return {
-    userDetails,
-    ui,
-    state,
-  };
-};
-const mapDispatchToProps = (dispatch) => {
-  return {
-    updateUserDetails: (userDetails) => {
-      dispatch({
-        type: "UPDATE_USER",
-        payload: userDetails,
-      });
-    },
-    updateToastMsg: (toastMsg) => {
-      dispatch({
-        type: "UPDATE_TOAST",
-        payload: toastMsg,
-      });
-    },
-  };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(ProfileMenu);
+export default ProfileMenu;

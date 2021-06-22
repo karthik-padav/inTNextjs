@@ -4,7 +4,7 @@ import Typography from "@material-ui/core/Typography";
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import { makeStyles } from "@material-ui/core/styles";
-import { connect } from "react-redux";
+import { connect, useSelector } from "react-redux";
 
 import classNames from "classnames";
 
@@ -24,11 +24,13 @@ import PostCardWrapper from "components/common/postCard/PostCardWrapper";
 import ConfirmAlertBox from "components/common/ConfirmAlertBox";
 import { deletePostFeed } from "dataService/Api";
 import ButtonWrapper from "components/common/ButtonWrapper";
-import { isLoggedIn } from "utils/Common";
+import { isLoggedIn } from "redux/selector";
 import { grey, red, blue } from "@material-ui/core/colors";
 import colors from "themes/ThemeColors";
 import { NextSeo } from "next-seo";
 import { getSeoDetails } from "seo/getSEO";
+import { updateToastMsg } from "redux/slices/uiSlice";
+import { getLoggedUser } from "redux/slices/loggedUserSlice";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -44,16 +46,15 @@ const useStyles = makeStyles((theme) => ({
 
 function Post(props) {
   const classes = useStyles();
+  const loggedUser = useSelector(getLoggedUser);
   const {
-    userDetails,
-    toggleShopModal,
-    updateToastMsg,
+    toggleShopModal = () => {},
     shopObj,
-    setList,
+    setList = () => {},
     SEO = {},
   } = props;
   const feedResp = _get(props, "shopList[0]");
-  const userId = _get(userDetails, "userId");
+  const userId = _get(loggedUser, "userId");
   const postedBy = _get(feedResp, "user_details.userId");
 
   const [showConfirmBox, setConfirmAlert] = useState(false);
@@ -109,10 +110,10 @@ function Post(props) {
         if (_get(res, "status")) {
           setList({ data: [] });
           setConfirmAlert(false);
-          updateToastMsg({ msg: res.message, type: "success" });
+          dispatch(updateToastMsg({ msg: res.message, type: "success" }));
           setLoader(false);
         } else {
-          updateToastMsg({ msg: res.message, type: "error" });
+          dispatch(updateToastMsg({ msg: res.message, type: "error" }));
           setLoader(false);
         }
       });
@@ -195,39 +196,4 @@ Post.getInitialProps = async function (ctx) {
   return { shopObj, SEO };
 };
 
-const mapStateToProps = (state) => {
-  return {
-    userDetails: state.userDetails,
-    shopList: _get(state, "shopList.data", []),
-  };
-};
-const mapDispatchToProps = (dispatch) => {
-  return {
-    toggleLoginModal: (flag) => {
-      dispatch({
-        type: "SHOW_LOGIN_MODAL",
-        payload: flag,
-      });
-    },
-    toggleShopModal: (show, data) => {
-      dispatch({
-        type: "SHOW_SHOP_MODAL",
-        payload: { show, data },
-      });
-    },
-    updateToastMsg: (toastMsg) => {
-      dispatch({
-        type: "UPDATE_TOAST",
-        payload: toastMsg,
-      });
-    },
-    setList: (payload) => {
-      dispatch({
-        type: "ADD_SHOP",
-        payload,
-      });
-    },
-  };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(Post);
+export default Post;

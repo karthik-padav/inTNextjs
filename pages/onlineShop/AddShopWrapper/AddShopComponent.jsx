@@ -23,6 +23,7 @@ import * as Yup from "yup";
 import { Formik, Field } from "formik";
 import constants from "dataService/Constants";
 import { TextField as FTextField } from "formik-material-ui";
+import { toggleLoginModal, updateToastMsg } from "redux/slices/uiSlice";
 
 const useStyles = makeStyles((theme) => ({
   submitLoaderBtn: {
@@ -56,13 +57,17 @@ const validationSchema = Yup.object().shape({
 
 function AddShopComponent(props) {
   const classes = useStyles();
-  const { togglePostModal, isEditRequest, setList, shopList, isModalOpen } =
-    props;
+  const {
+    togglePostModal = () => {},
+    isEditRequest = {},
+    setList = () => {},
+    shopList = [],
+    isModalOpen = false,
+  } = props;
 
   const [initialValues, setInitialValues] = React.useState();
   const [submitLoader, setSubmitLoader] = React.useState(false);
   const placeholder = `${'Start your question with "What", "How", "Why", etc.'}`;
-  console.log(_get(props, "isEditRequest"), "asdasdasdadasdasdasd");
   React.useEffect(() => {
     const initialValues = {
       images: _get(props, "isEditRequest.contentImage", []),
@@ -85,10 +90,7 @@ function AddShopComponent(props) {
     postShop(formData, _get(isEditRequest, "_id") ? "update" : "post").then(
       (res) => {
         if (_get(res, "status")) {
-          props.updateToastMsg({
-            msg: "Success",
-            type: "success",
-          });
+          dispatch(updateToastMsg({ msg: "Success", type: "success" }));
           togglePostModal(false);
           if (isEditRequest) {
             const feedIndex = _findIndex(shopList, (item) => {
@@ -101,10 +103,7 @@ function AddShopComponent(props) {
             }
           } else setList({ data: [res.data, ...shopList] });
         } else {
-          props.updateToastMsg({
-            msg: res.message,
-            type: "error",
-          });
+          dispatch(updateToastMsg({ msg: res.message, type: "error" }));
         }
         setSubmitLoader(false);
       }
@@ -306,35 +305,4 @@ function AddShopComponent(props) {
   );
 }
 
-const mapStateToProps = (state) => {
-  return {
-    userDetails: state.userDetails,
-    isEditRequest: _get(state, "ui.shopModal.data"),
-    shopList: _get(state, "shopList.data", []),
-    isModalOpen: _get(state, "ui.shopModal.show"),
-  };
-};
-const mapDispatchToProps = (dispatch) => {
-  return {
-    updateToastMsg: (toastMsg) => {
-      dispatch({
-        type: "UPDATE_TOAST",
-        payload: toastMsg,
-      });
-    },
-    togglePostModal: (show, data = null) => {
-      dispatch({
-        type: "SHOW_SHOP_MODAL",
-        payload: { show, data },
-      });
-    },
-    setList: (payload) => {
-      dispatch({
-        type: "ADD_SHOP",
-        payload,
-      });
-    },
-  };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(AddShopComponent);
+export default AddShopComponent;

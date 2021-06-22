@@ -4,7 +4,7 @@ import Typography from "@material-ui/core/Typography";
 
 import { makeStyles } from "@material-ui/core/styles";
 import _get from "lodash/get";
-import { isLoggedIn } from "utils/Common";
+import { isLoggedIn } from "redux/selector";
 import { connect } from "react-redux";
 import ShareIcon from "@material-ui/icons/Share";
 import ButtonWrapper from "components/common/ButtonWrapper";
@@ -151,15 +151,4 @@ function SharePost(props) {
   );
 }
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    toggleLoginModal: (flag) => {
-      dispatch({
-        type: "SHOW_LOGIN_MODAL",
-        payload: flag,
-      });
-    },
-  };
-};
-
-export default connect(null, mapDispatchToProps)(SharePost);
+export default SharePost;

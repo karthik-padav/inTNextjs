@@ -4,7 +4,7 @@ import Typography from "@material-ui/core/Typography";
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import { makeStyles } from "@material-ui/core/styles";
-import { connect } from "react-redux";
+import { connect, useSelector } from "react-redux";
 
 import classNames from "classnames";
 
@@ -24,11 +24,13 @@ import PostCardWrapper from "components/common/postCard/PostCardWrapper";
 import ConfirmAlertBox from "components/common/ConfirmAlertBox";
 import { deletePostFeed } from "dataService/Api";
 import ButtonWrapper from "components/common/ButtonWrapper";
-import { isLoggedIn } from "utils/Common";
+import { isLoggedIn } from "redux/selector";
 import { grey, red, blue } from "@material-ui/core/colors";
 import colors from "themes/ThemeColors";
 import { NextSeo } from "next-seo";
 import { getSeoDetails } from "seo/getSEO";
+import { toggleLoginModal, updateToastMsg } from "redux/slices/uiSlice";
+import { getLoggedUser } from "redux/slices/loggedUserSlice";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -36,9 +38,6 @@ const useStyles = makeStyles((theme) => ({
   },
   paper: {
     padding: theme.spacing(2),
-    color: theme.palette.text.secondary,
-    backgroundColor: theme.palette.background.paper,
-    // boxShadow: theme.shadows[5],
   },
   raiseRequestBtn: {
     borderRadius: "50px",
@@ -53,16 +52,14 @@ const useStyles = makeStyles((theme) => ({
 
 function FeedPost(props) {
   const classes = useStyles();
+  const loggedUser = useSelector(getLoggedUser);
   const {
-    loggedUser,
-    togglePostModal,
-    updateToastMsg,
+    togglePostModal = () => {},
     questionObj,
-    setQuestionList,
-    questionList,
+    setQuestionList = () => {},
+    questionList = [],
     SEO = {},
   } = props;
-  console.log(questionList, "questionList123");
   const feedResp = _get(questionList, "[0]");
   const userId = _get(loggedUser, "_id");
   const postedBy = _get(feedResp, "user._id");
@@ -120,10 +117,10 @@ function FeedPost(props) {
         if (_get(res, "status")) {
           setQuestionList({ data: [] });
           setConfirmAlert(false);
-          updateToastMsg({ msg: res.message, type: "success" });
+          dispatch(updateToastMsg({ msg: res.message, type: "success" }));
           setLoader(false);
         } else {
-          updateToastMsg({ msg: res.message, type: "error" });
+          dispatch(updateToastMsg({ msg: res.message, type: "error" }));
           setLoader(false);
         }
       });
@@ -208,39 +205,4 @@ FeedPost.getInitialProps = async function (ctx) {
   return { questionObj, SEO };
 };
 
-const mapStateToProps = (state) => {
-  return {
-    loggedUser: state.userDetails,
-    questionList: _get(state, "questionList.data", []),
-  };
-};
-const mapDispatchToProps = (dispatch) => {
-  return {
-    toggleLoginModal: (flag) => {
-      dispatch({
-        type: "SHOW_LOGIN_MODAL",
-        payload: flag,
-      });
-    },
-    togglePostModal: (show, data) => {
-      dispatch({
-        type: "SHOW_Q_MODAL",
-        payload: { show, data },
-      });
-    },
-    updateToastMsg: (toastMsg) => {
-      dispatch({
-        type: "UPDATE_TOAST",
-        payload: toastMsg,
-      });
-    },
-    setQuestionList: (payload) => {
-      dispatch({
-        type: "ADD_Q",
-        payload,
-      });
-    },
-  };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(FeedPost);
+export default FeedPost;

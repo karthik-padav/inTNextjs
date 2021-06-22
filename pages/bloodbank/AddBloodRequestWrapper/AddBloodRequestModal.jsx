@@ -44,7 +44,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function AddBloodRequestModal(props) {
-  const { isModalOpen, toggleBloodModal } = props;
+  const { isModalOpen = false, toggleBloodModal = () => {} } = props;
   const classes = useStyles();
 
   return (
@@ -64,23 +64,4 @@ function AddBloodRequestModal(props) {
   );
 }
 
-const mapStateToProps = (state) => {
-  return {
-    isModalOpen: _get(state, "ui.postBloodModal.show", false),
-  };
-};
-const mapDispatchToProps = (dispatch) => {
-  return {
-    toggleBloodModal: (show, data) => {
-      dispatch({
-        type: "SHOW_B_MODAL",
-        payload: { show, data },
-      });
-    },
-  };
-};
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(AddBloodRequestModal);
+export default AddBloodRequestModal;

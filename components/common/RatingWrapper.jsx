@@ -6,8 +6,9 @@ import Box from "@material-ui/core/Box";
 import { makeStyles } from "@material-ui/core/styles";
 import { handleReview } from "dataService/Api";
 import _get from "lodash/get";
-import { isLoggedIn } from "utils/Common";
-import { connect } from "react-redux";
+import { isLoggedIn } from "redux/selector";
+import { connect, useDispatch } from "react-redux";
+import { toggleLoginModal, updateToastMsg } from "redux/slices/uiSlice";
 
 const useStyles = makeStyles((theme) => ({
   reviewSubTitle: {
@@ -18,7 +19,8 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function RatingWrapper(props) {
-  const { postId, review, toggleLoginModal } = props;
+  const dispatch = useDispatch();
+  const { postId, review } = props;
   const classes = useStyles();
   const myReview = _get(review, "myReview", 0);
   const [value, setValue] = useState(myReview);
@@ -30,10 +32,12 @@ function RatingWrapper(props) {
       .then((resp) => {
         if (_get(resp, "status")) {
         } else {
-          updateToastMsg({
-            msg: "Something went wrong.",
-            type: "error",
-          });
+          dispatch(
+            updateToastMsg({
+              msg: "Something went wrong.",
+              type: "error",
+            })
+          );
         }
       })
       .catch((err) => {
@@ -51,7 +55,7 @@ function RatingWrapper(props) {
         onChange={(event, newValue) => {
           if (isLogged) {
             handleRate(newValue);
-          } else toggleLoginModal(true);
+          } else dispatch(toggleLoginModal());
         }}
         emptyIcon={<StarBorderIcon fontSize="inherit" />}
       />
@@ -67,15 +71,4 @@ function RatingWrapper(props) {
   );
 }
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    toggleLoginModal: (flag) => {
-      dispatch({
-        type: "SHOW_LOGIN_MODAL",
-        payload: flag,
-      });
-    },
-  };
-};
-
-export default connect(null, mapDispatchToProps)(RatingWrapper);
+export default RatingWrapper;

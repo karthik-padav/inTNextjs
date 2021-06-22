@@ -9,7 +9,7 @@ import Icon from "@material-ui/core/Icon";
 import MenuIcon from "@material-ui/icons/Menu";
 import Badge from "@material-ui/core/Badge";
 import Avatar from "@material-ui/core/Avatar";
-import { connect } from "react-redux";
+import { connect, useDispatch, useSelector } from "react-redux";
 import _get from "lodash/get";
 import _omit from "lodash/omit";
 import _cloneDeep from "lodash/cloneDeep";
@@ -26,6 +26,8 @@ import menuLists from "dataService/MenuLists";
 import ButtonWrapper from "components/common/ButtonWrapper";
 import { grey, red, blue } from "@material-ui/core/colors";
 import colors from "themes/ThemeColors";
+import { toggleLoginModal, updateToastMsg } from "redux/slices/uiSlice";
+import { loggedUserReducer, getLoggedUser } from "redux/slices/loggedUserSlice";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -62,8 +64,10 @@ const validationSchema = Yup.object().shape({
 });
 
 function EditProfile(props) {
-  const fileRef = useRef(null);
+  const dispatch = useDispatch();
+  const loggedUser = useSelector(getLoggedUser);
 
+  const fileRef = useRef(null);
   const getPhoto = (event, formikProps) => {
     let files = Array.from(event.target.files);
     files.forEach((file, index) => {
@@ -95,16 +99,15 @@ function EditProfile(props) {
     updateUserDetails(formData).then((res) => {
       if (_get(res, "status")) {
         const userData = _get(res, "data", null);
-        props.updateUser(userData);
-        props.updateToastMsg({
-          msg: "Profile Updated Successfully.",
-          type: "success",
-        });
+        dispatch(loggedUserReducer(userData));
+        dispatch(
+          updateToastMsg({
+            msg: "Profile Updated Successfully.",
+            type: "success",
+          })
+        );
       } else {
-        props.updateToastMsg({
-          msg: res.message,
-          type: "error",
-        });
+        dispatch(updateToastMsg({ msg: res.message, type: "error" }));
       }
     });
   };
@@ -115,15 +118,15 @@ function EditProfile(props) {
     <div className={classes.root}>
       <Formik
         initialValues={{
-          givenName: _get(props, "userDetails.givenName", ""),
-          familyName: _get(props, "userDetails.familyName", ""),
-          email: _get(props, "userDetails.email", ""),
-          phoneNumber: _get(props, "userDetails.phoneNumber", ""),
+          givenName: _get(loggedUser, "givenName", ""),
+          familyName: _get(loggedUser, "familyName", ""),
+          email: _get(loggedUser, "email", ""),
+          phoneNumber: _get(loggedUser, "phoneNumber", ""),
           profilePicture: {
-            imagesUrl: _get(props, "userDetails.profilePicture", ""),
+            imagesUrl: _get(loggedUser, "profilePicture", ""),
           },
-          bio: _get(props, "userDetails.bio", ""),
-          bloodType: _get(props, "userDetails.bloodType", ""),
+          bio: _get(loggedUser, "bio", ""),
+          bloodType: _get(loggedUser, "bloodType", ""),
         }}
         validationSchema={validationSchema}
         enableReinitialize
@@ -278,26 +281,5 @@ function EditProfile(props) {
     </div>
   );
 }
-const mapStateToProps = (state) => {
-  return {
-    userDetails: state.userDetails,
-  };
-};
-const mapDispatchToProps = (dispatch) => {
-  return {
-    updateUser: (userDetails) => {
-      dispatch({
-        type: "UPDATE_USER",
-        payload: userDetails,
-      });
-    },
-    updateToastMsg: (toastMsg) => {
-      dispatch({
-        type: "UPDATE_TOAST",
-        payload: toastMsg,
-      });
-    },
-  };
-};
 
-export default connect(mapStateToProps, mapDispatchToProps)(EditProfile);
+export default EditProfile;

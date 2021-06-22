@@ -10,7 +10,7 @@ import {
 } from "@material-ui/core";
 import React, { useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import { connect } from "react-redux";
+import { connect, useDispatch } from "react-redux";
 import EditProfile from "pages/profilePage/EditProfile";
 import ProfileMenu from "components/common/ProfileMenu";
 import Menu from "components/common/Menu";
@@ -30,6 +30,8 @@ import ButtonWrapper from "components/common/ButtonWrapper";
 import _isEmpty from "lodash/isEmpty";
 import _get from "lodash/get";
 import { getUserDetails, updateUserDetails } from "dataService/Api";
+import { toggleLoginModal, updateToastMsg } from "redux/slices/uiSlice";
+import { loggedUserReducer } from "redux/slices/loggedUserSlice";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -38,7 +40,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function AccountSettings(props) {
-  const { updateUser } = props;
+  const dispatch = useDispatch();
   const classes = useStyles();
   const [confirmAlertButtons, setAlertBoxPayload] = useState([]);
   const [deactivateFlag, setDeactivateFlag] = useState(false);
@@ -125,13 +127,15 @@ function AccountSettings(props) {
     updateUserDetails(formData).then((res) => {
       const userData = _get(res, "data");
       if (_get(res, "status") && userData) {
-        updateUser(null);
-        localStorage.removeItem("userDetails");
+        dispatch(loggedUserReducer(null));
+        localStorage.removeItem("inTulunadu_accesstoken");
       } else {
-        updateToastMsg({
-          msg: "Something went wrong.",
-          type: "error",
-        });
+        dispatch(
+          updateToastMsg({
+            msg: "Something went wrong.",
+            type: "error",
+          })
+        );
       }
       setLoader(false);
     });
@@ -194,41 +198,4 @@ function AccountSettings(props) {
   );
 }
 
-const mapStateToProps = (state) => {
-  console.log(state, "state123");
-  return {
-    toastMsg: state.toastMsg,
-    userDetails: state.userDetails,
-    theme: state.ui.theme,
-  };
-};
-const mapDispatchToProps = (dispatch) => {
-  return {
-    updateTheme: (mode) => {
-      dispatch({
-        type: "UPDATE_THEME",
-        payload: mode,
-      });
-    },
-    updateToastMsg: (toastMsg) => {
-      dispatch({
-        type: "UPDATE_TOAST",
-        payload: toastMsg,
-      });
-    },
-    updateUser: (userDetails) => {
-      dispatch({
-        type: "UPDATE_USER",
-        payload: userDetails,
-      });
-    },
-    toggleLoginModal: (flag) => {
-      dispatch({
-        type: "SHOW_LOGIN_MODAL",
-        payload: flag,
-      });
-    },
-  };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(AccountSettings);
+export default AccountSettings;

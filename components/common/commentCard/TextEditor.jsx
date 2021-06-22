@@ -12,7 +12,7 @@ import _get from "lodash/get";
 import _isEmpty from "lodash/isEmpty";
 import { connect } from "react-redux";
 import { getAllComments, postComments } from "dataService/Api";
-import { isLoggedIn } from "utils/Common";
+import { isLoggedIn } from "redux/selector";
 import UserHeaderCard from "components/common/UserHeaderCard";
 import ButtonWrapper from "components/common/ButtonWrapper";
 import OptionMenuV2 from "components/common/OptionMenuV2";

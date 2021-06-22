@@ -1,6 +1,6 @@
 import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
-import { connect } from "react-redux";
+import { connect, useDispatch } from "react-redux";
 import _get from "lodash/get";
 import _isEmpty from "lodash/isEmpty";
 import _isArray from "lodash/isArray";
@@ -18,6 +18,7 @@ import { postBloodRequest } from "dataService/Api";
 import ButtonWrapper from "components/common/ButtonWrapper";
 import { grey, red, blue } from "@material-ui/core/colors";
 import colors from "themes/ThemeColors";
+import { updateToastMsg } from "redux/slices/uiSlice";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -53,8 +54,13 @@ const validationSchema = Yup.object().shape({
 });
 
 function RequestBloodForm(props) {
-  const { isEditRequest, toggleBloodModal, setBloodReqList, bRequestList } =
-    props;
+  const dispatch = useDispatch();
+  const {
+    isEditRequest = false,
+    toggleBloodModal = () => {},
+    setBloodReqList = () => {},
+    bRequestList = [],
+  } = props;
   const [initialValues, setInitialValues] = React.useState(null);
   const [countryCode, setCountryValues] = React.useState("IND");
 
@@ -125,7 +131,7 @@ function RequestBloodForm(props) {
     postBloodRequest(data, isEdit)
       .then((res) => {
         if (_get(res, "status")) {
-          props.updateToastMsg({ msg: res.message, type: "success" });
+          dispatch(updateToastMsg({ msg: res.message, type: "success" }));
           toggleBloodModal(false);
           if (isEdit) {
             const feedIndex = _findIndex(bRequestList, (item) => {
@@ -137,11 +143,13 @@ function RequestBloodForm(props) {
               setBloodReqList({ data: newList });
             }
           } else setBloodReqList({ data: [res.data, ...bRequestList] });
-        } else props.updateToastMsg({ msg: res.message, type: "error" });
+        } else dispatch(updateToastMsg({ msg: res.message, type: "error" }));
         setLoader(false);
       })
       .catch((err) => {
-        props.updateToastMsg({ msg: "Something went wrong.", type: "error" });
+        dispatch(
+          updateToastMsg({ msg: "Something went wrong.", type: "error" })
+        );
         setLoader(false);
       });
   };
@@ -308,35 +316,4 @@ function RequestBloodForm(props) {
   );
 }
 
-const mapStateToProps = (state) => {
-  return {
-    toastMsg: state.toastMsg,
-    userDetails: state.userDetails,
-    isEditRequest: _get(state, "ui.postBloodModal.data"),
-    bRequestList: _get(state, "bRequestList.data", []),
-  };
-};
-const mapDispatchToProps = (dispatch) => {
-  return {
-    updateToastMsg: (toastMsg) => {
-      dispatch({
-        type: "UPDATE_TOAST",
-        payload: toastMsg,
-      });
-    },
-    toggleBloodModal: (show, data) => {
-      dispatch({
-        type: "SHOW_B_MODAL",
-        payload: { show, data },
-      });
-    },
-    setBloodReqList: (payload) => {
-      dispatch({
-        type: "ADD_B",
-        payload,
-      });
-    },
-  };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(RequestBloodForm);
+export default RequestBloodForm;

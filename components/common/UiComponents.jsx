@@ -5,7 +5,6 @@ import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
 import IconButton from "@material-ui/core/IconButton";
 import MenuIcon from "@material-ui/icons/Menu";
-import { connect } from "react-redux";
 import { loadCSS } from "fg-loadcss";
 import _get from "lodash/get";
 import _isEmpty from "lodash/isEmpty";
@@ -18,6 +17,8 @@ import UserDeactivated from "components/common/UserDeactivated";
 import AddPostComponent from "pages/questions/AddPostWrapper/AddPostComponent";
 import AddShopComponent from "pages/onlineShop/AddShopWrapper/AddShopComponent";
 import AddBloodRequestModal from "pages/bloodbank/AddBloodRequestWrapper/AddBloodRequestModal";
+import { toastMsgState, updateToastMsg } from "redux/slices/uiSlice";
+import { connect, useDispatch, useSelector } from "react-redux";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -32,14 +33,11 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function UiComponents(props) {
-  const {
-    userDetails,
-    postQuestionModal,
-    shopModal,
-    bloodRequestModal,
-    deactivatedModal,
-  } = props;
+  const { userDetails, deactivatedModal } = props;
 
+  const dispatch = useDispatch();
+  const toastMsg = useSelector(toastMsgState);
+  console.log(toastMsg, "toastMsg123");
   const [loader, setLoader] = React.useState(false);
 
   React.useEffect(() => {
@@ -54,10 +52,8 @@ function UiComponents(props) {
   }, []);
 
   const handleClose = (event, reason) => {
-    if (reason === "clickaway") {
-      return;
-    }
-    props.updateToastMsg({ msg: "", type: "" });
+    if (reason === "clickaway") return;
+    dispatch(updateToastMsg({ msg: "", type: "" }));
   };
 
   const Alert = (props) => {
@@ -67,53 +63,26 @@ function UiComponents(props) {
   const classes = useStyles();
   return (
     <div className={classes.root}>
-      {_get(props, "toastMsg.type") && (
+      {_get(toastMsg, "type") && (
         <Snackbar
-          open={!_isEmpty(_get(props, "toastMsg.msg"))}
+          open={!_isEmpty(_get(toastMsg, "msg"))}
           autoHideDuration={3000}
           onClose={handleClose}
         >
-          <Alert severity={props.toastMsg.type}>
-            {_get(props, "toastMsg.msg", "Something went wrong!")}
+          <Alert severity={toastMsg.type}>
+            {_get(toastMsg, "msg", "Something went wrong!")}
           </Alert>
         </Snackbar>
       )}
 
       <LoginModal />
-      {postQuestionModal && <AddPostComponent />}
-      {bloodRequestModal && <AddBloodRequestModal />}
-      {shopModal && <AddShopComponent />}
-      {deactivatedModal && <UserDeactivated />}
+      {/* <AddPostComponent />
+      <AddBloodRequestModal />
+      <AddShopComponent /> */}
+      {/* <UserDeactivated /> */}
     </div>
   );
 }
-
-const mapStateToProps = (state) => {
-  return {
-    userDetails: state.userDetails,
-    toastMsg: _get(state, "ui.toast"),
-    postQuestionModal: _get(state, "ui.postQuestionModal.show"),
-    bloodRequestModal: _get(state, "ui.postBloodModal.show", false),
-    shopModal: _get(state, "ui.shopModal.show"),
-    deactivatedModal: _get(state, "ui.deactivatedModal.show"),
-  };
-};
-const mapDispatchToProps = (dispatch) => {
-  return {
-    updateToastMsg: (toastMsg) => {
-      dispatch({
-        type: "UPDATE_TOAST",
-        payload: toastMsg,
-      });
-    },
-    updateTheme: (mode) => {
-      dispatch({
-        type: "UPDATE_THEME",
-        payload: mode,
-      });
-    },
-  };
-};
 
 function usePrevious(value) {
   const ref = React.useRef();
@@ -123,4 +92,4 @@ function usePrevious(value) {
   return ref.current;
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(UiComponents);
+export default UiComponents;

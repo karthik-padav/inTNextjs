@@ -1,17 +1,8 @@
 import React, { useEffect } from "react";
 import { withStyles } from "@material-ui/core/styles";
-import Button from "@material-ui/core/Button";
 import Menu from "@material-ui/core/Menu";
-import MenuItem from "@material-ui/core/MenuItem";
-import ListItemIcon from "@material-ui/core/ListItemIcon";
-import InboxIcon from "@material-ui/icons/MoveToInbox";
-import DraftsIcon from "@material-ui/icons/Drafts";
-import SendIcon from "@material-ui/icons/Send";
 import Icon from "@material-ui/core/Icon";
-import Badge from "@material-ui/core/Badge";
-import ButtonWrapper from "components/common/ButtonWrapper";
-import { connect } from "react-redux";
-import { getNotification, readNotification } from "dataService/Api";
+import { connect, useDispatch } from "react-redux";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
@@ -19,8 +10,6 @@ import ListItemAvatar from "@material-ui/core/ListItemAvatar";
 import Avatar from "@material-ui/core/Avatar";
 import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
-import moment from "moment";
-import ListSubheader from "@material-ui/core/ListSubheader";
 import Box from "@material-ui/core/Box";
 import Link from "next/link";
 import Divider from "components/common/Divider";
@@ -32,8 +21,9 @@ import _findIndex from "lodash/findIndex";
 import classNames from "classnames";
 import constants from "dataService/Constants";
 import menuLists from "dataService/MenuLists";
-import { red, orange, blue, pink, grey } from "@material-ui/core/colors";
+import { grey } from "@material-ui/core/colors";
 import { useRouter } from "next/router";
+import { loggedUserReducer } from "redux/slices/loggedUserSlice";
 
 const StyledMenu = withStyles({
   paper: {
@@ -59,7 +49,6 @@ const useStyles = makeStyles((theme) => ({
   root: {
     width: "100%",
     maxWidth: "36ch",
-    // backgroundColor: theme.palette.background.paper,
     "&:focus": {
       outline: "none",
     },
@@ -91,12 +80,13 @@ const useStyles = makeStyles((theme) => ({
 
 function NotificationBadge(props) {
   const classes = useStyles();
-  const { userDetails } = props;
+  const dispatch = useDispatch();
+  const { loggedUser } = props;
   const [anchorEl, setAnchorEl] = React.useState(null);
   const router = useRouter();
 
-  const fullName = `${_get(userDetails, "givenName", "")} ${_get(
-    userDetails,
+  const fullName = `${_get(loggedUser, "givenName", "")} ${_get(
+    loggedUser,
     "familyName",
     ""
   )}`;
@@ -112,8 +102,8 @@ function NotificationBadge(props) {
   useEffect(() => {}, []);
 
   const logout = () => {
-    props.updateUser(null);
-    localStorage.removeItem("userDetails");
+    dispatch(loggedUserReducer(null));
+    localStorage.removeItem("inTulunadu_accesstoken");
   };
 
   const redirectTo = (item) => {
@@ -139,7 +129,7 @@ function NotificationBadge(props) {
     <>
       <Avatar
         onClick={handleClick}
-        src={_get(userDetails, "profilePicture", "")}
+        src={_get(loggedUser, "profilePicture", "")}
         className={classes.avatarSize}
       />
 
@@ -158,7 +148,7 @@ function NotificationBadge(props) {
               <Box p={2} display="flex" alignItems="center">
                 <Box mr={1}>
                   <Avatar
-                    src={_get(userDetails, "profilePicture", "")}
+                    src={_get(loggedUser, "profilePicture", "")}
                     className={classes.avatarSize}
                   />
                 </Box>
@@ -167,7 +157,7 @@ function NotificationBadge(props) {
                     <b>{fullName}</b>
                   </Typography>
                   <Typography variant="caption">
-                    {_get(userDetails, "email", "")}
+                    {_get(loggedUser, "email", "")}
                   </Typography>
                 </div>
               </Box>
@@ -217,20 +207,5 @@ function NotificationBadge(props) {
     </>
   );
 }
-const mapStateToProps = (state) => {
-  return {
-    userDetails: state.userDetails,
-  };
-};
-const mapDispatchToProps = (dispatch) => {
-  return {
-    updateUser: (userDetails) => {
-      dispatch({
-        type: "UPDATE_USER",
-        payload: userDetails,
-      });
-    },
-  };
-};
 
-export default connect(mapStateToProps, mapDispatchToProps)(NotificationBadge);
+export default NotificationBadge;

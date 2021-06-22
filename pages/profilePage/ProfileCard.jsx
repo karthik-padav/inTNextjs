@@ -70,7 +70,6 @@ const useStyles = makeStyles((theme) => ({
 
 function ProfileCard(props) {
   const classes = useStyles();
-  const { updateUser } = props;
   const givenName = _get(props, "userDetails.givenName", "");
   const familyName = _get(props, "userDetails.familyName", "");
   const email = _get(props, "userDetails.email", "");
@@ -120,34 +119,4 @@ function ProfileCard(props) {
   );
 }
 
-const mapStateToProps = (state) => {
-  return {
-    // toastMsg: state.toastMsg,
-    userDetails: state.userDetails,
-    // theme: state.theme,
-  };
-};
-const mapDispatchToProps = (dispatch) => {
-  return {
-    updateUser: (userDetails) => {
-      dispatch({
-        type: "UPDATE_USER",
-        payload: userDetails,
-      });
-    },
-    updateToastMsg: (toastMsg) => {
-      dispatch({
-        type: "UPDATE_TOAST",
-        payload: toastMsg,
-      });
-    },
-    toggleLoginModal: (flag) => {
-      dispatch({
-        type: "SHOW_LOGIN_MODAL",
-        payload: flag,
-      });
-    },
-  };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(ProfileCard);
+export default ProfileCard;

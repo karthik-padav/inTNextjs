@@ -12,7 +12,7 @@ import Button from "@material-ui/core/Button";
 import IconButton from "@material-ui/core/IconButton";
 import constants from "dataService/Constants";
 import { GoogleLogin } from "react-google-login";
-import { connect } from "react-redux";
+import { connect, useDispatch, useSelector } from "react-redux";
 import { login } from "dataService/Api";
 import { bindActionCreators } from "redux";
 import DialogBox from "components/common/dialogBoxWrapper/DialogBox";
@@ -21,14 +21,21 @@ import { grey, red, blue } from "@material-ui/core/colors";
 import ConfirmAlertBox from "components/common/ConfirmAlertBox";
 import colors from "themes/ThemeColors";
 import { getUserDetails, updateUserDetails } from "dataService/Api";
+import {
+  updateToastMsg,
+  getDeactivateModal,
+  toggleDeactivateUserModal,
+} from "redux/slices/uiSlice";
+import { loggedUserReducer } from "redux/slices/loggedUserSlice";
 
 const useStyles = makeStyles((theme) => ({}));
 
 function UserDeactivated(props) {
+  const dispatch = useDispatch();
+  const { flag: showModal = false, data: modalData = null } =
+    useSelector(getDeactivateModal);
   const classes = useStyles();
   const [loader, setLoader] = useState(false);
-  const { showModal, toggleModal, modalData, updateUser, updateToastMsg } =
-    props;
   const message = _get(modalData, "message", "Account has been delete");
   const status = _get(modalData, "status");
   const activeAccount = _get(modalData, "activeAccount");
@@ -36,30 +43,28 @@ function UserDeactivated(props) {
 
   const updateUserStatus = async (value) => {
     setLoader(true);
-    console.log(value, "value123321");
-    await updateUser({ accesstoken: value.accesstoken });
+    // dispatch(loggedUserReducer({ accesstoken: value.accesstoken }));
 
     const formData = new FormData();
     formData.append("data", JSON.stringify({ status: 1 }));
     updateUserDetails(formData).then((res) => {
       const userData = _get(res, "data");
       if (_get(res, "status") && userData) {
-        toggleModal(false, null);
-        updateUser(userData);
+        dispatch(toggleDeactivateUserModal({ flag: false, data: null }));
+        dispatch(loggedUserReducer(userData));
         localStorage.setItem(
-          "userDetails",
-          JSON.stringify({
-            accesstoken: value.accesstoken,
-            userId: value.userId,
-          })
+          "inTulunadu_accesstoken",
+          JSON.stringify(value.accesstoken)
         );
       } else {
-        toggleModal(false, null);
-        updateUser(null);
-        updateToastMsg({
-          msg: "Something went wrong.",
-          type: "error",
-        });
+        dispatch(toggleDeactivateUserModal({ flag: false, data: null }));
+        dispatch(loggedUserReducer(null));
+        dispatch(
+          updateToastMsg({
+            msg: "Something went wrong.",
+            type: "error",
+          })
+        );
       }
       setLoader(false);
     });
@@ -70,7 +75,8 @@ function UserDeactivated(props) {
       {
         title: "Ok",
         code: "yes",
-        cb: () => toggleModal(false, null),
+        cb: () =>
+          dispatch(toggleDeactivateUserModal({ flag: false, data: null })),
       },
     ];
   } else if (status === 0) {
@@ -78,7 +84,8 @@ function UserDeactivated(props) {
       {
         title: "No",
         code: "no",
-        cb: () => toggleModal(false, null),
+        cb: () =>
+          dispatch(toggleDeactivateUserModal({ flag: false, data: null })),
         mr: 2,
         color: colors.blue,
         bgColor: grey[100],
@@ -90,7 +97,7 @@ function UserDeactivated(props) {
       },
     ];
   } else {
-    toggleModal(false, null);
+    dispatch(toggleDeactivateUserModal({ flag: false, data: null }));
   }
 
   return (
@@ -105,33 +112,4 @@ function UserDeactivated(props) {
   );
 }
 
-const mapStateToProps = (state) => {
-  return {
-    showModal: _get(state, "ui.deactivatedModal.show", false),
-    modalData: _get(state, "ui.deactivatedModal.data"),
-  };
-};
-const mapDispatchToProps = (dispatch) => {
-  return {
-    updateUser: (userDetails) => {
-      dispatch({
-        type: "UPDATE_USER",
-        payload: userDetails,
-      });
-    },
-    updateToastMsg: (toastMsg) => {
-      dispatch({
-        type: "UPDATE_TOAST",
-        payload: toastMsg,
-      });
-    },
-    toggleModal: (show, data) => {
-      dispatch({
-        type: "SHOW_USER_DEACTIVATED_MODAL",
-        payload: { show, data },
-      });
-    },
-  };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(UserDeactivated);
+export default UserDeactivated;

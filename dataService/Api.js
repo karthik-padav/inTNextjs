@@ -1,41 +1,42 @@
 import axios from "axios";
 import constants from "./Constants";
 import _get from "lodash/get";
-import { isLoggedIn } from "utils/Common";
 
-const getHeader = () => {
-  const loggedIn = isLoggedIn();
-  const token = _get(loggedIn, "accesstoken");
-  console.log({ token });
-  return typeof window !== "undefined" && token
-    ? { Authorization: `Bearer ${token}` }
-    : "";
+const getHeader = async () => {
+  if (typeof window !== "undefined") {
+    let accesstoken = localStorage.getItem("inTulunadu_accesstoken");
+    accesstoken = JSON.parse(accesstoken);
+    if (accesstoken) return { Authorization: `Bearer ${accesstoken}` };
+  }
+  return "";
 };
 
-export const getUserDetails = (userId) => {
+export const getUserDetails = async (userId) => {
   let url = `${constants.serverBaseUrl}/getUserDetails`;
   if (userId) url += `?userId=${userId}`;
+  const headers = await getHeader();
   return new Promise((resolve, reject) => {
     axios({
       method: "get",
       url,
-      headers: getHeader(),
+      headers,
     })
       .then((res) => {
-        if (res && res.data) resolve(res.data);
+        resolve({ data: res?.data });
       })
       .catch((err) => {
-        reject(err);
+        reject({ error: err });
       });
   });
 };
 
-export const getNotification = () => {
+export const getNotification = async () => {
+  const headers = await getHeader();
   return new Promise((resolve, reject) => {
     axios({
       method: "get",
       url: constants.serverBaseUrl + `/getNotification`,
-      headers: getHeader(),
+      headers,
     })
       .then((res) => {
         if (res && res.data) resolve(res.data);
@@ -46,13 +47,14 @@ export const getNotification = () => {
   });
 };
 
-export const readNotification = (notificationId) => {
+export const readNotification = async (notificationId) => {
   const data = { unread: 0, notificationId };
+  const headers = await getHeader();
   return new Promise((resolve, reject) => {
     axios({
       method: "post",
       url: constants.serverBaseUrl + `/readNotification`,
-      headers: getHeader(),
+      headers,
       data,
     })
       .then((res) => {
@@ -64,12 +66,13 @@ export const readNotification = (notificationId) => {
   });
 };
 
-export const updateUserDetails = (data) => {
+export const updateUserDetails = async (data) => {
+  const headers = await getHeader();
   return new Promise((resolve, reject) => {
     axios({
       method: "post",
       url: constants.serverBaseUrl + `/updateUserDetails`,
-      headers: getHeader(),
+      headers,
       data,
     })
       .then((res) => {
@@ -81,31 +84,33 @@ export const updateUserDetails = (data) => {
   });
 };
 
-export const login = (body) => {
+export const login = async (body) => {
+  const headers = await getHeader();
   return new Promise((resolve, reject) => {
     axios({
       method: "post",
       url: constants.serverBaseUrl + "/login",
-      headers: getHeader(),
+      headers,
       data: body,
     })
       .then((res) => {
-        if (res && res.data) resolve(res.data);
+        if (res && res.data) resolve({ data: res.data });
       })
       .catch((err) => {
-        reject(err);
+        reject({ error: err });
       });
   });
 };
 
-export const postBloodRequest = (body, isEdit) => {
+export const postBloodRequest = async (body, isEdit) => {
+  const headers = await getHeader();
   return new Promise((resolve, reject) => {
     axios({
       method: "post",
       url: `${constants.serverBaseUrl}/${
         isEdit ? "updateBloodRequest" : "postBloodRequest"
       }`,
-      headers: getHeader(),
+      headers,
       data: body,
     })
       .then((res) => {
@@ -117,12 +122,13 @@ export const postBloodRequest = (body, isEdit) => {
   });
 };
 
-export const deleteBloodRequest = (id) => {
+export const deleteBloodRequest = async (id) => {
+  const headers = await getHeader();
   return new Promise((resolve, reject) => {
     axios({
       method: "post",
       url: `${constants.serverBaseUrl}/deleteBloodRequest`,
-      headers: getHeader(),
+      headers,
       data: {
         postId: id,
       },
@@ -136,12 +142,13 @@ export const deleteBloodRequest = (id) => {
   });
 };
 
-export const getBloodReceiver = (querry) => {
+export const getBloodReceiver = async (querry) => {
+  const headers = await getHeader();
   return new Promise((resolve, reject) => {
     axios({
       method: "get",
       url: constants.serverBaseUrl + `/getAllBloodRequest${querry}`,
-      headers: getHeader(),
+      headers,
     })
       .then((res) => {
         if (res && res.data) resolve(res.data);
@@ -152,13 +159,13 @@ export const getBloodReceiver = (querry) => {
   });
 };
 
-export const getBloodDonor = (querry) => {
-  console.log(querry, "querry");
+export const getBloodDonor = async (querry) => {
+  const headers = await getHeader();
   return new Promise((resolve, reject) => {
     axios({
       method: "get",
       url: constants.serverBaseUrl + `/wp-json/api/v1/questions${querry}`,
-      headers: getHeader(),
+      headers,
     })
       .then((res) => {
         if (res && res.data) resolve(res.data);
@@ -173,12 +180,13 @@ export const getBloodDonor = (querry) => {
  * START
  * COMMENTS API
  */
-export const getAllComments = (querry) => {
+export const getAllComments = async (querry) => {
+  const headers = await getHeader();
   return new Promise((resolve, reject) => {
     axios({
       method: "get",
       url: constants.serverBaseUrl + `/getAllComments${querry}`,
-      headers: getHeader(),
+      headers,
     })
       .then((res) => {
         if (res && res.data) resolve(res.data);
@@ -189,16 +197,16 @@ export const getAllComments = (querry) => {
   });
 };
 
-export const postComments = (data) => {
+export const postComments = async (data) => {
   let url = "";
   if (_get(data, "_id")) url = `${constants.serverBaseUrl}/editComment`;
   else url = `${constants.serverBaseUrl}/postComments`;
-  console.log(getHeader(), "getHeader()");
+  const headers = await getHeader();
   return new Promise((resolve, reject) => {
     axios({
       method: "post",
       url,
-      headers: getHeader(),
+      headers,
       data,
     })
       .then((res) => {
@@ -210,12 +218,13 @@ export const postComments = (data) => {
   });
 };
 
-export const deleteComment = (id) => {
+export const deleteComment = async (id) => {
+  const headers = await getHeader();
   return new Promise((resolve, reject) => {
     axios({
       method: "delete",
       url: `${constants.serverBaseUrl}/deleteComment/${id}`,
-      headers: getHeader(),
+      headers,
     })
       .then((res) => {
         if (res && res.data) resolve(res.data);
@@ -231,12 +240,13 @@ export const deleteComment = (id) => {
  * COMMENTS API
  */
 
-export const handleLike = (data) => {
+export const handleLike = async (data) => {
+  const headers = await getHeader();
   return new Promise((resolve, reject) => {
     axios({
       method: "post",
       url: `${constants.serverBaseUrl}/handleLike`,
-      headers: getHeader(),
+      headers,
       data,
     })
       .then((res) => {
@@ -248,12 +258,13 @@ export const handleLike = (data) => {
   });
 };
 
-export const handleReview = (data) => {
+export const handleReview = async (data) => {
+  const headers = await getHeader();
   return new Promise((resolve, reject) => {
     axios({
       method: "post",
       url: `${constants.serverBaseUrl}/handleReview`,
-      headers: getHeader(),
+      headers,
       data,
     })
       .then((res) => {
@@ -265,8 +276,8 @@ export const handleReview = (data) => {
   });
 };
 
-export const postFeed = (body, flag) => {
-  console.log(body, "body123");
+export const postFeed = async (body, flag) => {
+  const headers = await getHeader();
   return new Promise((resolve, reject) => {
     let url = constants.serverBaseUrl;
     if (flag === "post") url += "/postFeedDetails";
@@ -274,40 +285,42 @@ export const postFeed = (body, flag) => {
     axios({
       method: "post",
       url,
-      headers: { ...getHeader(), "Content-Type": "multipart/form-data" },
+      headers: { ...headers, "Content-Type": "multipart/form-data" },
       data: body,
     })
       .then((res) => {
-        if (res && res.data) resolve(res.data);
+        resolve({ data: res?.data });
       })
       .catch((err) => {
-        reject(err);
+        reject({ error: err });
       });
   });
 };
 
-export const getQuestions = (querry) => {
+export const getQuestions = async (querry = "") => {
+  const headers = await getHeader();
   return new Promise((resolve, reject) => {
     axios({
       method: "get",
       url: constants.serverBaseUrl + `/getAllFeeds${querry}`,
-      headers: getHeader(),
+      headers,
     })
       .then((res) => {
-        if (res && res.data) resolve(res.data);
+        resolve({ data: res?.data });
       })
       .catch((err) => {
-        reject(err);
+        reject({ error: err });
       });
   });
 };
 
-export const deletePostFeed = (id) => {
+export const deletePostFeed = async (id) => {
+  const headers = await getHeader();
   return new Promise((resolve, reject) => {
     axios({
       method: "delete",
       url: `${constants.serverBaseUrl}/deletePostFeed/${id}`,
-      headers: getHeader(),
+      headers,
     })
       .then((res) => {
         if (res && res.data) resolve(res.data);
@@ -319,12 +332,13 @@ export const deletePostFeed = (id) => {
 };
 
 /** Shop - START */
-export const getAllShop = (querry) => {
+export const getAllShop = async (querry) => {
+  const headers = await getHeader();
   return new Promise((resolve, reject) => {
     axios({
       method: "get",
       url: constants.serverBaseUrl + `/getAllShop${querry}`,
-      headers: getHeader(),
+      headers,
     })
       .then((res) => {
         if (res && res.data) resolve(res.data);
@@ -335,7 +349,8 @@ export const getAllShop = (querry) => {
   });
 };
 
-export const postShop = (body, flag) => {
+export const postShop = async (body, flag) => {
+  const headers = await getHeader();
   return new Promise((resolve, reject) => {
     let url = constants.serverBaseUrl;
     if (flag === "post") url += "/postShop";
@@ -343,7 +358,7 @@ export const postShop = (body, flag) => {
     axios({
       method: "post",
       url,
-      headers: getHeader(),
+      headers,
       data: body,
     })
       .then((res) => {
@@ -355,12 +370,13 @@ export const postShop = (body, flag) => {
   });
 };
 
-export const deleteShop = (id) => {
+export const deleteShop = async (id) => {
+  const headers = await getHeader();
   return new Promise((resolve, reject) => {
     axios({
       method: "post",
       url: `${constants.serverBaseUrl}/deleteShop`,
-      headers: getHeader(),
+      headers,
       data: {
         shopId: id,
       },

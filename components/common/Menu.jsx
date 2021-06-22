@@ -17,7 +17,8 @@ import _get from "lodash/get";
 import constants from "dataService/Constants";
 import menuLists from "dataService/MenuLists";
 
-import { isLoggedIn, getPageCode } from "utils/Common";
+import { getPageCode } from "utils/Common";
+import { isLoggedIn } from "redux/selector";
 import { connect } from "react-redux";
 import { useRouter } from "next/router";
 import classNames from "classnames";
@@ -46,8 +47,6 @@ const useStyles = makeStyles((theme) => ({
 function Menu(props) {
   const classes = useStyles();
   const router = useRouter();
-
-  const { userDetails } = props;
 
   const getMenuList = () => {
     let menuItem = [];
@@ -122,11 +121,4 @@ function Menu(props) {
   );
 }
 
-const mapStateToProps = (state) => {
-  return {
-    toastMsg: state.toastMsg,
-    userDetails: state.userDetails,
-    theme: state.theme,
-  };
-};
-export default connect(mapStateToProps)(Menu);
+export default Menu;

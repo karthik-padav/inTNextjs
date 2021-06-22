@@ -5,7 +5,7 @@ import Typography from "@material-ui/core/Typography";
 import _get from "lodash/get";
 import _isEmpty from "lodash/isEmpty";
 import _includes from "lodash/includes";
-import { connect } from "react-redux";
+import { connect, useDispatch } from "react-redux";
 import Divider from "components/common/Divider";
 import RatingWrapper from "components/common/RatingWrapper";
 import SharePost from "components/common/SharePost";
@@ -17,12 +17,10 @@ import Paper from "@material-ui/core/Paper";
 import Box from "@material-ui/core/Box";
 import ButtonWrapper from "components/common/ButtonWrapper";
 import Link from "next/link";
-import { isLoggedIn, getPostTypeFromURL } from "utils/Common";
-import { usePrevious } from "utils/CustomHooks";
-
 import { handleLike } from "dataService/Api";
 import { red } from "@material-ui/core/colors";
 import constants from "dataService/Constants";
+import { toggleLoginModal, updateToastMsg } from "redux/slices/uiSlice";
 
 const useStyles = makeStyles((theme) => ({
   paper: {},
@@ -32,7 +30,6 @@ function PostCardWrapper(props) {
   const classes = useStyles(props);
   const {
     children,
-    updateToastMsg,
     data: postCardData = {},
     showCommentList = false,
     menuItem = [],
@@ -41,16 +38,17 @@ function PostCardWrapper(props) {
     showComment = true,
     showRating = true,
   } = props;
-  console.log(props.data, "data123");
   const {
     review = 0,
     _id: postId,
     user: authorDetails,
     createdAt,
     collectionName,
+    loggedUser = {},
     like = {},
     comment = {},
   } = postCardData;
+  const dispatch = useDispatch();
   const { count: likeCount = 0, hasLiked = [] } = like;
   const { count: commentCount = 0 } = comment;
   const [liked, setLike] = useState(0);
@@ -59,7 +57,6 @@ function PostCardWrapper(props) {
   }, [hasLiked]);
 
   const router = useRouter();
-  const isLogged = isLoggedIn();
 
   const onLike = ({ postId }) => {
     handleLike({ postId, collectionName })
@@ -67,10 +64,12 @@ function PostCardWrapper(props) {
         if (_get(resp, "status")) {
           // const likeStatus = _get(resp, "data.status", 0);
         } else {
-          updateToastMsg({
-            msg: "Something went wrong.",
-            type: "error",
-          });
+          dispatch(
+            updateToastMsg({
+              msg: "Something went wrong.",
+              type: "error",
+            })
+          );
         }
       })
       .catch((err) => {
@@ -83,7 +82,11 @@ function PostCardWrapper(props) {
         <Box px={2} pt={2} pb={1}>
           <UserHeaderCard {...authorDetails} createdAt={createdAt}>
             {!_isEmpty(menuItem) && (
-              <OptionMenuV2 menuItem={menuItem} data={postCardData} />
+              <OptionMenuV2
+                menuItem={menuItem}
+                loggedUser={loggedUser}
+                data={postCardData}
+              />
             )}
           </UserHeaderCard>
         </Box>
@@ -110,15 +113,15 @@ function PostCardWrapper(props) {
                 type="IconButton"
                 color={red[500]}
                 onClick={() => {
-                  if (isLogged) {
+                  if (loggedUser) {
                     setLike(!liked);
                     postId && onLike({ postId });
-                  } else props.toggleLoginModal(true);
+                  } else dispatch(toggleLoginModal());
                 }}
               >
                 <Icon
                   className={
-                    isLogged && liked ? "fas fa-heart" : "far fa-heart"
+                    loggedUser && liked ? "fas fa-heart" : "far fa-heart"
                   }
                   style={{ fontSize: "18px" }}
                 />
@@ -156,7 +159,7 @@ function PostCardWrapper(props) {
         <>
           <Divider />
           <Box px={2} py={1}>
-            <CommentCard data={postCardData} />
+            <CommentCard data={postCardData} loggedUser={loggedUser} />
           </Box>
         </>
       )}
@@ -164,21 +167,4 @@ function PostCardWrapper(props) {
   );
 }
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    updateToastMsg: (toastMsg) => {
-      dispatch({
-        type: "UPDATE_TOAST",
-        payload: toastMsg,
-      });
-    },
-    toggleLoginModal: (flag) => {
-      dispatch({
-        type: "SHOW_LOGIN_MODAL",
-        payload: flag,
-      });
-    },
-  };
-};
-
-export default connect(null, mapDispatchToProps)(PostCardWrapper);
+export default PostCardWrapper;

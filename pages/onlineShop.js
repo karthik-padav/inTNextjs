@@ -75,9 +75,7 @@ function OnlineShop(props) {
         <NextSeo {...SEO} />
         <Grid container spacing={0}>
           <Grid item sm={12} md={3} className={classes.p1}>
-            <div className="stickyWrapper">
-              <Menu />
-            </div>
+            <div className="stickyWrapper">{/* <Menu /> */}</div>
           </Grid>
           <Grid item sm={12} md={6} className={classes.p1}>
             <OnlineShopWrapper />
@@ -94,13 +92,4 @@ function OnlineShop(props) {
   return null;
 }
 
-const mapStateToProps = (state) => {
-  return {
-    userDetails: state.userDetails,
-  };
-};
-const mapDispatchToProps = (dispatch) => {
-  return {};
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(OnlineShop);
+export default OnlineShop;

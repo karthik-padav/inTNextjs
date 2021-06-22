@@ -1,7 +1,7 @@
 import { Grid, Paper, Box } from "@material-ui/core";
 import React, { useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import { connect } from "react-redux";
+import { connect, useSelector } from "react-redux";
 import ProfileMenu from "components/common/ProfileMenu";
 import Menu from "components/common/Menu";
 import List from "@material-ui/core/List";
@@ -19,7 +19,7 @@ import Theme from "pages/settings/Theme";
 import BloodValunteer from "pages/settings/BloodValunteer";
 import AccountSettings from "pages/settings/AccountSettings";
 import { useRouter } from "next/router";
-import { isLoggedIn } from "utils/Common";
+import { getLoggedUser } from "redux/slices/loggedUserSlice";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -27,9 +27,6 @@ const useStyles = makeStyles((theme) => ({
   },
   paper: {
     padding: theme.spacing(2),
-    color: theme.palette.text.secondary,
-    backgroundColor: theme.palette.background.paper,
-    // boxShadow: theme.shadows[5],
   },
   headerTitle: {
     color: theme.palette.common.white,
@@ -42,14 +39,9 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function Settings(props) {
-  const { theme, updateTheme, userDetails } = props;
+  const loggedUser = useSelector(getLoggedUser);
   const classes = useStyles();
   const router = useRouter();
-
-  useEffect(() => {
-    // console.log(userDetails, "userDetails123");
-    // if (!userDetails) router.push("/");
-  }, []);
 
   return (
     <div className={classes.root}>
@@ -67,11 +59,11 @@ function Settings(props) {
           <Box mb={1}>
             <Paper className={classes.paper}>
               <Theme />
-              {isLoggedIn() && <BloodValunteer />}
+              {loggedUser && <BloodValunteer />}
             </Paper>
           </Box>
 
-          {isLoggedIn() && (
+          {loggedUser && (
             <Box mb={1}>
               <Paper className={classes.paper}>
                 <AccountSettings />
@@ -89,34 +81,4 @@ function Settings(props) {
   );
 }
 
-const mapStateToProps = (state) => {
-  return {
-    toastMsg: state.toastMsg,
-    userDetails: state.userDetails,
-    theme: state.theme,
-  };
-};
-const mapDispatchToProps = (dispatch) => {
-  return {
-    updateTheme: (mode) => {
-      dispatch({
-        type: "UPDATE_THEME",
-        payload: mode,
-      });
-    },
-    updateToastMsg: (toastMsg) => {
-      dispatch({
-        type: "UPDATE_TOAST",
-        payload: toastMsg,
-      });
-    },
-    toggleLoginModal: (flag) => {
-      dispatch({
-        type: "SHOW_LOGIN_MODAL",
-        payload: flag,
-      });
-    },
-  };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(Settings);
+export default Settings;

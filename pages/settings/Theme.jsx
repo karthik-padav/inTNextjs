@@ -10,7 +10,7 @@ import {
 } from "@material-ui/core";
 import React, { useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import { connect } from "react-redux";
+import { connect, useDispatch, useSelector } from "react-redux";
 import EditProfile from "pages/profilePage/EditProfile";
 import ProfileMenu from "components/common/ProfileMenu";
 import Menu from "components/common/Menu";
@@ -24,6 +24,7 @@ import Switch from "@material-ui/core/Switch";
 import constants from "dataService/Constants";
 import { orange } from "@material-ui/core/colors";
 import classNames from "classnames";
+import { getThemeState, updateTheme } from "redux/slices/uiSlice";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -32,7 +33,8 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function Theme(props) {
-  const { theme, updateTheme } = props;
+  const dispatch = useDispatch();
+  const theme = useSelector(getThemeState);
   const classes = useStyles();
 
   return (
@@ -92,7 +94,7 @@ function Theme(props) {
             const mode = e.target.checked
               ? constants.THEME.DARK
               : constants.THEME.LIGHT;
-            updateTheme(mode);
+            dispatch(updateTheme(mode));
             localStorage.setItem(
               "theme",
               JSON.stringify({
@@ -110,35 +112,4 @@ function Theme(props) {
   );
 }
 
-const mapStateToProps = (state) => {
-  console.log(state, "state123");
-  return {
-    toastMsg: state.toastMsg,
-    userDetails: state.userDetails,
-    theme: state.ui.theme,
-  };
-};
-const mapDispatchToProps = (dispatch) => {
-  return {
-    updateTheme: (mode) => {
-      dispatch({
-        type: "UPDATE_THEME",
-        payload: mode,
-      });
-    },
-    updateToastMsg: (toastMsg) => {
-      dispatch({
-        type: "UPDATE_TOAST",
-        payload: toastMsg,
-      });
-    },
-    toggleLoginModal: (flag) => {
-      dispatch({
-        type: "SHOW_LOGIN_MODAL",
-        payload: flag,
-      });
-    },
-  };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(Theme);
+export default Theme;

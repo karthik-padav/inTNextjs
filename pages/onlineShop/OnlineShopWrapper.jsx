@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { makeStyles, withStyles } from "@material-ui/core/styles";
-import { connect } from "react-redux";
+import { connect, useDispatch, useSelector } from "react-redux";
 
 import classNames from "classnames";
 
@@ -15,7 +15,7 @@ import Badge from "@material-ui/core/Badge";
 import Typography from "@material-ui/core/Typography";
 
 import { getAllShop, deleteShop } from "dataService/Api";
-import { isLoggedIn } from "utils/Common";
+import { isLoggedIn } from "redux/selector";
 
 import FilterWrapper from "pages/bloodbank/FilterWrapper";
 import ConfirmAlertBox from "components/common/ConfirmAlertBox";
@@ -28,6 +28,8 @@ import NoDataFound from "components/common/NoDataFound";
 import CardWrapper from "./CardWrapper";
 import { grey, red, blue } from "@material-ui/core/colors";
 import colors from "themes/ThemeColors";
+import { toggleLoginModal, updateToastMsg } from "redux/slices/uiSlice";
+import { getLoggedUser } from "redux/slices/loggedUserSlice";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -48,14 +50,13 @@ const StyledBadge = withStyles((theme) => ({
 }))(Badge);
 
 function OnlineShopWrapper(props) {
+  const dispatch = useDispatch();
+  const loggedUser = useSelector(getLoggedUser);
   const classes = useStyles();
   const {
     list = [],
-    setList,
-    toggleShopModal,
-    updateToastMsg,
-    toggleLoginModal,
-    loggedInUser,
+    setList = () => {},
+    toggleShopModal = () => {},
     showAddPost = true,
   } = props;
   const [listStartIndex, setListStartIndex] = useState(0);
@@ -120,14 +121,16 @@ function OnlineShopWrapper(props) {
             });
             setList({ data: newList });
             setConfirmAlert(false);
-            updateToastMsg({ msg: res.message, type: "success" });
+            dispatch(updateToastMsg({ msg: res.message, type: "success" }));
           } else {
             setConfirmAlert(null);
-            updateToastMsg({ msg: res.message, type: "error" });
+            dispatch(updateToastMsg({ msg: res.message, type: "error" }));
           }
         })
         .catch((err) => {
-          updateToastMsg({ msg: "Something went wrong", type: "error" });
+          dispatch(
+            updateToastMsg({ msg: "Something went wrong", type: "error" })
+          );
         });
     }
   };
@@ -177,7 +180,7 @@ function OnlineShopWrapper(props) {
             onClick={() => {
               if (isLoggedIn()) {
                 toggleShopModal(true);
-              } else toggleLoginModal(true);
+              } else dispatch(toggleLoginModal());
             }}
           >
             <Typography variant="button">Add Your Shop</Typography>
@@ -207,7 +210,7 @@ function OnlineShopWrapper(props) {
 
       {list.map((item, index) => {
         let menuItem = [];
-        const userId = _get(loggedInUser, "_id");
+        const userId = _get(loggedUser, "_id");
         const postedBy = _get(item, "user._id");
         if (userId && userId === postedBy)
           menuItem.push(
@@ -261,40 +264,4 @@ function OnlineShopWrapper(props) {
   );
 }
 
-const mapStateToProps = (state) => {
-  return {
-    loggedInUser: state.userDetails,
-    list: _get(state, "shopList.data", []),
-    state,
-  };
-};
-const mapDispatchToProps = (dispatch) => {
-  return {
-    updateToastMsg: (toastMsg) => {
-      dispatch({
-        type: "UPDATE_TOAST",
-        payload: toastMsg,
-      });
-    },
-    toggleLoginModal: (flag) => {
-      dispatch({
-        type: "SHOW_LOGIN_MODAL",
-        payload: flag,
-      });
-    },
-    toggleShopModal: (show, data) => {
-      dispatch({
-        type: "SHOW_SHOP_MODAL",
-        payload: { show, data },
-      });
-    },
-    setList: (payload) => {
-      dispatch({
-        type: "ADD_SHOP",
-        payload,
-      });
-    },
-  };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(OnlineShopWrapper);
+export default OnlineShopWrapper;

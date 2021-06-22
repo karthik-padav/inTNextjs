@@ -39,7 +39,6 @@ function CardWrapper(props) {
       )}
       {data?.contentImage && !_isEmpty(data.contentImage) && (
         <Box my={1}>
-          {console.log(data.contentImage, "contentImage123")}
           <ImagePreview
             contentImage={data.contentImage}
             imagePath={constants.s3BaseUrl}

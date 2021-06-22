@@ -1,14 +1,14 @@
 import { createStore, combineReducers } from "redux";
 
-const userDetails = (userDetails = null, action) => {
+const loggedUser = (loggedUser = null, action) => {
   switch (action.type) {
     case "UPDATE_USER":
-      userDetails = action.payload;
+      loggedUser = action.payload;
       break;
     default:
-      return userDetails;
+      return loggedUser;
   }
-  return userDetails;
+  return loggedUser;
 };
 
 const questionList = (questionList = {}, action) => {
@@ -88,7 +88,7 @@ const ui = (ui = {}, action) => {
 
 export const store = createStore(
   combineReducers({
-    userDetails,
+    loggedUser,
     ui,
     questionList,
     bRequestList,

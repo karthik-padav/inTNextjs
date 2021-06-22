@@ -5,7 +5,6 @@ import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
 import IconButton from "@material-ui/core/IconButton";
 import MenuIcon from "@material-ui/icons/Menu";
-import { connect } from "react-redux";
 import { loadCSS } from "fg-loadcss";
 import _get from "lodash/get";
 import _isEmpty from "lodash/isEmpty";
@@ -22,8 +21,9 @@ import NotificationBadge from "components/common/NotificationBadge";
 import ProfileBadge from "components/common/ProfileBadge";
 import constants from "dataService/Constants";
 import permission from "dataService/Permission";
-
-import { isLoggedIn } from "utils/Common";
+import { useDispatch, useSelector } from "react-redux";
+import { toggleLoginModal } from "redux/slices/uiSlice";
+import { getLoggedUser } from "redux/slices/loggedUserSlice";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -50,9 +50,10 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function Header(props) {
-  const { toggleLoginModal } = props;
-
   const classes = useStyles();
+  const dispatch = useDispatch();
+  const loggedUser = useSelector(getLoggedUser);
+  console.log(loggedUser, "loggedUser123");
   return (
     <div className={classes.root}>
       <AppBar position="fixed" className={classes.appBar}>
@@ -72,13 +73,17 @@ function Header(props) {
               />
             </Link>
             <Box>
-              {isLoggedIn() ? (
+              {loggedUser ? (
                 <Box display="flex" alignItems="center">
                   {permission?.NOTIFICATION?.show && <NotificationBadge />}
-                  <ProfileBadge />
+                  <ProfileBadge loggedUser={loggedUser} />
                 </Box>
               ) : (
-                <ButtonWrapper onClick={() => toggleLoginModal(true)}>
+                <ButtonWrapper
+                  onClick={() => {
+                    dispatch(toggleLoginModal());
+                  }}
+                >
                   <Typography variant="button">Login</Typography>
                 </ButtonWrapper>
               )}
@@ -91,33 +96,4 @@ function Header(props) {
   );
 }
 
-const mapStateToProps = (state) => {
-  return {
-    userDetails: state.userDetails,
-    toastMsg: state.toastMsg,
-  };
-};
-const mapDispatchToProps = (dispatch) => {
-  return {
-    updateUser: (userDetails) => {
-      dispatch({
-        type: "UPDATE_USER",
-        payload: userDetails,
-      });
-    },
-    toggleLoginModal: (flag) => {
-      dispatch({
-        type: "SHOW_LOGIN_MODAL",
-        payload: flag,
-      });
-    },
-    updateToastMsg: (toastMsg) => {
-      dispatch({
-        type: "UPDATE_TOAST",
-        payload: toastMsg,
-      });
-    },
-  };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(Header);
+export default Header;

@@ -2,7 +2,7 @@ import { getQuestions } from "dataService/Api";
 import React, { useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { Grid, Paper, Box, Icon, Button, Typography } from "@material-ui/core";
-import { connect } from "react-redux";
+import { connect, useSelector } from "react-redux";
 import Divider from "components/common/Divider";
 
 import _get from "lodash/get";
@@ -10,6 +10,7 @@ import _isEmpty from "lodash/isEmpty";
 import _find from "lodash/find";
 import _findIndex from "lodash/findIndex";
 import QuestionsWrapper from "pages/questions/QuestionsWrapper";
+import { getLoggedUser } from "redux/slices/loggedUserSlice";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -24,7 +25,7 @@ const useStyles = makeStyles((theme) => ({
 
 function MyPostCard(props) {
   const classes = useStyles();
-  const { userDetails } = props;
+  const loggedUser = useSelector(getLoggedUser);
 
   return (
     <div className={classes.root}>
@@ -33,34 +34,11 @@ function MyPostCard(props) {
       </Paper>
       {/* <Divider /> */}
       <QuestionsWrapper
-        postedBy={_get(userDetails, "userId")}
+        postedBy={_get(loggedUser, "userId")}
         showAddPost={false}
       />
     </div>
   );
 }
 
-const mapStateToProps = (state) => {
-  return {
-    toastMsg: state.toastMsg,
-    userDetails: state.userDetails,
-  };
-};
-const mapDispatchToProps = (dispatch) => {
-  return {
-    toggleLoginModal: (flag) => {
-      dispatch({
-        type: "SHOW_LOGIN_MODAL",
-        payload: flag,
-      });
-    },
-    togglePostModal: (flag, data) => {
-      dispatch({
-        type: "SHOW_ADD_POST",
-        payload: { flag, data },
-      });
-    },
-  };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(MyPostCard);
+export default MyPostCard;

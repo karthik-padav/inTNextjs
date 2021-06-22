@@ -14,9 +14,8 @@ import _get from "lodash/get";
 import _isEmpty from "lodash/isEmpty";
 import _findIndex from "lodash/findIndex";
 
-import { connect } from "react-redux";
+import { connect, useDispatch } from "react-redux";
 import { getAllComments, postComments, deleteComment } from "dataService/Api";
-import { isLoggedIn, getPostTypeFromURL } from "utils/Common";
 import UserHeaderCard from "components/common/UserHeaderCard";
 import OptionMenuV2 from "components/common/OptionMenuV2";
 import ConfirmAlertBox from "components/common/ConfirmAlertBox";
@@ -27,6 +26,7 @@ import LoadMore from "components/common/LoadMore";
 import LoaderComponent from "./LoaderComponent";
 import { grey, red, blue } from "@material-ui/core/colors";
 import colors from "themes/ThemeColors";
+import { toggleLoginModal, updateToastMsg } from "redux/slices/uiSlice";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -49,7 +49,8 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function CommentCard(props) {
-  const { data, userDetails } = props;
+  const dispatch = useDispatch();
+  const { data, loggedUser } = props;
   const { _id: postId, collectionName = null } = data;
   const classes = useStyles();
   const [comments, setComments] = useState("");
@@ -129,7 +130,7 @@ function CommentCard(props) {
           }
           setEditId(null);
           setComments("");
-        } else props.updateToastMsg({ msg: res.message, type: "error" });
+        } else dispatch(updateToastMsg({ msg: res.message, type: "error" }));
         setLoader(false);
       });
     }
@@ -156,7 +157,7 @@ function CommentCard(props) {
         setLoader(false);
       } else {
         setLoader(false);
-        updateToastMsg({ msg: res.message, type: "error" });
+        dispatch(updateToastMsg({ msg: res.message, type: "error" }));
       }
     });
   };
@@ -191,12 +192,12 @@ function CommentCard(props) {
 
   return (
     <div className={classes.root}>
-      {isLoggedIn() && (
+      {loggedUser._id && (
         <Box mt={2}>
           <Grid container display="flex" justify="center">
             <Grid item>
               <Avatar
-                src={_get(userDetails, "profilePicture", "")}
+                src={_get(loggedUser, "profilePicture", "")}
                 className={classes.small}
               />
             </Grid>
@@ -223,9 +224,9 @@ function CommentCard(props) {
                       variant="contained"
                       loader={loader}
                       onClick={() => {
-                        if (isLoggedIn()) {
+                        if (loggedUser._id) {
                           sumbmitComment();
-                        } else props.toggleLoginModal(true);
+                        } else dispatch(toggleLoginModal());
                       }}
                     >
                       <Typography variant="button">Comment</Typography>
@@ -246,7 +247,7 @@ function CommentCard(props) {
             createdAt={_get(item, "createdAt")}
             avatarClass={classes.small}
           >
-            {isLoggedIn() && userDetails._id === item.user._id ? (
+            {loggedUser._id === item.user._id ? (
               <OptionMenuV2 menuItem={menuItem} data={item} />
             ) : null}
           </UserHeaderCard>
@@ -305,27 +306,4 @@ function CommentCard(props) {
   );
 }
 
-const mapStateToProps = (state) => {
-  return {
-    toastMsg: state.toastMsg,
-    userDetails: state.userDetails,
-  };
-};
-const mapDispatchToProps = (dispatch) => {
-  return {
-    updateToastMsg: (toastMsg) => {
-      dispatch({
-        type: "UPDATE_TOAST",
-        payload: toastMsg,
-      });
-    },
-    toggleLoginModal: (flag) => {
-      dispatch({
-        type: "SHOW_LOGIN_MODAL",
-        payload: flag,
-      });
-    },
-  };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(CommentCard);
+export default CommentCard;

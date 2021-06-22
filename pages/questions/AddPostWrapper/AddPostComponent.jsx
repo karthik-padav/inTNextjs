@@ -14,7 +14,7 @@ import Button from "@material-ui/core/Button";
 import classNames from "classnames";
 import GridList from "@material-ui/core/GridList";
 import GridListTile from "@material-ui/core/GridListTile";
-import { connect } from "react-redux";
+import { connect, useDispatch, useSelector } from "react-redux";
 import { postFeed } from "dataService/Api";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import DialogActions from "@material-ui/core/DialogActions";
@@ -31,6 +31,11 @@ import { Formik, Field } from "formik";
 import constants from "dataService/Constants";
 import * as Yup from "yup";
 import { TextField as FTextField } from "formik-material-ui";
+import {
+  showAskModal,
+  updateToastMsg,
+  toggleAskModal,
+} from "redux/slices/uiSlice";
 
 const useStyles = makeStyles((theme) => ({
   imageSizeWrapper: {
@@ -77,57 +82,37 @@ const validationSchema = Yup.object().shape({
 
 function AddPostComponent(props) {
   const classes = useStyles();
-  const {
-    togglePostModal,
-    isEditRequest,
-    setQuestionList,
-    questionList,
-    isModalOpen,
-  } = props;
+  const dispatch = useDispatch();
+  const { showAddModal, actions } = props;
+  const { onSuccess = () => {}, onCancel = () => {} } = actions;
+  const { flag: isModalOpen, data: isEditRequest = null } = showAddModal;
   const [initialValues, setInitialValues] = React.useState();
   const [submitLoader, setSubmitLoader] = React.useState(false);
   const placeholder = `${'Start your question with "What", "How", "Why", etc.'}`;
 
   React.useEffect(() => {
     const initialValues = {
-      images: _get(props, "isEditRequest.contentImage", []),
-      content: _get(props, "isEditRequest.content", ""),
+      images: _get(isEditRequest, "contentImage", []),
+      content: _get(isEditRequest, "content", ""),
     };
     setInitialValues(initialValues);
   }, [isEditRequest]);
 
   const handleSubmit = async (values) => {
-    let data = values;
-    if (_get(isEditRequest, "_id")) data._id = isEditRequest._id;
-    const formData = await generateFinalFormData(data);
     setSubmitLoader(true);
-    postFeed(formData, _get(isEditRequest, "_id") ? "update" : "post").then(
-      (res) => {
-        if (_get(res, "status")) {
-          props.updateToastMsg({
-            msg: "Success",
-            type: "success",
-          });
-          togglePostModal(false);
-          if (isEditRequest) {
-            const feedIndex = _findIndex(questionList, (item) => {
-              return item.postId === res.data.postId;
-            });
-            if (feedIndex > -1) {
-              const newList = _cloneDeep(questionList);
-              newList[feedIndex] = res.data;
-              setQuestionList({ data: newList });
-            }
-          } else setQuestionList({ data: [res.data, ...questionList] });
-        } else {
-          props.updateToastMsg({
-            msg: res.message,
-            type: "error",
-          });
-        }
-        setSubmitLoader(false);
-      }
+    if (_get(isEditRequest, "_id")) values._id = isEditRequest._id;
+    const formData = await generateFinalFormData(values);
+    const { data, error } = await postFeed(
+      formData,
+      isEditRequest?._id ? "update" : "post"
     );
+    if (error) dispatch(updateToastMsg({ msg: res.message, type: "error" }));
+    else if (data?.status) {
+      dispatch(updateToastMsg({ msg: "Success", type: "success" }));
+      onSuccess({ data: data.data });
+    } else
+      dispatch(updateToastMsg({ msg: "Something went wrong", type: "error" }));
+    setSubmitLoader(false);
   };
 
   const generateFinalFormData = (values) => {
@@ -150,120 +135,91 @@ function AddPostComponent(props) {
     return formData;
   };
 
-  return (
-    <Formik
-      initialValues={initialValues}
-      validationSchema={validationSchema}
-      enableReinitialize
-      validateOnBlur
-      onSubmit={(values, { setSubmitting }) => {
-        setSubmitting(false);
-        handleSubmit(values);
-      }}
-    >
-      {(formikProps) => (
-        <DialogBox
-          isModalOpen={isModalOpen}
-          onClose={togglePostModal}
-          fullWidth
-          headerTitle={"Create Post"}
-          body={
-            <Box>
-              {console.log(formikProps, "formikProps123")}
-              <ImagePicker formikProps={formikProps} />
-              <Box mt={1}>
-                <Grid container spacing={1}>
-                  <Grid item sm={12} md={12}>
-                    <Box>
-                      <Field
-                        type="text"
-                        InputLabelProps={{
-                          shrink: true,
-                        }}
-                        name="content"
-                        // label={placeholder}
-                        placeholder={placeholder}
-                        component={FTextField}
-                        multiline
-                        fullWidth
-                        rows={4}
-                        rowsMax={10}
-                        value={_get(formikProps, "values.content", "")}
-                      />
-                      <Box display="flex" justifyContent="flex-end">
-                        <Typography variant="caption">
-                          {_get(formikProps, "values.content", "").length}/
-                          {postCharLength}
-                        </Typography>
+  if (isModalOpen)
+    return (
+      <Formik
+        initialValues={initialValues}
+        validationSchema={validationSchema}
+        enableReinitialize
+        validateOnBlur
+        onSubmit={(values, { setSubmitting }) => {
+          setSubmitting(false);
+          handleSubmit(values);
+        }}
+      >
+        {(formikProps) => (
+          <DialogBox
+            isModalOpen={isModalOpen}
+            onClose={onCancel}
+            fullWidth
+            headerTitle={"Create Post"}
+            body={
+              <Box>
+                {console.log(formikProps, "formikProps123")}
+                <ImagePicker formikProps={formikProps} />
+                <Box mt={1}>
+                  <Grid container spacing={1}>
+                    <Grid item sm={12} md={12}>
+                      <Box>
+                        <Field
+                          type="text"
+                          InputLabelProps={{
+                            shrink: true,
+                          }}
+                          name="content"
+                          // label={placeholder}
+                          placeholder={placeholder}
+                          component={FTextField}
+                          multiline
+                          fullWidth
+                          rows={4}
+                          rowsMax={10}
+                          value={_get(formikProps, "values.content", "")}
+                        />
+                        <Box display="flex" justifyContent="flex-end">
+                          <Typography variant="caption">
+                            {_get(formikProps, "values.content", "").length}/
+                            {postCharLength}
+                          </Typography>
+                        </Box>
                       </Box>
-                    </Box>
+                    </Grid>
                   </Grid>
-                </Grid>
+                </Box>
               </Box>
-            </Box>
-          }
-          footer={
-            <Box px={1} py={1} display="flex" justifyContent="flex-end">
-              <ButtonWrapper
-                onClick={() => togglePostModal(false)}
-                disabled={submitLoader}
-                bgColor={grey[100]}
-                color={colors.blue}
-              >
-                <Typography variant="button">Close</Typography>
-              </ButtonWrapper>
-              <Box ml={1}>
+            }
+            footer={
+              <Box px={1} py={1} display="flex" justifyContent="flex-end">
                 <ButtonWrapper
-                  variant="contained"
-                  onClick={formikProps.handleSubmit}
+                  onClick={onCancel}
                   disabled={submitLoader}
+                  bgColor={grey[100]}
+                  color={colors.blue}
                 >
-                  <Typography variant="button">Sumbit</Typography>
-                  {submitLoader && (
-                    <CircularProgress
-                      size={24}
-                      className={classes.submitLoaderBtn}
-                    />
-                  )}
+                  <Typography variant="button">Close</Typography>
                 </ButtonWrapper>
+                <Box ml={1}>
+                  <ButtonWrapper
+                    variant="contained"
+                    onClick={formikProps.handleSubmit}
+                    disabled={submitLoader}
+                  >
+                    <Typography variant="button">Sumbit</Typography>
+                    {submitLoader && (
+                      <CircularProgress
+                        size={24}
+                        className={classes.submitLoaderBtn}
+                      />
+                    )}
+                  </ButtonWrapper>
+                </Box>
               </Box>
-            </Box>
-          }
-        />
-      )}
-    </Formik>
-  );
+            }
+          />
+        )}
+      </Formik>
+    );
+  return null;
 }
 
-const mapStateToProps = (state) => {
-  return {
-    userDetails: state.userDetails,
-    isEditRequest: _get(state, "ui.postQuestionModal.data"),
-    questionList: _get(state, "questionList.data", []),
-    isModalOpen: _get(state, "ui.postQuestionModal.show"),
-  };
-};
-const mapDispatchToProps = (dispatch) => {
-  return {
-    updateToastMsg: (toastMsg) => {
-      dispatch({
-        type: "UPDATE_TOAST",
-        payload: toastMsg,
-      });
-    },
-    togglePostModal: (show, data = null) => {
-      dispatch({
-        type: "SHOW_Q_MODAL",
-        payload: { show, data },
-      });
-    },
-    setQuestionList: (payload) => {
-      dispatch({
-        type: "ADD_Q",
-        payload,
-      });
-    },
-  };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(AddPostComponent);
+export default AddPostComponent;

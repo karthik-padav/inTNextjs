@@ -12,13 +12,17 @@ import Button from "@material-ui/core/Button";
 import IconButton from "@material-ui/core/IconButton";
 import constants from "dataService/Constants";
 import { GoogleLogin } from "react-google-login";
-import { connect } from "react-redux";
+import { connect, useDispatch, useSelector } from "react-redux";
 import { login } from "dataService/Api";
-import { bindActionCreators } from "redux";
 import DialogBox from "components/common/dialogBoxWrapper/DialogBox";
 import ButtonWrapper from "components/common/ButtonWrapper";
-import { grey, red, blue } from "@material-ui/core/colors";
 import colors from "themes/ThemeColors";
+import {
+  showLoginModal,
+  updateToastMsg,
+  toggleLoginModal,
+} from "redux/slices/uiSlice";
+import { loggedUserReducer } from "redux/slices/loggedUserSlice";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -44,15 +48,11 @@ const useStyles = makeStyles((theme) => ({
 
 function LoginModal(props) {
   const classes = useStyles();
-  const {
-    showLoginModal,
-    toggleLoginModal,
-    toggleDeactivatedModal,
-    updateUser,
-    updateToastMsg,
-  } = props;
+  const { toggleDeactivatedModal } = props;
+  const isOpen = useSelector(showLoginModal);
+  const dispatch = useDispatch();
 
-  const responseGoogle = (response) => {
+  const responseGoogle = async (response) => {
     if (_get(response, "googleId")) {
       const params = {
         providerId: response.googleId,
@@ -62,49 +62,49 @@ function LoginModal(props) {
         givenName: response.profileObj.givenName,
         provider: "Google",
       };
-      console.log(JSON.stringify(params), "params123");
-      login(params).then((res) => {
-        if (_get(res, "status")) {
-          if (
-            _get(res, "data.activeAccount") === 0 ||
-            _get(res, "data.status") === 0
-          ) {
-            toggleLoginModal(false);
-            toggleDeactivatedModal(true, {
-              ...res.data,
-              message: res.message,
-            });
-          } else {
-            const userData = _get(res, "data", null);
-            toggleLoginModal(false);
-            updateUser(userData);
-            localStorage.setItem(
-              "userDetails",
-              JSON.stringify({
-                accesstoken: userData.accesstoken,
-                userId: userData.userId,
-              })
-            );
+      const { data, error } = await login(params);
+      if (error) {
+        dispatch(
+          updateToastMsg({ msg: "Something went wrong.", type: "error" })
+        );
+        return;
+      }
+      if (data?.status) {
+        const loggedUser = _get(data, "data");
+        if (
+          _get(loggedUser, "activeAccount") === 0 ||
+          _get(loggedUser, "status") === 0
+        ) {
+          dispatch(toggleLoginModal());
+          toggleDeactivatedModal(true, {
+            ...loggedUser,
+            message: data.message,
+          });
+        } else {
+          dispatch(toggleLoginModal());
+          dispatch(loggedUserReducer(loggedUser));
+          localStorage.setItem(
+            "inTulunadu_accesstoken",
+            JSON.stringify(loggedUser.accesstoken)
+          );
+          dispatch(
             updateToastMsg({
-              msg: `Howdy ${userData.givenName} ${userData.familyName}`,
+              msg: `Howdy ${loggedUser.givenName} ${loggedUser.familyName}`,
               type: "success",
-            });
-          }
+            })
+          );
         }
-      });
+      }
     } else {
-      updateToastMsg({
-        msg: "Something went wrong.",
-        type: "error",
-      });
+      dispatch(updateToastMsg({ msg: "Something went wrong.", type: "error" }));
     }
   };
 
   return (
     <DialogBox
-      isModalOpen={showLoginModal}
+      isModalOpen={isOpen}
       fullWidth
-      onClose={() => toggleLoginModal(false)}
+      onClose={() => dispatch(toggleLoginModal())}
       body={
         <>
           <Box className={classes.blueWrapper}>
@@ -113,7 +113,7 @@ function LoginModal(props) {
                 type="IconButton"
                 bgColor={colors.blue}
                 color="#fff"
-                onClick={() => toggleLoginModal(false)}
+                onClick={() => dispatch(toggleLoginModal())}
               >
                 <Icon className="fas fa-times" fontSize="small" />
               </ButtonWrapper>
@@ -155,38 +155,4 @@ function LoginModal(props) {
   );
 }
 
-const mapStateToProps = (state) => {
-  return {
-    showLoginModal: _get(state, "ui.loginModal", false),
-  };
-};
-const mapDispatchToProps = (dispatch) => {
-  return {
-    toggleLoginModal: (flag) => {
-      dispatch({
-        type: "SHOW_LOGIN_MODAL",
-        payload: flag,
-      });
-    },
-    updateUser: (userDetails) => {
-      dispatch({
-        type: "UPDATE_USER",
-        payload: userDetails,
-      });
-    },
-    updateToastMsg: (toastMsg) => {
-      dispatch({
-        type: "UPDATE_TOAST",
-        payload: toastMsg,
-      });
-    },
-    toggleDeactivatedModal: (show, data) => {
-      dispatch({
-        type: "SHOW_USER_DEACTIVATED_MODAL",
-        payload: { show, data },
-      });
-    },
-  };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(LoginModal);
+export default LoginModal;

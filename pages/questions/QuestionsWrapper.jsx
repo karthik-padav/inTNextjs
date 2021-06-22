@@ -3,7 +3,6 @@ import { bindActionCreators } from "redux";
 import { getQuestions } from "dataService/Api";
 import { makeStyles } from "@material-ui/core/styles";
 import { Grid, Paper, Box, Icon } from "@material-ui/core";
-import { connect } from "react-redux";
 
 import ProfileMenu from "components/common/ProfileMenu";
 import Menu from "components/common/Menu";
@@ -13,7 +12,8 @@ import _get from "lodash/get";
 import _isEmpty from "lodash/isEmpty";
 import _find from "lodash/find";
 import _findIndex from "lodash/findIndex";
-import { isLoggedIn } from "utils/Common";
+import _cloneDeep from "lodash/cloneDeep";
+
 import LoaderComponent from "pages/questions/LoaderComponent";
 // import { getAllQuestions } from "actions/questions";
 import PostCardWrapper from "components/common/postCard/PostCardWrapper";
@@ -26,6 +26,15 @@ import LoadMore from "components/common/LoadMore";
 import Typography from "@material-ui/core/Typography";
 import { grey, red, blue } from "@material-ui/core/colors";
 import colors from "themes/ThemeColors";
+import AddPostComponent from "pages/questions/AddPostWrapper/AddPostComponent";
+import { getLoggedUser } from "redux/slices/loggedUserSlice";
+import { getAskList, createNewAskList } from "redux/slices/askListSlice";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  toggleLoginModal,
+  toggleAskModal,
+  updateToastMsg,
+} from "redux/slices/uiSlice";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -49,93 +58,60 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function QuestionsWrapper(props) {
+  const loggedUser = useSelector(getLoggedUser);
+  const userId = loggedUser?._id;
+  const dispatch = useDispatch();
   const classes = useStyles();
-  const {
-    togglePostModal,
-    toggleLoginModal,
-    updateToastMsg,
-    loggedUser,
-    list,
-    setList,
-    postedBy,
-    showAddPost = true,
-  } = props;
+  const { postedBy, showAddPost = true } = props;
   const [listStartIndex, setListStartIndex] = useState(0);
   const [hasMoreListToLoad, setHasMoreListToLoad] = useState(true);
+  const [list, setList] = useState([]);
   const [showConfirmBox, setConfirmAlert] = useState(false);
-
-  const [limit, setLimit] = useState(15);
-
-  const [querry, setQuerry] = useState(null);
-
-  const [listLoader, setListLoader] = useState(false);
-
-  const userId = _get(loggedUser, "_id");
+  const [showAddModal, toggleAddModal] = useState({ flag: false, data: null });
+  const [loader, setLoader] = useState(false);
 
   const LoadMoreList = async () => {
-    if (hasMoreListToLoad) {
-      setListStartIndex((prev) => (prev ? prev : 0 + limit));
-    }
+    // if (hasMoreListToLoad) {
+    //   setListStartIndex((prev) => (prev ? prev : 0 + limit));
+    // }
+  };
+
+  const initialLoad = async () => {
+    setLoader(true);
+    let querryString = `?skip=${list.length}&limit=${15}`;
+    if (postedBy) querryString += `&postedBy=${postedBy}`;
+    const { data, error } = await getQuestions(querryString);
+    if (error)
+      dispatch(updateToastMsg({ msg: "Something went wrong.", type: "error" }));
+    else if (data?.status) setList(_get(data, "data", []));
+    else
+      dispatch(updateToastMsg({ msg: "Something went wrong.", type: "error" }));
+    setLoader(false);
   };
 
   useEffect(() => {
-    setList(null);
+    initialLoad();
   }, []);
 
-  useEffect(() => {
-    let querryString = `?offset=${
-      listStartIndex ? listStartIndex : 0
-    }&limit=${limit}`;
-    if (postedBy) querryString += `&postedBy=${postedBy}`;
-    // if (userId) querryString += `&userId=${userId}`;
-    if (querry) querryString += `${querry}`;
-    getListFnc(querryString, listStartIndex ? listStartIndex : 0 > 0);
-  }, [listStartIndex]);
-
-  const getListFnc = (querryString, isAppend = true) => {
-    setListLoader(true);
-    getQuestions(querryString)
-      .then((res) => {
-        if (_get(res, "status")) {
-          if (!_isEmpty(res.data)) {
-            if (isAppend) setList({ data: [...list, ...res.data] });
-            else setList({ data: res.data });
-          } else {
-            if (!isAppend) {
-              setList({ data: res.data });
-            }
-            setHasMoreListToLoad(false);
-          }
-        }
-        setListLoader(false);
-      })
-      .catch((err) => {
-        setListLoader(false);
-      });
-  };
-
-  const editClicked = (value) => {
-    togglePostModal(true, value);
-  };
-
   const deletePost = (data) => {
-    const postId = _get(data, "_id");
-    if (postId) {
-      deletePostFeed(postId)
+    if (data?._id) {
+      deletePostFeed(data._id)
         .then((res) => {
           if (_get(res, "status")) {
             let newList = list.filter((item) => {
-              return item._id !== postId;
+              return item._id !== data._id;
             });
-            setList({ data: newList });
+            setList(newList);
             setConfirmAlert(false);
-            updateToastMsg({ msg: res.message, type: "success" });
+            dispatch(updateToastMsg({ msg: res.message, type: "success" }));
           } else {
-            updateToastMsg({ msg: res.message, type: "error" });
+            dispatch(updateToastMsg({ msg: res.message, type: "error" }));
           }
         })
         .catch((err) => {
-          updateToastMsg({ msg: "Something went wrong", type: "error" });
+          dispatch(
+            updateToastMsg({ msg: "Something went wrong", type: "error" })
+          );
         });
     }
   };
@@ -158,6 +134,17 @@ function QuestionsWrapper(props) {
     },
   ];
 
+  const onSuccess = ({ data }) => {
+    let newList = _cloneDeep(list);
+    const index = _findIndex(list, (item) => {
+      return item._id === data?._id;
+    });
+    if (index > -1) newList[index] = data;
+    else newList = [data, ...newList];
+    setList(newList);
+    toggleAddModal({ flag: false, data: null });
+  };
+
   return (
     <div className={classes.root}>
       {showAddPost && (
@@ -165,9 +152,9 @@ function QuestionsWrapper(props) {
           <ButtonWrapper
             variant="contained"
             onClick={() => {
-              if (isLoggedIn()) {
-                togglePostModal(true);
-              } else toggleLoginModal(true);
+              if (loggedUser) {
+                toggleAddModal({ flag: true });
+              } else dispatch(toggleLoginModal());
             }}
           >
             <Typography variant="button">What's on your mind?</Typography>
@@ -183,7 +170,7 @@ function QuestionsWrapper(props) {
               title: "Edit",
               authCheck: true,
               code: "edit",
-              cb: editClicked,
+              cb: (value) => toggleAddModal({ flag: true, data: value }),
             },
             {
               title: "Delete",
@@ -196,6 +183,7 @@ function QuestionsWrapper(props) {
           <Box key={index} mb={2}>
             <PostCardWrapper
               data={item}
+              loggedUser={loggedUser}
               menuItem={menuItem}
               redirect_href={`/questions/${postId}`}
               showRating={false}
@@ -206,67 +194,39 @@ function QuestionsWrapper(props) {
         );
       })}
 
-      {listLoader ? (
-        <LoaderComponent />
-      ) : _isEmpty(list) ? (
-        <Box display="flex" justifyContent="center" m={3}>
-          <NoDataFound />
-        </Box>
-      ) : hasMoreListToLoad ? (
+      {list.length === 0 && !loader && <NoDataFound />}
+      {loader && <LoaderComponent />}
+      {list.length > 1 && (
         <Box display="flex" justifyContent="center" my={2}>
           <LoadMore
             label="Load More"
-            loader={listLoader}
+            loader={loader}
             onTrigger={LoadMoreList}
             width="30%"
           />
         </Box>
-      ) : null}
+      )}
 
-      <ConfirmAlertBox
-        menu={confirmAlertButtons}
-        title={<Typography variant="h1">Delete Post</Typography>}
-        subtitle="Are You Sure You Want To Delete This Post?"
-        data={showConfirmBox}
-        isModalOpen={showConfirmBox}
-      />
+      {showConfirmBox && (
+        <ConfirmAlertBox
+          menu={confirmAlertButtons}
+          title={<Typography variant="h1">Delete Post</Typography>}
+          subtitle="Are You Sure You Want To Delete This Post?"
+          data={showConfirmBox}
+          isModalOpen={showConfirmBox}
+        />
+      )}
+      {showAddModal.flag && (
+        <AddPostComponent
+          actions={{
+            onSuccess: onSuccess,
+            onCancel: () => toggleAddModal({ flag: false, data: null }),
+          }}
+          showAddModal={showAddModal}
+        />
+      )}
     </div>
   );
 }
 
-const mapStateToProps = (state) => {
-  return {
-    loggedUser: state.userDetails,
-    list: _get(state, "questionList.data", []),
-  };
-};
-const mapDispatchToProps = (dispatch) => {
-  return {
-    toggleLoginModal: (flag) => {
-      dispatch({
-        type: "SHOW_LOGIN_MODAL",
-        payload: flag,
-      });
-    },
-    togglePostModal: (show, data) => {
-      dispatch({
-        type: "SHOW_Q_MODAL",
-        payload: { show, data },
-      });
-    },
-    updateToastMsg: (toastMsg) => {
-      dispatch({
-        type: "UPDATE_TOAST",
-        payload: toastMsg,
-      });
-    },
-    setList: (payload) => {
-      dispatch({
-        type: "ADD_Q",
-        payload,
-      });
-    },
-  };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(QuestionsWrapper);
+export default QuestionsWrapper;

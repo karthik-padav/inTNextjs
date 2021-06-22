@@ -22,7 +22,7 @@ import Typography from "@material-ui/core/Typography";
 import moment from "moment";
 import Box from "@material-ui/core/Box";
 import Divider from "components/common/Divider";
-import { isLoggedIn } from "utils/Common";
+import { isLoggedIn } from "redux/selector";
 
 import _get from "lodash/get";
 import _cloneDeep from "lodash/cloneDeep";
@@ -94,7 +94,7 @@ function ProfileBadge(props) {
   const getAllNotification = () => {
     // GET NOTIFICATION LIST
     getNotification().then((res) => {
-      if (_get(res, "status")) setNotificationList({ data: res.data });
+      // if (_get(res, "status")) setNotificationList({ data: res.data });
     });
   };
 
@@ -110,7 +110,7 @@ function ProfileBadge(props) {
             return item.notificationId === notificationId;
           });
           if (index > -1) list[index] = obj;
-          setNotificationList({ data: list });
+          // setNotificationList({ data: list });
         }
       });
   };
@@ -213,20 +213,5 @@ function ProfileBadge(props) {
     </>
   );
 }
-const mapStateToProps = (state) => {
-  return {
-    notificationList: _get(state, "notificationList.data", []),
-  };
-};
-const mapDispatchToProps = (dispatch) => {
-  return {
-    setNotificationList: (payload) => {
-      dispatch({
-        type: "ADD_NOTIFICATION",
-        payload,
-      });
-    },
-  };
-};
 
-export default connect(mapStateToProps, mapDispatchToProps)(ProfileBadge);
+export default ProfileBadge;

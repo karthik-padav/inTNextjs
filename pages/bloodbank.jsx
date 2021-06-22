@@ -59,22 +59,4 @@ function BloodBank(props) {
   return null;
 }
 
-const mapStateToProps = (state) => {
-  return {
-    userDetails: state.userDetails,
-    bRequestList: _get(state, "bRequestList.data", []),
-    state,
-  };
-};
-const mapDispatchToProps = (dispatch) => {
-  return {
-    updateToastMsg: (toastMsg) => {
-      dispatch({
-        type: "UPDATE_TOAST",
-        payload: toastMsg,
-      });
-    },
-  };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(BloodBank);
+export default BloodBank;

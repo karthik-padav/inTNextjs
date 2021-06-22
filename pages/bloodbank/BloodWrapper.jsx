@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { makeStyles, withStyles } from "@material-ui/core/styles";
-import { connect } from "react-redux";
+import { connect, useDispatch, useSelector } from "react-redux";
 
 import classNames from "classnames";
 
@@ -15,7 +15,6 @@ import Badge from "@material-ui/core/Badge";
 import Typography from "@material-ui/core/Typography";
 
 import { getBloodReceiver, deleteBloodRequest } from "dataService/Api";
-import { isLoggedIn } from "utils/Common";
 
 import FilterWrapper from "pages/bloodbank/FilterWrapper";
 import ConfirmAlertBox from "components/common/ConfirmAlertBox";
@@ -27,6 +26,8 @@ import ButtonWrapper from "components/common/ButtonWrapper";
 import NoDataFound from "components/common/NoDataFound";
 import { grey, red, blue } from "@material-ui/core/colors";
 import colors from "themes/ThemeColors";
+import { updateToastMsg, toggleLoginModal } from "redux/slices/uiSlice";
+import { getLoggedUser } from "redux/slices/loggedUserSlice";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -47,14 +48,13 @@ const StyledBadge = withStyles((theme) => ({
 }))(Badge);
 
 function BloodWrapper(props) {
+  const dispatch = useDispatch();
+  const loggedUser = useSelector(getLoggedUser);
   const classes = useStyles();
   const {
     list = [],
-    setList,
-    toggleBloodModal,
-    updateToastMsg,
-    toggleLoginModal,
-    userDetails,
+    setList = () => {},
+    toggleBloodModal = () => {},
     showAddPost = true,
   } = props;
   const [listStartIndex, setListStartIndex] = useState(0);
@@ -119,14 +119,16 @@ function BloodWrapper(props) {
             });
             setList({ data: newList });
             setConfirmAlert(false);
-            updateToastMsg({ msg: res.message, type: "success" });
+            dispatch(updateToastMsg({ msg: res.message, type: "success" }));
           } else {
             setConfirmAlert(null);
-            updateToastMsg({ msg: res.message, type: "error" });
+            dispatch(updateToastMsg({ msg: res.message, type: "error" }));
           }
         })
         .catch((err) => {
-          updateToastMsg({ msg: "Something went wrong", type: "error" });
+          dispatch(
+            updateToastMsg({ msg: "Something went wrong", type: "error" })
+          );
         });
     }
   };
@@ -176,9 +178,9 @@ function BloodWrapper(props) {
           <ButtonWrapper
             variant="contained"
             onClick={() => {
-              if (isLoggedIn()) {
+              if (loggedUser) {
                 toggleBloodModal(true);
-              } else toggleLoginModal(true);
+              } else dispatch(toggleLoginModal());
             }}
           >
             <Typography variant="button">Add</Typography>
@@ -214,7 +216,7 @@ function BloodWrapper(props) {
 
       {list.map((item, index) => {
         let menuItem = [];
-        const userId = _get(userDetails, "userId");
+        const userId = _get(loggedUser, "_id");
         const postedBy = _get(item, "user_details.userId");
         if (userId && userId === postedBy)
           menuItem.push(
@@ -280,40 +282,4 @@ function BloodWrapper(props) {
   );
 }
 
-const mapStateToProps = (state) => {
-  return {
-    userDetails: state.userDetails,
-    list: _get(state, "bRequestList.data", []),
-    state,
-  };
-};
-const mapDispatchToProps = (dispatch) => {
-  return {
-    updateToastMsg: (toastMsg) => {
-      dispatch({
-        type: "UPDATE_TOAST",
-        payload: toastMsg,
-      });
-    },
-    toggleLoginModal: (flag) => {
-      dispatch({
-        type: "SHOW_LOGIN_MODAL",
-        payload: flag,
-      });
-    },
-    toggleBloodModal: (show, data) => {
-      dispatch({
-        type: "SHOW_B_MODAL",
-        payload: { show, data },
-      });
-    },
-    setList: (payload) => {
-      dispatch({
-        type: "ADD_B",
-        payload,
-      });
-    },
-  };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(BloodWrapper);
+export default BloodWrapper;
