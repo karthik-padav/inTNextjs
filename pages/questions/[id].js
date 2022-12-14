@@ -18,7 +18,7 @@ import { Grid, Paper, Box, Icon } from "@material-ui/core";
 import ProfileMenu from "components/common/ProfileMenu";
 import Menu from "components/common/Menu";
 import NoDataFound from "components/common/NoDataFound";
-import CardWrapper from "./CardWrapper";
+import CardWrapper from "../../components/questions/CardWrapper";
 import PostCardWrapper from "components/common/postCard/PostCardWrapper";
 
 import ConfirmAlertBox from "components/common/ConfirmAlertBox";

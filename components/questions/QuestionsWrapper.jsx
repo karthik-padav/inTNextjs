@@ -7,14 +7,14 @@ import { Grid, Paper, Box, Icon } from "@material-ui/core";
 import ProfileMenu from "components/common/ProfileMenu";
 import Menu from "components/common/Menu";
 import classNames from "classnames";
-import CardWrapper from "pages/questions/CardWrapper";
+import CardWrapper from "components/questions/CardWrapper";
 import _get from "lodash/get";
 import _isEmpty from "lodash/isEmpty";
 import _find from "lodash/find";
 import _findIndex from "lodash/findIndex";
 import _cloneDeep from "lodash/cloneDeep";
 
-import LoaderComponent from "pages/questions/LoaderComponent";
+import LoaderComponent from "components/questions/LoaderComponent";
 // import { getAllQuestions } from "actions/questions";
 import PostCardWrapper from "components/common/postCard/PostCardWrapper";
 import ConfirmAlertBox from "components/common/ConfirmAlertBox";
@@ -26,7 +26,7 @@ import LoadMore from "components/common/LoadMore";
 import Typography from "@material-ui/core/Typography";
 import { grey, red, blue } from "@material-ui/core/colors";
 import colors from "themes/ThemeColors";
-import AddPostComponent from "pages/questions/AddPostWrapper/AddPostComponent";
+import AddPostComponent from "components/questions/AddPostWrapper/AddPostComponent";
 import { getLoggedUser } from "redux/slices/loggedUserSlice";
 import { getAskList, createNewAskList } from "redux/slices/askListSlice";
 import { useDispatch, useSelector } from "react-redux";
@@ -65,7 +65,8 @@ function QuestionsWrapper(props) {
   const { postedBy, showAddPost = true } = props;
   const [listStartIndex, setListStartIndex] = useState(0);
   const [hasMoreListToLoad, setHasMoreListToLoad] = useState(true);
-  const [list, setList] = useState([]);
+  const list = useSelector(getAskList);
+  // const [list, setList] = useState([]);
   const [showConfirmBox, setConfirmAlert] = useState(false);
   const [showAddModal, toggleAddModal] = useState({ flag: false, data: null });
   const [loader, setLoader] = useState(false);
@@ -83,8 +84,10 @@ function QuestionsWrapper(props) {
     const { data, error } = await getQuestions(querryString);
     if (error)
       dispatch(updateToastMsg({ msg: "Something went wrong.", type: "error" }));
-    else if (data?.status) setList(_get(data, "data", []));
-    else
+    else if (data?.status) {
+      dispatch(createNewAskList(_get(data, "data", [])));
+      // setList(_get(data, "data", []));
+    } else
       dispatch(updateToastMsg({ msg: "Something went wrong.", type: "error" }));
     setLoader(false);
   };
@@ -101,7 +104,7 @@ function QuestionsWrapper(props) {
             let newList = list.filter((item) => {
               return item._id !== data._id;
             });
-            setList(newList);
+            // setList(newList);
             setConfirmAlert(false);
             dispatch(updateToastMsg({ msg: res.message, type: "success" }));
           } else {
@@ -141,7 +144,7 @@ function QuestionsWrapper(props) {
     });
     if (index > -1) newList[index] = data;
     else newList = [data, ...newList];
-    setList(newList);
+    // setList(newList);
     toggleAddModal({ flag: false, data: null });
   };
 

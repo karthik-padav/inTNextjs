@@ -9,7 +9,7 @@ import _get from "lodash/get";
 import _isEmpty from "lodash/isEmpty";
 import _find from "lodash/find";
 import _findIndex from "lodash/findIndex";
-import QuestionsWrapper from "pages/questions/QuestionsWrapper";
+import QuestionsWrapper from "components/questions/QuestionsWrapper";
 import { getLoggedUser } from "redux/slices/loggedUserSlice";
 
 const useStyles = makeStyles((theme) => ({

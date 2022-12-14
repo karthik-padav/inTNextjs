@@ -10,7 +10,7 @@ import { Grid, Paper, Badge } from "@material-ui/core";
 
 import Menu from "components/common/Menu";
 import { withStyles } from "@material-ui/core/styles";
-import OnlineShopWrapper from "pages/onlineShop/OnlineShopWrapper";
+import OnlineShopWrapper from "components/onlineShop/OnlineShopWrapper";
 import SEO from "seo/shop";
 import { NextSeo } from "next-seo";
 import { useRouter } from "next/router";
@@ -73,19 +73,7 @@ function OnlineShop(props) {
     return (
       <div className={classes.root}>
         <NextSeo {...SEO} />
-        <Grid container spacing={0}>
-          <Grid item sm={12} md={3} className={classes.p1}>
-            <div className="stickyWrapper">{/* <Menu /> */}</div>
-          </Grid>
-          <Grid item sm={12} md={6} className={classes.p1}>
-            <OnlineShopWrapper />
-          </Grid>
-          <Grid item sm={12} md={3} className={classes.p1}>
-            <div className="stickyWrapper">
-              <Paper className={classes.paper}>xs=6</Paper>
-            </div>
-          </Grid>
-        </Grid>
+        <OnlineShopWrapper />
       </div>
     );
 

@@ -10,9 +10,9 @@ import { connect, useSelector } from "react-redux";
 import _get from "lodash/get";
 import { grey, red, blue } from "@material-ui/core/colors";
 import colors from "themes/ThemeColors";
-import QuestionsWrapper from "pages/questions/QuestionsWrapper";
+import QuestionsWrapper from "components/questions/QuestionsWrapper";
 import BloodWrapper from "pages/bloodbank/BloodWrapper";
-import OnlineShopWrapper from "pages/onlineShop/OnlineShopWrapper";
+import OnlineShopWrapper from "components/onlineShop/OnlineShopWrapper";
 import permission from "dataService/Permission";
 import { getLoggedUser } from "redux/slices/loggedUserSlice";
 
